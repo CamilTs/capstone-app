@@ -29,24 +29,55 @@
 }
 
 /* Estilos para el menú lateral */
+.menu-container {
+  display: flex;
+  align-items: flex-start; /* Alinear elementos verticalmente en la parte superior */
+  justify-content: flex-start; /* Alinear elementos horizontalmente en la parte superior */
+}
+
 .MenuLateral {
   width: 250px;
   height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
   background-color: #333;
   color: #fff;
   padding: 20px;
   box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.8);
-  z-index: 1;
 }
 
-/* Estilos para el título "Ai-Zi" */
-.title {
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-align: center;
+/* Estilos del botón "Mostrar/Ocultar" */
+.toggle-button {
+  cursor: pointer;
+  background-color: rgb(3, 137, 146);
   color: #fff;
+  border-radius: 5px;
+  padding: 5px 10px;
+  transition: background-color 0.3s ease-in-out;
+  z-index: 2;
+  margin-left: 10px; /* Espacio entre el menú y el botón */
+  width: 80px;
 }
+/* Estilo para el botón cuando está oculto */
+.toggle-button.hidden {
+  right: -40px;
+}
+
+/* Cambio de color de fondo al pasar el mouse por encima del botón */
+.toggle-button:hover {
+  background-color: rgb(3, 137, 146);
+}
+
+/* Estilos para ocultar el menú cuando la clase .menu-hidden está presente */
+.MenuCard.menu-hidden .MenuLateral {
+  transform: translateX(-250px);
+}
+
+.MenuCard.menu-hidden .toggle-button {
+  left: 10px;
+  background-color: rgb(3, 137, 146);
+}
+
+.MenuCard.menu-hidden .toggle-button.hidden {
+  left: -40px;
+}
+
 
