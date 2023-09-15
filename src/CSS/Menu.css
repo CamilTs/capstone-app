@@ -1,0 +1,35 @@
+.MenuLateral {
+  width: 250px;
+  height: 100%;
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: height 0.3s ease-in-out;
+}
+  
+.MenuLateral .title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: lightseagreen;
+    border-bottom: 2px solid lightseagreen;
+    padding-bottom: 10px;
+  }
+  
+/* .MenuLateral .menu {
+
+} */
+
+.center-content {
+    margin-left: 270px;
+    transition: margin-left 0.3s ease-in-out;
+  }
+
+.MenuLateral.submenu-extended {
+    width: 300px; /* Ancho fijo para el submenú extendido */
+  }  

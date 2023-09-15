@@ -52,14 +52,14 @@ export const RegistrarUsuarios = () => {
 
   const cargar = () => {
     if (formData.fotoPerfil) {
+      setCargando(true);
+      
+      setTimeout(() => {
+        setCargando(false);
+        submit(); // Llamar a la función submit cuando cargando sea falso
+      }, 2000);
     }
 
-    setCargando(true);
-    
-    setTimeout(() => {
-      setCargando(false);
-      submit(); // Llamar a la función submit cuando cargando sea falso
-    }, 2000);
   };
   
   const submit = () => {
