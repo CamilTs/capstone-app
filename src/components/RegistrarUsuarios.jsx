@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Dropdown } from 'primereact/dropdown';
 import { Password } from 'primereact/password';
-import { Button } from 'primereact/button'
+import { Button } from 'primereact/button';
+import { FileUpload } from 'primereact/fileupload';
 import { InputText } from 'primereact/inputtext';
-import { FileUpload } from 'primereact/fileupload'
 
 export const RegistrarUsuarios = () => {
   const [fotoPerfil, setFotoPerfil] = useState(null);
@@ -44,8 +44,6 @@ export const RegistrarUsuarios = () => {
       fotoPerfil: file,
     });
   };
-
-  //  ========== FORM HOOK =========
 
   const rolOptions = [
     { label: 'Administrador', value: 'administrador' },
@@ -142,7 +140,7 @@ export const RegistrarUsuarios = () => {
       <p style={{ fontSize: '10px' }}>
         ¿Ya tienes una cuenta? Presiona <Link to="/Iniciar-sesion" style={{ color: 'blue' }}>aquí</Link>.
       </p>
-    </div>
-  );
+      </div>
+  )
 };
 
