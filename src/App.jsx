@@ -3,16 +3,11 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import { PrimeReactProvider } from 'primereact/api';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import MenuLateral from '../components/Menubar';
+import MenuLateral from './components/Menubar';
 
-<<<<<<< Updated upstream
-import { IniciarSesion } from '../components/IniciarSesion'
-import { RegistrarUsuarios } from '../components/RegistrarUsuarios'
-import { Principal } from '../components/Principal';
-=======
+
 import { IniciarSesion } from './components/IniciarSesion'
 import { RegistrarUsuarios } from './components/RegistrarUsuarios'
->>>>>>> Stashed changes
 
 function App() {
   const [menuVisible, setMenuVisible] = useState(true);
