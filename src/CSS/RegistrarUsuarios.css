@@ -1,0 +1,83 @@
+/* .registrar-usuarios-container {
+    padding: 20px;
+    width: 80%;
+    height: 437px;
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 20px;
+  }
+  
+  .registrar-usuarios-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    width: 186.996px;
+    height: 31px;
+    flex-shrink: 0;
+  }
+  
+  .registrar-usuarios-dropdown {
+    display: contents;
+    flex-shrink: 0;
+  }
+  
+  .registrar-usuarios-label {
+    font-weight: bold;
+    display: flex;
+    width: 185px;
+    padding: 16px;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .registrar-usuarios-preview {
+    margin-top: 10px;
+    max-width: 100px;
+    width: 92px;
+    height: 92px;
+    flex-shrink: 0;
+  }
+  
+  .registrar-usuarios-input {
+    margin-right: 20px;
+    display: flex;
+    width: 203px;
+    height: 60px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  
+  .registrar-usuarios-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .registrar-usuarios-create-button {
+    margin-right: 10px;
+  }
+  
+  .registrar-usuarios-link {
+    font-size: 10px;
+    margin-top: 20px;
+  }
+  
+  .registrar-usuarios-link a {
+    color: blue;
+  }
+  
+  .registrar-container-label {
+    margin-top: 23%;
+    margin-right: 10%;
+  }
+  
+  .registrar-container-campos {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+  }
+   */

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menubar } from 'primereact/menubar';
+import { PanelMenu } from 'primereact/panelmenu';
 import '../CSS/Menu.css'
 import '../App.css';
 
@@ -14,25 +14,36 @@ const MenuLateral = () => {
     },
     {
       label: 'Cuentas',
-      icon: 'pi pi-check',
+      icon: 'pi pi-users',
       items: [
-        { label: 'Ver cuentas', icon: 'pi pi-check' },
+        { label: 'Ver cuentas', icon: 'pi pi-eye' },
         {
           label: 'Iniciar sesion',
-          icon: 'pi pi-check',
+          icon: 'pi pi-user',
           command: () => window.location.replace('/Iniciar-sesion'),
         },
         {
           label: 'Registrar cuentas',
-          icon: 'pi pi-times',
+          icon: 'pi pi-user-plus',
           command: () => window.location.replace('/Registrar'),
         }
       ],
     },
     {
       label: 'Productos',
-      icon: 'pi pi-times',
-      command: () => window.location.replace('/Productos'),
+      icon: 'pi pi-qrcode',
+      items: [
+        {
+          label: 'Ver Productos',
+          icon: 'pi pi-eye',
+          command: () => window.location.replace('/Productos'),
+        },
+        {
+          label: 'Agregar Productos',
+          icon: 'pi pi-plus',
+          command: () => window.location.replace('/AgregarProductos'),
+        }
+      ],
     },
     {
       label: 'Registros',
@@ -54,7 +65,7 @@ const MenuLateral = () => {
     <div className={`MenuLateral ${isSubMenuExtended ? 'submenu-extended' : ''}`}>
       <div className="title">Ai Zi</div>
       <div className="menu">
-        <Menubar model={items} onChange={handleMenuItemClick} />
+        <PanelMenu model={items} className="w-full md:w-25rem" multiple={true} onChange={handleMenuItemClick} />
       </div>
     </div>
   );

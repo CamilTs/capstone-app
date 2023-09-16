@@ -1,7 +1,7 @@
 .MenuLateral {
   width: 250px;
   height: 100%;
-  background-color: #333;
+  background-color: #fff;
   color: #fff;
   padding: 20px;
   box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.8);
@@ -13,12 +13,14 @@
 }
   
 .MenuLateral .title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-    color: lightseagreen;
-    border-bottom: 2px solid lightseagreen;
-    padding-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  background: #538A95;
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: rgb(255, 255, 255);
+  padding-bottom: 10px;
   }
   
 /* .MenuLateral .menu {

@@ -4,7 +4,7 @@
   }
   
   .tableWrapper {
-    border: 2px solid black;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 5px;
     background-color: white;
