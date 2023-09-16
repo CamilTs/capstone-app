@@ -13,14 +13,22 @@ import { RegistrarUsuarios } from '../components/RegistrarUsuarios'
 import { Principal } from '../components/Principal';
 
 function App() {
+  const [isMenuSelected, setIsMenuSelected] = useState(false);
+
   return (
     <PrimeReactProvider>
     <Router>
-      <Routes>
-        <Route path="/" element={<MenuLateral/>}/>
-        <Route path="/Iniciar-sesion" element={<IniciarSesion/>} />
-        <Route path="/Registrar" element={<RegistrarUsuarios/>} />
-      </Routes>
+      <div className="App">
+        <MenuLateral/>
+        <div className={`center-content ${isMenuSelected ? 'menu-selected' : ''}`}>
+          <Routes>
+            <Route path="/" element={<></>} />
+            <Route path="/Iniciar-sesion" element={<IniciarSesion />} />
+            <Route path="/Registrar" element={<RegistrarUsuarios />} />
+            <Route path="/Productos" element={<Productos/>} />
+          </Routes>
+        </div>
+      </div>
     </Router>
     </PrimeReactProvider>
   );
