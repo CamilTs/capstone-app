@@ -9,6 +9,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import { Productos } from './components/Productos';
 import 'primeicons/primeicons.css';
+import { AgregarProductos } from './components/AgregarProductos';
 
 function App() {
   const [isMenuSelected, setIsMenuSelected] = useState(false);
@@ -35,6 +36,7 @@ function App() {
             <Route path="/Iniciar-sesion" element={<IniciarSesion />} />
             <Route path="/Registrar" element={<RegistrarUsuarios />} />
             <Route path="/Productos" element={<Productos/>} />
+            <Route path='/AgregarProductos' element={<AgregarProductos/>} />
           </Routes>
         </div>
       </div>
