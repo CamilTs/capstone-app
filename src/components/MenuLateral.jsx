@@ -54,7 +54,7 @@ const MenuLateral = () => {
     <div className={`MenuLateral ${isSubMenuExtended ? 'submenu-extended' : ''}`}>
       <div className="title">Ai Zi</div>
       <div className="menu">
-        <Menubar model={items} onItemSelect={handleMenuItemClick} />
+        <Menubar model={items} onChange={handleMenuItemClick} />
       </div>
     </div>
   );
