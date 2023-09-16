@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { Menubar } from 'primereact/menubar';
-import 'primereact/resources/themes/saga-blue/theme.css'; // Agrega la importación del tema CSS de PrimeReact
-import 'primereact/resources/primereact.min.css'; // Agrega la importación de los estilos base de PrimeReact
-import 'primeicons/primeicons.css'; // Agrega la importación de los iconos de PrimeIcons
-import '../CSS/Menu.css';
+import '../CSS/Menu.css'
 import '../App.css';
 
 const MenuLateral = () => {
@@ -21,7 +18,7 @@ const MenuLateral = () => {
       items: [
         { label: 'Ver cuentas', icon: 'pi pi-check' },
         {
-          label: 'Iniciar sesión',
+          label: 'Iniciar sesion',
           icon: 'pi pi-check',
           command: () => window.location.replace('/Iniciar-sesion'),
         },
@@ -50,7 +47,7 @@ const MenuLateral = () => {
   ];
 
   const handleMenuItemClick = () => {
-    setIsSubMenuExtended(!isSubMenuExtended);
+    setIsSubMenuExtended(!isSubMenuExtended); // Invertir el estado al hacer clic en un elemento del submenú
   };
 
   return (
@@ -64,3 +61,6 @@ const MenuLateral = () => {
 };
 
 export default MenuLateral;
+
+
+

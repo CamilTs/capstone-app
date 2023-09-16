@@ -1,0 +1,16 @@
+.container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .tableWrapper {
+    border: 2px solid black;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: white;
+  }
+  
+  .title {
+    margin-right: 20px; /* Ajusta la distancia desde la izquierda */
+    color: black;
+  }

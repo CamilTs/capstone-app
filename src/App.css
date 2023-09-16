@@ -28,25 +28,3 @@
   color: #888;
 }
 
-/* Estilos para el menú lateral */
-.MenuLateral {
-  width: 250px;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: #333;
-  color: #fff;
-  padding: 20px;
-  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.8);
-  z-index: 1;
-}
-
-/* Estilos para el título "Ai-Zi" */
-.title {
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-align: center;
-  color: #fff;
-}
-

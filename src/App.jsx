@@ -1,25 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MenuLateral from './components/MenuLateral';
+import { IniciarSesion } from './components/IniciarSesion';
+import { RegistrarUsuarios } from './components/RegistrarUsuarios';
+import './App.css';
+import './CSS/Menu.css';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
-import { PrimeReactProvider } from 'primereact/api';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import MenuLateral from '../components/Menubar';
-
-import { IniciarSesion } from '../components/IniciarSesion'
-import { RegistrarUsuarios } from '../components/RegistrarUsuarios'
-import { Principal } from '../components/Principal';
+import { Productos } from './components/Productos';
+import 'primeicons/primeicons.css';
 
 function App() {
   const [isMenuSelected, setIsMenuSelected] = useState(false);
 
+  const handleMenuItemClick = () => {
+    setIsMenuSelected(true);
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuSelected(false);
+  };
+
   return (
-    <PrimeReactProvider>
     <Router>
       <div className="App">
-        <MenuLateral/>
+        <MenuLateral
+          isMenuSelected={isMenuSelected}
+          handleMenuItemClick={handleMenuItemClick}
+          handleMenuClose={handleMenuClose}
+        />
         <div className={`center-content ${isMenuSelected ? 'menu-selected' : ''}`}>
           <Routes>
             <Route path="/" element={<></>} />
@@ -30,8 +39,15 @@ function App() {
         </div>
       </div>
     </Router>
-    </PrimeReactProvider>
   );
 }
 
 export default App;
+
+
+
+
+
+
+
+
