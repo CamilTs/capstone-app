@@ -52,9 +52,15 @@ const MenuLateral = () => {
     },
     {
       label: 'Proveedores',
-      icon: 'pi pi-times',
-      command: () => window.location.replace('/'), // Recordar cambiar por ruta componentes
-    },
+      icon: 'pi pi-truck',
+      items: [
+        {
+          label: 'Ver proveedores',
+          icon: 'pi pi-eye',
+          command: () => window.location.replace('/Proveedores'),
+        }
+      ]
+    }
   ];
 
   const handleMenuItemClick = () => {
