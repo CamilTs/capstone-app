@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Dropdown } from 'primereact/dropdown';
 import { Password } from 'primereact/password';
@@ -28,6 +28,23 @@ export const RegistrarUsuarios = () => {
     setFormData(estructuraFormulario);
     setFotoPerfil(null);
   }
+  
+  // == INTENTO DE ALMACENAMIENTO == //
+  // Cargar los objetos guardados desde localStorage al cargar la página
+  useEffect(() => {
+    const storedFormData = JSON.parse(localStorage.getItem('formData'));
+    if (storedFormData) {
+      setFormData(storedFormData);
+    }
+  }, []);
+
+  // Guardar los objetos en localStorage cuando cambian
+  useEffect(() => {
+    localStorage.setItem('formData', JSON.stringify(formData));
+  }, [formData]);
+
+  // ================================= //
+
   const handleChange = ({target}) => {
     const {name, value} = target
     setFormData({...formData,[name]:value})
