@@ -20,6 +20,7 @@ const AgregarProveedores = () => {
     { label: 'Chile (+56 9)', value: '+56 9' }
   ];
 
+  // == INTENTO DE ALMACENAMIENTO == //
   // Cargar los objetos guardados desde localStorage al cargar la página
   useEffect(() => {
     const storedProviders = JSON.parse(localStorage.getItem('proveedoresGuardados'));
@@ -32,6 +33,8 @@ const AgregarProveedores = () => {
   useEffect(() => {
     localStorage.setItem('proveedoresGuardados', JSON.stringify(proveedoresGuardados));
   }, [proveedoresGuardados]);
+
+  // ================================== //
 
   const showDialog = () => {
     setVisible(true);
