@@ -1,44 +1,53 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import MenuLateral from './components/MenuLateral';
-import { IniciarSesion } from './components/IniciarSesion';
-import { RegistrarUsuarios } from './components/RegistrarUsuarios';
-import { Productos } from './components/Productos';
-import { AgregarProductos } from './components/AgregarProductos';
-import { Principal } from './components/Principal';
-import './App.css';
-import './CSS/Menu.css';
+import { Route, Routes } from "react-router-dom";
+import MenuLateral from "./components/MenuLateral";
+import { IniciarSesion } from "./components/IniciarSesion";
+import { RegistrarUsuarios } from "./components/RegistrarUsuarios";
+import { Productos } from "./components/Productos";
+import { AgregarProductos } from "./components/AgregarProductos";
+import "./App.css";
+import "./CSS/Menu.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
-import 'primeicons/primeicons.css';
-import AgregarProveedores from './components/AgregarProveedores';
+import "primeicons/primeicons.css";
+import AgregarProveedores from "./components/AgregarProveedores";
+import styled from "styled-components";
+import { PrincipalPage } from "./pages/Principal/PrincipalPage";
+
+
+const Container = styled.div`
+  background-color: #538A95;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+`
+
+const Content = styled.div`
+    width: 100%;
+    margin: 50px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+`
 
 function App() {
   return (
-    <Router>
-      <div className="App">
+    <>
+      <Container className="contenedorPrincipal">
         <MenuLateral />
-        <div className="center-content">
+        <Content className="contenedor">
           <Routes>
-            <Route path="/Iniciar-sesion" element={<IniciarSesion />} />
-            <Route path="/Registrar" element={<RegistrarUsuarios />} />
-            <Route path="/Productos" element={<Productos />} />
-            <Route path="/AgregarProductos" element={<AgregarProductos />} />
-            <Route path="/Proveedores" element={<AgregarProveedores />} />
-            <Route path="/" element={<Principal />} />
+            <Route path="/iniciar-sesion" element={<IniciarSesion />} />
+            <Route path="/registrar" element={<RegistrarUsuarios />} />
+            <Route path="/productos" element={<Productos />} />
+            <Route path="/agregarProductos" element={<AgregarProductos />} />
+            <Route path="/proveedores" element={<AgregarProveedores />} />
+            <Route path="/" element={<PrincipalPage />} />
           </Routes>
-        </div>
-      </div>
-    </Router>
+        </Content>
+
+      </Container>
+    </>
   );
 }
 
 export default App;
-
-
-
-
-
-
-
-
