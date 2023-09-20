@@ -1,5 +1,4 @@
 // En IniciarSesionPage.jsx (Componente de página)
-import React from 'react';
 import { IniciarSesionForm } from '../IniciarSesion/components/IniciarSesionForm';
 
 export const IniciarSesionPage = () => {
