@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import MenuLateral from "./components/MenuLateral";
-import { IniciarSesion } from "./components/IniciarSesion";
 import { Productos } from "./components/Productos";
 import { AgregarProductos } from "./components/AgregarProductos";
 import "./App.css";
@@ -11,7 +10,7 @@ import "primeicons/primeicons.css";
 import AgregarProveedores from "./components/AgregarProveedores";
 import styled from "styled-components";
 
-import {PrincipalPage, RegistrarUsuarios} from './pages'
+import {PrincipalPage, RegistrarUsuarios, IniciarSesionPage} from './pages'
 
 const Container = styled.div`
   background-color: #538A95;
@@ -35,7 +34,7 @@ function App() {
         <MenuLateral />
         <Content className="contenedor">
           <Routes>
-            <Route path="/iniciar-sesion" element={<IniciarSesion />} />
+            <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />
             <Route path="/registrar" element={<RegistrarUsuarios />} />
             <Route path="/productos" element={<Productos />} />
             <Route path="/agregarProductos" element={<AgregarProductos />} />
