@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import MenuLateral from "./components/MenuLateral";
 import { IniciarSesion } from "./components/IniciarSesion";
-import { RegistrarUsuarios } from "./components/RegistrarUsuarios";
 import { Productos } from "./components/Productos";
 import { AgregarProductos } from "./components/AgregarProductos";
 import "./App.css";
@@ -11,8 +10,8 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import AgregarProveedores from "./components/AgregarProveedores";
 import styled from "styled-components";
-import { PrincipalPage } from "./pages/Principal/PrincipalPage";
 
+import {PrincipalPage, RegistrarUsuarios} from './pages'
 
 const Container = styled.div`
   background-color: #538A95;
