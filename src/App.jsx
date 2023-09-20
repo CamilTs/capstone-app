@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import MenuLateral from "./components/MenuLateral";
-import { IniciarSesion } from "./components/IniciarSesion";
 import { RegistrarUsuarios } from "./components/RegistrarUsuarios";
 import { Productos } from "./components/Productos";
 import { AgregarProductos } from "./components/AgregarProductos";
@@ -12,6 +11,7 @@ import "primeicons/primeicons.css";
 import AgregarProveedores from "./components/AgregarProveedores";
 import styled from "styled-components";
 import { PrincipalPage } from "./pages/Principal/PrincipalPage";
+import { IniciarSesionPage } from "./pages/Cuentas/IniciarSesion/IniciarSesionPage";
 
 
 const Container = styled.div`
@@ -36,7 +36,7 @@ function App() {
         <MenuLateral />
         <Content className="contenedor">
           <Routes>
-            <Route path="/iniciar-sesion" element={<IniciarSesion />} />
+            <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />
             <Route path="/registrar" element={<RegistrarUsuarios />} />
             <Route path="/productos" element={<Productos />} />
             <Route path="/agregarProductos" element={<AgregarProductos />} />
