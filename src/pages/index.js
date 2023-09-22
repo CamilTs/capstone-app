@@ -1,3 +1,3 @@
 export * from './Cuentas/IniciarSesion/IniciarSesionPage'
-export * from './Cuentas/RegistrarUsuario/RegistrarUsuarioPage'
+export * from './RegistrarUsuario/RegistrarUsuarios'
 export * from './Principal/PrincipalPage'
