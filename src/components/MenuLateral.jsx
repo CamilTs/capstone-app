@@ -16,7 +16,7 @@ const MenuLateral = () => {
       label: "Inicio",
       icon: "pi pi-home",
       command: () => {
-        navigate("/");
+        navigate("/cliente/");
       },
     },
     {
@@ -32,7 +32,7 @@ const MenuLateral = () => {
         {
           label: "Registrar cuentas",
           icon: "pi pi-user-plus",
-          command: () => navigate("/registrar"),
+          command: () => navigate("/admin/registrar"),
         },
       ],
     },
@@ -44,19 +44,19 @@ const MenuLateral = () => {
         {
           label: "Ver Productos",
           icon: "pi pi-eye",
-          command: () => navigate("/productos"),
+          command: () => navigate("/cliente/productos"),
         },
         {
           label: "Agregar Productos",
           icon: "pi pi-plus",
-          command: () => navigate("/agregarProductos"),
+          command: () => navigate("/admin/agregarProductos"),
         },
       ],
     },
     {
       label: "Registros",
       icon: "pi pi-times",
-      command: () => navigate("/"),
+      command: () => navigate("/cliente"),
     },
     {
       label: "Proveedores",
@@ -65,7 +65,7 @@ const MenuLateral = () => {
         {
           label: "Ver proveedores",
           icon: "pi pi-eye",
-          command: () => navigate("/proveedores"),
+          command: () => navigate("/proveedor"),
         },
       ],
     },

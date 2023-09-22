@@ -1,31 +1,31 @@
 import { Route, Routes } from "react-router-dom";
 import MenuLateral from "./components/MenuLateral";
-import { Productos } from "./components/Productos";
-import { AgregarProductos } from "./components/AgregarProductos";
+// import { Productos } from "./components/Productos";
+// import { AgregarProductos } from "./components/AgregarProductos";
 import "./App.css";
 import "./CSS/Menu.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
-import AgregarProveedores from "./components/AgregarProveedores";
+// import AgregarProveedores from "./components/AgregarProveedores";
 import styled from "styled-components";
-
-import {PrincipalPage, RegistrarUsuarios, IniciarSesionPage} from './pages'
+import { AdminRoutes, ClienteRoutes, ProveedorRoutes } from "./routes";
+import { IniciarSesionPage } from "./pages";
 
 const Container = styled.div`
-  background-color: #538A95;
+  background-color: #538a95;
   width: 100%;
   height: 100vh;
   display: flex;
-`
+`;
 
 const Content = styled.div`
-    width: 100%;
-    margin: 50px;
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 10px;
-`
+  width: 100%;
+  margin: 50px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+`;
 
 function App() {
   return (
@@ -35,14 +35,12 @@ function App() {
         <Content className="contenedor">
           <Routes>
             <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />
-            <Route path="/registrar" element={<RegistrarUsuarios />} />
-            <Route path="/productos" element={<Productos />} />
-            <Route path="/agregarProductos" element={<AgregarProductos />} />
-            <Route path="/proveedores" element={<AgregarProveedores />} />
-            <Route path="/" element={<PrincipalPage />} />
+
+            <Route path="/admin/*" element={<AdminRoutes />} />
+            <Route path="/cliente/*" element={<ClienteRoutes />} />
+            <Route path="/proveedor/*" element={<ProveedorRoutes />} />
           </Routes>
         </Content>
-
       </Container>
     </>
   );
