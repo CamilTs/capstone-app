@@ -53,7 +53,7 @@ export const Productos = () => {
         <DataTable value={productos}>
           <Column field="codigoBarra" header="Código de barra" />
           <Column field="producto" header="Productos" />
-          <Column field="categoria" header="Categoria" />
+          <Column field="categorias" header="Categorias" />
           <Column field="cantidad" header="Cantidad" />
           <Column field="precio" header="Precio" />
           <Column body={botonEliminar} />
