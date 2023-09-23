@@ -11,6 +11,7 @@ import "primeicons/primeicons.css";
 import styled from "styled-components";
 import { AdminRoutes, ClienteRoutes, ProveedorRoutes } from "./routes";
 import { IniciarSesionPage } from "./pages";
+import { useAuth } from "./context/AuthContext";
 
 const Container = styled.div`
   background-color: #538a95;
@@ -19,28 +20,29 @@ const Container = styled.div`
   display: flex;
 `;
 
-const Content = styled.div`
-  width: 100%;
-  margin: 50px;
+export const Content = styled.div`
+  /* width: 100%; */
+  width: ${({width}) => (width? width: '100%')};
+  margin: ${({margin}) => (margin? margin: '50px')};
   background-color: #fff;
   border-radius: 10px;
   padding: 10px;
 `;
 
 function App() {
+  const {user} = useAuth()
+  
   return (
     <>
       <Container className="contenedorPrincipal">
-        <MenuLateral />
-        <Content className="contenedor">
-          <Routes>
-            <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />
+        {user? <MenuLateral />:null}
+        <Routes>
+          <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />
 
-            <Route path="/admin/*" element={<AdminRoutes />} />
-            <Route path="/cliente/*" element={<ClienteRoutes />} />
-            <Route path="/proveedor/*" element={<ProveedorRoutes />} />
-          </Routes>
-        </Content>
+          <Route path="/admin/*" element={<AdminRoutes />} />
+          <Route path="/cliente/*" element={<ClienteRoutes />} />
+          <Route path="/proveedor/*" element={<ProveedorRoutes />} />
+        </Routes>
       </Container>
     </>
   );

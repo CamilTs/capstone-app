@@ -3,11 +3,13 @@ import { PanelMenu } from "primereact/panelmenu";
 import "../CSS/Menu.css";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 
 
 
 const MenuLateral = () => {
+  const {user} = useAuth()
   const [isSubMenuExtended, setIsSubMenuExtended] = useState(false);
   const navigate = useNavigate();
 
@@ -88,6 +90,7 @@ const MenuLateral = () => {
           onChange={handleMenuItemClick}
         />
       </div>
+        <span style={{color:'#000'}}>{user.nombre } {user.apellidos}</span>
     </div>
   );
 };

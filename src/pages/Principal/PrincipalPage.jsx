@@ -115,13 +115,13 @@ export const PrincipalPage = () => {
       </Content>
 
       <Content>
-        <DataTable value={tabla1} rows={5} showGridlines tableStyle={{ minWidth: '50rem', height:'300px' }}>
+        <DataTable value={tabla1} rows={5} showGridlines tableStyle={{ minWidth: '50%', height:'300px' }}>
           <Column field="name" header="Producto"></Column>
           <Column field="totalSold" header="Total vendido"></Column>
           <Column field="quantity" header="Cantidad total"></Column>
         </DataTable>
 
-        <DataTable value={tabla2Formateada}  showGridlines tableStyle={{ minWidth: '50rem', height:'300px' }}>
+        <DataTable value={tabla2Formateada}  showGridlines tableStyle={{ minWidth: '50%', height:'300px' }}>
           <Column field="correlatives" header="Correlativos"></Column>
           <Column field="name" header="Nombre"></Column>
           <Column field="date" header="Fecha"></Column>
