@@ -90,7 +90,7 @@ const MenuLateral = () => {
           onChange={handleMenuItemClick}
         />
       </div>
-        <span style={{color:'#000'}}>{user.nombre } {user.apellidos}</span>
+        {user && <span style={{color:'#000'}}>{user.nombre } {user.apellidos}</span>}
     </div>
   );
 };
