@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { PrincipalPage } from "../pages";
-import { Productos } from "../components/Productos";
+import { Productos } from "../pages/Productos/VerProductos/ProductosPage";
 
 export const ClienteRoutes = () => {
   return (

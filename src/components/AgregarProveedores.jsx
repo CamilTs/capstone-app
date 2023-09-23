@@ -13,16 +13,10 @@ const AgregarProveedores = () => {
   const [proveedor, setProveedor] = useState({
     nombre: "",
     descripcion: "",
-    pais: "",
     numero: "",
+    correo: "",
   });
   const [proveedoresGuardados, setProveedoresGuardados] = useState([]);
-  const paises = [
-    { label: "Seleccione un país", value: "" },
-    { label: "Estados Unidos (+1)", value: "+1" },
-    { label: "México (+52)", value: "+52" },
-    { label: "España (+34)", value: "+34" },
-  ];
 
   useEffect(() => {
     const proveedores = JSON.parse(
@@ -49,7 +43,10 @@ const AgregarProveedores = () => {
   };
 
   const handleGuardar = () => {
-    const nuevoProveedor = { ...proveedor };
+    const nuevoProveedor = {
+      ...proveedor,
+      numero: "+56 9 " + proveedor.numero,
+    };
     setProveedoresGuardados([...proveedoresGuardados, nuevoProveedor]);
     hideDialog();
   };
@@ -117,9 +114,7 @@ const AgregarProveedores = () => {
             />
           </div>
           <div className="p-field">
-            <label htmlFor="descripcion">
-              Descripción (máximo 200 caracteres)
-            </label>
+            <label htmlFor="descripcion">Descripción</label>
             <InputTextarea
               id="descripcion"
               value={proveedor.descripcion}
@@ -133,22 +128,7 @@ const AgregarProveedores = () => {
             />
           </div>
           <div className="p-field">
-            <label htmlFor="pais">País</label>
-            <Dropdown
-              id="pais"
-              options={paises}
-              value={proveedor.pais}
-              onChange={(e) => setProveedor({ ...proveedor, pais: e.value })}
-              placeholder="Seleccione un país"
-            />
-          </div>
-          {proveedor.pais && (
-            <div className="p-field">
-              <label>Número de país seleccionado: {proveedor.pais}</label>
-            </div>
-          )}
-          <div className="p-field">
-            <label htmlFor="numero">Número de teléfono (8 caracteres)</label>
+            <label htmlFor="numero">Número de teléfono</label>
             <InputText
               id="numero"
               value={proveedor.numero}
@@ -158,6 +138,16 @@ const AgregarProveedores = () => {
                 setProveedor({ ...proveedor, numero: numericValue });
               }}
               pattern="[0-9]*"
+            />
+          </div>
+          <div className="p-field">
+            <label htmlFor="correo">Correo</label>
+            <InputText
+              id="correo"
+              value={proveedor.correo}
+              onChange={(e) =>
+                setProveedor({ ...proveedor, correo: e.target.value })
+              }
             />
           </div>
         </div>

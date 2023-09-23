@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Link } from "react-router-dom";
-import "../CSS/Productos.css";
+import "../../../CSS/Productos.css";
+
+import { TablaProductos } from "./components/TablaProductos";
 
 export const Productos = () => {
   const [productos, setProductos] = useState([]);
@@ -19,23 +19,11 @@ export const Productos = () => {
   }, []);
 
   const eliminarProducto = (id) => {
-    const nuevosProductos = productos.filter((producto) => producto.id !== id);
+    const nuevosProductos = productos.filter(
+      (producto) => producto && producto.id !== id
+    );
     setProductos(nuevosProductos);
     localStorage.setItem("productos", JSON.stringify(nuevosProductos));
-  };
-
-  const botonEliminar = (rowData) => {
-    return (
-      <div>
-        <Button
-          icon="pi pi-times"
-          rounded
-          severity="danger"
-          aria-label="Cancel"
-          onClick={() => eliminarProducto(rowData.id)}
-        />
-      </div>
-    );
   };
 
   return (
@@ -50,14 +38,10 @@ export const Productos = () => {
             Agregar Productos
           </Link>
         </Button>
-        <DataTable value={productos}>
-          <Column field="codigoBarra" header="Código de barra" />
-          <Column field="producto" header="Productos" />
-          <Column field="categorias" header="Categorias" />
-          <Column field="cantidad" header="Cantidad" />
-          <Column field="precio" header="Precio" />
-          <Column body={botonEliminar} />
-        </DataTable>
+        <TablaProductos
+          productos={productos}
+          eliminarProducto={eliminarProducto}
+        />
       </div>
     </div>
   );

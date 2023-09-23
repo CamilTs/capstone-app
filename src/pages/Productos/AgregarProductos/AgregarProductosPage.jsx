@@ -1,12 +1,10 @@
 import { useState, useRef } from "react";
-import { InputText } from "primereact/inputtext";
-import { InputNumber } from "primereact/inputnumber";
-import { Button } from "primereact/button";
 import { Messages } from "primereact/messages";
-import { Link, useNavigate } from "react-router-dom";
-import "../../../CSS/AgregarProductos.css";
+import { useNavigate } from "react-router-dom";
 
-import { CategoriasProductos } from "../AgregarProductos/components/CategoriasProductos";
+import { CategoriasProductos } from "./components/CategoriasProductos";
+import { CamposProductos } from "./components/CamposProductos";
+import { BotonesAgregarProductos } from "./components/BotonesAgregarProductos";
 
 export const AgregarProductos = () => {
   const estructuraFormulario = {
@@ -35,12 +33,12 @@ export const AgregarProductos = () => {
     });
   };
 
-  const guardarProductoEnLocalStorage = () => {
+  const guardarProductosLocal = () => {
     const productosGuardados =
       JSON.parse(localStorage.getItem("productos")) || [];
 
     const productoExistente = productosGuardados.find(
-      (producto) => producto.id === formulario.id
+      (producto) => producto && producto.id === formulario?.id
     );
 
     if (!productoExistente) {
@@ -70,59 +68,14 @@ export const AgregarProductos = () => {
       <form onSubmit={handleSubmit}>
         <div className="p-fluid p-formgrid p-grid">
           <div className="p-field p-col">
-            <label htmlFor="codigoBarra">Código de barra</label>
-            <InputText
-              id="codigoBarra"
-              name="codigoBarra"
-              value={formulario.codigoBarra}
-              onChange={handleChange}
+            <CamposProductos
+              formulario={formulario}
+              handleChange={handleChange}
             />
-
-            <label htmlFor="producto">Producto</label>
-            <InputText
-              id="producto"
-              name="producto"
-              value={formulario.producto}
-              onChange={handleChange}
-            />
-
             <CategoriasProductos onCategoriasChange={handleCategoriasChange} />
-
-            <label htmlFor="cantidad">Cantidad</label>
-            <InputNumber
-              id="cantidad"
-              name="cantidad"
-              value={formulario.cantidad}
-              onChange={(e) =>
-                setFormulario({ ...formulario, cantidad: e.value })
-              }
+            <BotonesAgregarProductos
+              guardarProductosLocal={guardarProductosLocal}
             />
-
-            <label htmlFor="precio">Precio</label>
-            <InputNumber
-              id="precio"
-              name="precio"
-              value={formulario.precio}
-              onChange={(e) =>
-                setFormulario({ ...formulario, precio: e.value })
-              }
-            />
-          </div>
-          <div className="card">
-            <Button
-              style={{ marginRight: "10px" }}
-              className="custom-button"
-              severity="success"
-              label="Confirmar"
-              onClick={guardarProductoEnLocalStorage}
-            />
-            <Link to="/cliente/productos">
-              <Button
-                className="custom-button"
-                severity="danger"
-                label="Cancelar"
-              />
-            </Link>
           </div>
         </div>
         <Messages ref={messagesRef} />
