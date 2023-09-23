@@ -153,7 +153,7 @@ export const RegistrarUsuarios = () => {
               </div>
             )}
         </Inputs>
-        <Inputs className="CONTENEDOR FORM 2">
+        <Inputs >
           <InputRow>
             <InputContainer className="p-float-label">
               <Input value={formData.rut} name="rut" onChange={handleChange} />
@@ -214,13 +214,15 @@ export const RegistrarUsuarios = () => {
         </Inputs>
       </Formulario>
       <div className="flex">
+        <Link to={"/iniciar-sesion"}>
         <Button
           label="Crear"
           severity="success"
           loading={cargando}
           onClick={cargar}
-        />
+          />
         <Button severity="info" label="Borrar" onClick={resetForm} />
+        </Link>
       </div>
       <p style={{ fontSize: "10px" }}>
         ¿Ya tienes una cuenta? Presiona{" "}

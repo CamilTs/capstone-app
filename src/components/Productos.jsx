@@ -1,57 +1,64 @@
-import React, { useState } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
-import { Link } from 'react-router-dom';
-import '../CSS/Productos.css';
-
-
-const initialProductos = [
-  { codigoProducto: '001', producto: 'Producto 1', cantidad: 1, precio: 1000 },
-  { codigoProducto: '002', producto: 'Producto 2', cantidad: 5, precio: 2000 },
-  { codigoProducto: '003', producto: 'Producto 3', cantidad: 2, precio: 1000 },
-];
+import React, { useEffect, useState } from "react";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Button } from "primereact/button";
+import { Link } from "react-router-dom";
+import "../CSS/Productos.css";
 
 export const Productos = () => {
-  const [productos, setProductos] = useState(initialProductos);
+  const [productos, setProductos] = useState([]);
 
-  const eliminarProducto = (codigoProducto) => {
-    const nuevosProductos = productos.filter((producto) => producto.codigoProducto !== codigoProducto);
-    setProductos(nuevosProductos);
+  const cargarProductos = () => {
+    const productosGuardados =
+      JSON.parse(localStorage.getItem("productos")) || [];
+    setProductos(productosGuardados);
   };
 
-  const actionBodyTemplate = (rowData) => {
+  useEffect(() => {
+    cargarProductos();
+  }, []);
+
+  const eliminarProducto = (id) => {
+    const nuevosProductos = productos.filter((producto) => producto.id !== id);
+    setProductos(nuevosProductos);
+    localStorage.setItem("productos", JSON.stringify(nuevosProductos));
+  };
+
+  const botonEliminar = (rowData) => {
     return (
       <div>
-        <Button icon="pi pi-times" rounded severity="danger" aria-label="Cancel" onClick={() => eliminarProducto(rowData.codigoProducto)}/>
+        <Button
+          icon="pi pi-times"
+          rounded
+          severity="danger"
+          aria-label="Cancel"
+          onClick={() => eliminarProducto(rowData.id)}
+        />
       </div>
     );
   };
 
   return (
-    <div>
-      <div className="container">
-        <div className="tableWrapper">
-          <h2 className="title">Productos</h2>
-          <Button className="p-button-raised p-button-success" icon='pi pi-plus'>
-          <Link to="/AgregarProductos" style={{ textDecoration: 'none', color: 'white' }}>
-           Agregar Productos
+    <div className="container">
+      <div className="tableWrapper">
+        <h2 className="title">Productos</h2>
+        <Button className="p-button-raised p-button-success" icon="pi pi-plus">
+          <Link
+            to="/admin/agregarProductos"
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            Agregar Productos
           </Link>
-          </Button>
-          <DataTable value={productos}>
-            <Column field="codigoProducto" header="Código de Producto" />
-            <Column field="producto" header="Productos" />
-            <Column field="cantidad" header="Cantidad" />
-            <Column field="precio" header="Precio" />
-            <Column body={actionBodyTemplate} />
-          </DataTable>
-        </div>
+        </Button>
+        <DataTable value={productos}>
+          <Column field="codigoBarra" header="Código de barra" />
+          <Column field="producto" header="Productos" />
+          <Column field="categoria" header="Categoria" />
+          <Column field="cantidad" header="Cantidad" />
+          <Column field="precio" header="Precio" />
+          <Column body={botonEliminar} />
+        </DataTable>
       </div>
     </div>
   );
 };
-
-
-
-
-
