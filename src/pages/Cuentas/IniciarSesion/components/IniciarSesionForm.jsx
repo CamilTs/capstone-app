@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { Messages } from 'primereact/messages';
 
-export const IniciarSesionForm = ({ onSubmit }) => {
+export const IniciarSesionForm = () => {
   const [formData, setFormData] = useState({
     usuario: '',
     contrasena: ''
@@ -15,23 +15,20 @@ export const IniciarSesionForm = ({ onSubmit }) => {
   const messagesRef = useRef(null);
   const navigate = useNavigate();
 
-  const handleChange = ({ target }) => {
-    const { name, value } = target;
+  const handleChange = ({e}) => {
+    const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const cargar = () => {
-    setCargando(true);
 
-    setTimeout(() => {
       setCargando(false);
       setMensajeVisible(true);
       messagesRef.current.show({ severity: 'success', summary: 'Genial', detail: 'Inicio de sesión exitoso' });
       
       setTimeout(() => {
-        navigate("/")
+        navigate("/cliente/") // Recordar cambiar por ruta verificada
       }, 2000);
-    }, 2000);
   };
 
   return (
@@ -58,7 +55,7 @@ export const IniciarSesionForm = ({ onSubmit }) => {
         />
       </div>
       <p style={{ fontSize: '10px' }}>
-        ¿Tienes problemas para iniciar sesión? Presiona <Link to="/registrar" style={{ color: 'blue' }}>aquí</Link>.
+        ¿Tienes problemas para iniciar sesión? Presiona <Link to="/admin/registrar" style={{ color: 'blue' }}>aquí</Link>.
       </p>
 
       <Messages ref={messagesRef}/>
