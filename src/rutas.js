@@ -9,7 +9,7 @@ export const rutas = [
   {
     ruta: "cliente/proveedor",
     rol: "cliente",
-    icono: "",
+    icono: "pi pi-eye",
     label: "Ver proveedores",
     tipo: "",
   },
