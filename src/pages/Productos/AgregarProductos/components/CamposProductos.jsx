@@ -1,27 +1,17 @@
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 
-export const CamposProductos = ({ formulario, handleChange }) => {
+export const CamposProductos = ({ producto, handleChange }) => {
   return (
     <div>
       <div className="p-field">
         <label htmlFor="codigoBarra">Código de barra</label>
-        <InputText
-          id="codigoBarra"
-          name="codigoBarra"
-          value={formulario.codigoBarra}
-          onChange={handleChange}
-        />
+        <InputText id="codigoBarra" name="codigoBarra" value={producto.codigoBarra} onChange={handleChange} />
       </div>
 
       <div className="p-field">
         <label htmlFor="producto">Producto</label>
-        <InputText
-          id="producto"
-          name="producto"
-          value={formulario.producto}
-          onChange={handleChange}
-        />
+        <InputText id="producto" name="producto" value={producto.producto} onChange={handleChange} />
       </div>
 
       <div className="p-field">
@@ -29,10 +19,8 @@ export const CamposProductos = ({ formulario, handleChange }) => {
         <InputNumber
           id="cantidad"
           name="cantidad"
-          value={formulario.cantidad}
-          onChange={(e) =>
-            handleChange({ target: { name: "cantidad", value: e.value } })
-          }
+          value={producto.cantidad}
+          onChange={(e) => handleChange({ target: { name: "cantidad", value: e.value } })}
         />
       </div>
 
@@ -41,10 +29,8 @@ export const CamposProductos = ({ formulario, handleChange }) => {
         <InputNumber
           id="precio"
           name="precio"
-          value={formulario.precio}
-          onChange={(e) =>
-            handleChange({ target: { name: "precio", value: e.value } })
-          }
+          value={producto.precio}
+          onChange={(e) => handleChange({ target: { name: "precio", value: e.value } })}
           mode="currency"
           currency="CLP"
           locale="es-CL"

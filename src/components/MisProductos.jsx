@@ -3,7 +3,39 @@ import { useProductos } from "../context/ProductosContext";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "primereact/button";
 import { ConfirmDialog } from "primereact/confirmdialog";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Toast } from "primereact/toast";
+import styled from "styled-components";
+import { formatoCurrencyCLP } from "./FormatoDinero";
+
+const ProductosContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-width: 100%;
+  padding: 16px;
+  overflow: auto;
+  max-height: 720px;
+`;
+
+const CardProductos = styled(Card)`
+  width: 300px;
+  height: auto;
+  flex-grow: 1;
+  border: 1px solid black;
+  background-color: #64a0ab;
+  color: black;
+`;
+
+const ImgContainer = styled.img`
+  min-width: 250px;
+  max-width: 250px;
+  min-height: 200px;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 10px;
+  background-color: white;
+`;
 
 export const MisProductos = () => {
   const { productosData, eliminarProducto } = useProductos();
@@ -13,37 +45,55 @@ export const MisProductos = () => {
 
   const productoDelProveedor = productosData[proveedorActual] || [];
 
+  const toast = useRef(null);
+  const mostrar = () => {
+    toast.current.show({ severity: "info", summary: "Eliminado", detail: "Producto Eliminado", life: 2000 });
+  };
+
   const handleEliminarProductoClick = () => {
     if (productoAEliminarId) {
       console.log("ID del producto a eliminar:", productoAEliminarId);
       const proveedorId = proveedorActual;
       eliminarProducto(productoAEliminarId, proveedorId);
+      mostrar();
       setConfirmDialogVisible(false);
       setProductoAEliminarId(null);
     }
   };
+
+  // const cargarProducto = () => {
+  //   let prueba = productos.filter(el => el.proveedorId == user.id)
+  // }
+  // useEffect(() => {
+  //   cargarProducto()
+  // }, [])
+
   return (
     <div>
+      <Toast ref={toast} />
       <h2>Lista de Productos</h2>
-      <div className="p-grid">
+      <ProductosContainer>
         {productoDelProveedor.map((producto) => (
           <div key={producto.id} className="p-col-12 p-md-4">
-            <Card title={producto.nombre} style={{ marginBottom: "1rem" }}>
-              <img src={producto.imagen} alt={producto.nombre} style={{ maxWidth: "100%" }} />
-              <p>Categoría: {producto.categoria}</p>
-              <p>Valor: ${producto.valor.toFixed(2)}</p>
+            <CardProductos title={producto.nombre} style={{ marginBottom: "1rem" }}>
+              <ImgContainer src={producto.imagen} alt={producto.nombre} style={{ maxWidth: "100%" }} />
+              <div>
+                <p>Categoría: {producto.categoria}</p>
+                <p>Valor: {formatoCurrencyCLP(producto.valor)}</p>
+              </div>
               <Button
                 label="Eliminar"
                 icon="pi pi-trash"
+                className="p-button-danger"
                 onClick={() => {
                   setProductoAEliminarId(producto.id);
                   setConfirmDialogVisible(true);
                 }}
               />
-            </Card>
+            </CardProductos>
           </div>
         ))}
-      </div>
+      </ProductosContainer>
       <ConfirmDialog
         visible={confirmDialogVisible}
         onHide={() => setConfirmDialogVisible(false)}
@@ -55,8 +105,8 @@ export const MisProductos = () => {
         rejectLabel="No"
         footer={
           <div>
-            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={() => setConfirmDialogVisible(false)} />
             <Button label="Eliminar" icon="pi pi-trash" className="p-button-danger" onClick={handleEliminarProductoClick} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={() => setConfirmDialogVisible(false)} />
           </div>
         }
       />
