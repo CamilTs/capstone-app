@@ -2,7 +2,7 @@ export const cuentas = [
   {
     id: 1,
     contrasena: "1234",
-    rut: "20597279k",
+    rut: "00",
     nombre: "Camilo",
     apellidos: "Tapia Sepulveda",
     correo: "camilo@gmail.com",
@@ -11,8 +11,8 @@ export const cuentas = [
   },
   {
     id: 2,
-    contrasena: "321",
-    rut: "321",
+    contrasena: "1234",
+    rut: "11",
     nombre: "Camilo",
     apellidos: "Tapia Sepulveda",
     correo: "camilo@gmail.com",
@@ -21,8 +21,8 @@ export const cuentas = [
   },
   {
     id: 3,
-    contrasena: "123",
-    rut: "123",
+    contrasena: "1234",
+    rut: "22",
     nombre: "Matias",
     apellidos: "Pino Saá",
     correo: "matias@gmail.com",
@@ -32,7 +32,7 @@ export const cuentas = [
   {
     id: 4,
     contrasena: "1234",
-    rut: "1234",
+    rut: "33",
     nombre: "Roberto",
     apellidos: "Albino",
     correo: "Roberto@gmail.com",
@@ -42,8 +42,8 @@ export const cuentas = [
   },
   {
     id: 5,
-    contrasena: "12",
-    rut: "12",
+    contrasena: "1234",
+    rut: "44",
     nombre: "Alberto",
     apellidos: "raro",
     correo: "Alberto@gmail.com",

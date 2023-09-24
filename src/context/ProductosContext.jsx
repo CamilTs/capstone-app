@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { productos } from "../productos";
+import { productos } from "../productosCliente";
 
 const ProductosContext = createContext();
 
@@ -7,6 +7,7 @@ export const useProductos = () => {
   return useContext(ProductosContext);
 };
 
+// eslint-disable-next-line react/prop-types
 export const ProductosProvider = ({ children }) => {
   const [productosData, setProductosData] = useState(
     productos.reduce((acc, producto) => {

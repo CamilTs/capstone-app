@@ -68,22 +68,22 @@ export const VenderProducto = () => {
 
   return (
     <>
-      <Button severity="success" icon="pi pi-plus" onClick={() => setVisible(true)} />
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-        <Container>
-          <ContainerVenta>
-            <div style={{ fontSize: "44px" }}>
-              <label style={{ fontWeight: "bold" }}>Total:</label>
-              <Total>{venta.total}</Total>
-            </div>
+      <div style={{ display: "flex", flexDirection: "column", alignContent: "space-between" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <Button severity="success" icon="pi pi-plus" onClick={() => setVisible(true)} />
+          <Container>
+            <ContainerVenta>
+              <div style={{ fontSize: "44px" }}>
+                <label style={{ fontWeight: "bold" }}>Total:</label>
+                <Total>{venta.total}</Total>
+              </div>
 
-            <div style={{ fontSize: "25px" }}>
-              <label style={{ fontWeight: "bold" }}>Ultimo:</label>
-              <UltimaVenta>{venta.ultima}</UltimaVenta>
-            </div>
-          </ContainerVenta>
-        </Container>
-        <div>
+              <div style={{ fontSize: "25px" }}>
+                <label style={{ fontWeight: "bold" }}>Ultimo:</label>
+                <UltimaVenta>{venta.ultima}</UltimaVenta>
+              </div>
+            </ContainerVenta>
+          </Container>
           <DataTable value={products} showGridlines>
             <Column field="nombre" header="Nombre" />
             <Column field="cantidad" header="Cantidad" />
@@ -91,7 +91,11 @@ export const VenderProducto = () => {
             <Column field="total" header="Valor T." />
           </DataTable>
         </div>
+        <div style={{ display: "grid", placeContent: "center" }}>
+          <Button label="Vender" style={{ width: "150px" }} />
+        </div>
       </div>
+      <div></div>
       <Dialog header="Ingresar producto" visible={visible} onHide={() => setVisible(false)}>
         <InputText placeholder="Ingrese codigo de barras" value={value} onChange={(e) => setValue(e.target.value)} />
         <Button severity="success" label="Agregar" onClick={agregarProducto} />
