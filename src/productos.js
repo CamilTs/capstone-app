@@ -4,7 +4,7 @@ export const productos = [
     nombre: "Manzana",
     imagen: "https://andreuprados.com/wp-content/uploads/2017/01/apple_0.jpg.webp",
     categoria: "Alimento",
-    valor: 10.99,
+    valor: 300,
     proveedorId: 3,
   },
   {
@@ -12,7 +12,7 @@ export const productos = [
     nombre: "Refrigerador",
     imagen: "https://www.lg.com/cl/images/refrigeradores/md07545957/gallery/MZ-11.jpg",
     categoria: "Electrodoméstico",
-    valor: 299.99,
+    valor: 200000,
     proveedorId: 4,
   },
 ];

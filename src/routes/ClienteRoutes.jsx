@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { PrincipalPage } from "../pages";
+import { PrincipalPage, VenderProducto } from "../pages";
 import { Productos } from "../pages/Productos/VerProductos/ProductosPage";
 import { Content } from "../App";
 import AgregarProveedores from "../components/AgregarProveedores";
@@ -10,6 +10,7 @@ export const ClienteRoutes = () => {
       <Routes>
         <Route path="" element={<PrincipalPage />} />
         <Route path="productos" element={<Productos />} />
+        <Route path="venta" element={<VenderProducto />} />
         <Route path="proveedor" element={<AgregarProveedores />} />
       </Routes>
     </Content>

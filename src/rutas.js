@@ -13,6 +13,14 @@ export const rutas = [
     label: "Ver proveedores",
     tipo: "",
   },
+
+  {
+    ruta: "cliente/venta",
+    rol: "cliente",
+    icono: "",
+    label: "Vender Producto",
+    tipo: "",
+  },
   {
     ruta: "/proveedor/agregarProductos",
     rol: "proveedor",
