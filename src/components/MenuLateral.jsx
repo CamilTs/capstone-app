@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PanelMenu } from "primereact/panelmenu";
 import "../CSS/Menu.css";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+
+import { PerfilCard } from "./PerfilCard";
+import { rutas } from "../rutas";
 import { useAuth } from "../context/AuthContext";
 
-
-
-
 const MenuLateral = () => {
-  const {user} = useAuth()
   const [isSubMenuExtended, setIsSubMenuExtended] = useState(false);
+  const [itemsRuta, setItemsRuta] = useState([]);
+  const { user } = useAuth();
+  let itemsPrueba = [];
   const navigate = useNavigate();
-
   const items = [
     {
       label: "Inicio",
@@ -72,25 +73,36 @@ const MenuLateral = () => {
       ],
     },
   ];
+  const prueba = () => {
+    itemsPrueba = rutas
+      .filter((el) => el.rol == user.rol)
+      .map((el) => {
+        return {
+          label: el.label,
+          icon: el.icono,
+          command: () => {
+            navigate(el.ruta);
+          },
+        };
+      });
+    setItemsRuta(itemsPrueba);
+  };
 
   const handleMenuItemClick = () => {
     setIsSubMenuExtended(!isSubMenuExtended); // Invertir el estado al hacer clic en un elemento del submenú
   };
 
+  useEffect(() => {
+    prueba();
+  }, []);
+
   return (
-    <div
-      className={`MenuLateral ${isSubMenuExtended ? "submenu-extended" : ""}`}
-    >
+    <div className={`MenuLateral ${isSubMenuExtended ? "submenu-extended" : ""}`} style={{ width: "250px", minWidth: "250px" }}>
       <div className="title">Ai Zi</div>
       <div className="menu">
-        <PanelMenu
-          model={items}
-          className="w-full md:w-25rem"
-          multiple={true}
-          onChange={handleMenuItemClick}
-        />
+        <PanelMenu model={itemsRuta} className="w-full md:w-25rem" onChange={handleMenuItemClick} />
       </div>
-        {user && <span style={{color:'#000'}}>{user.nombre } {user.apellidos}</span>}
+      <PerfilCard />
     </div>
   );
 };

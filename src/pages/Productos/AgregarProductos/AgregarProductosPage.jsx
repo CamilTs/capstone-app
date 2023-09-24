@@ -63,7 +63,7 @@ export const AgregarProductos = () => {
   };
 
   return (
-    <div className="p-card" style={{ background: "white", padding: "20px" }}>
+    <>
       <h2>Agregar Productos</h2>
       <form onSubmit={handleSubmit}>
         <div className="p-fluid p-formgrid p-grid">
@@ -80,7 +80,7 @@ export const AgregarProductos = () => {
         </div>
         <Messages ref={messagesRef} />
       </form>
-    </div>
+    </>
   );
 };
 

@@ -1,11 +1,5 @@
 export const rutas = [
-    {
-      ruta: '/iniciar-sesion',
-      rol:'',
-      icono:'',
-      label:'',
-      tipo:''
-    },
+    
     {
       ruta: '/cliente',
       rol: 'cliente',
