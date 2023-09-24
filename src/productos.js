@@ -1,4 +1,5 @@
 export const productos = [
+  // Aqui son los productos Proveedor
   {
     id: 1,
     codigoBarra: "MANZANA-manzana-1234",
@@ -16,5 +17,16 @@ export const productos = [
     categoria: "Electrodoméstico",
     valor: 75000,
     proveedorId: 4,
+  },
+
+  // Aqui son los productos Clientes
+  {
+    id: 4,
+    codigoBarra: "MANZANA-manzana-1234",
+    producto: "Manzana",
+    categoria: "Alimento",
+    cantidad: 2,
+    precio: 100,
+    proveedorId: 2,
   },
 ];

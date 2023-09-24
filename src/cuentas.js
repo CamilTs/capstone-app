@@ -11,8 +11,8 @@ export const cuentas = [
   },
   {
     id: 2,
-    contrasena: "1234",
-    rut: "111111",
+    contrasena: "321",
+    rut: "321",
     nombre: "Camilo",
     apellidos: "Tapia Sepulveda",
     correo: "camilo@gmail.com",
@@ -37,6 +37,17 @@ export const cuentas = [
     apellidos: "Albino",
     correo: "Roberto@gmail.com",
     rol: "proveedor",
+    fotoPerfil:
+      "https://w1.pngwing.com/pngs/743/500/png-transparent-circle-silhouette-logo-user-user-profile-green-facial-expression-nose-cartoon.png",
+  },
+  {
+    id: 5,
+    contrasena: "12",
+    rut: "12",
+    nombre: "Alberto",
+    apellidos: "raro",
+    correo: "Alberto@gmail.com",
+    rol: "cliente",
     fotoPerfil:
       "https://w1.pngwing.com/pngs/743/500/png-transparent-circle-silhouette-logo-user-user-profile-green-facial-expression-nose-cartoon.png",
   },
