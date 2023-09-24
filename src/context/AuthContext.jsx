@@ -10,11 +10,16 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [proveedorActual, setProveedorActual] = useState(null);
 
   const login = (rut, contrasena) => {
     const usuarioEncontrado = cuentas.find((el) => el.rut == rut && el.contrasena == contrasena);
 
     setUser(usuarioEncontrado);
+
+    if (usuarioEncontrado?.rol === "proveedor") {
+      setProveedorActual(usuarioEncontrado.id);
+    }
   };
 
   const logout = () => {
@@ -30,6 +35,7 @@ export const AuthProvider = ({ children }) => {
 
   const contextValue = {
     user,
+    proveedorActual,
     login,
     logout,
     signUp,

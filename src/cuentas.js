@@ -1,11 +1,43 @@
 export const cuentas = [
-    {
-        contrasena:'1234',
-        rut:'20597279k',
-        nombre:'Camilo',
-        apellidos:'Tapia Sepulveda',
-        correo:'camilo@gmail.com',
-        rol:'admin',
-        fotoPerfil:'https://sm.ign.com/ign_es/news/n/netflixs-l/netflixs-live-action-avatar-the-last-airbender-gets-first-lo_ahdu.jpg'
-    }
-]
+  {
+    id: 1,
+    contrasena: "1234",
+    rut: "20597279k",
+    nombre: "Camilo",
+    apellidos: "Tapia Sepulveda",
+    correo: "camilo@gmail.com",
+    rol: "admin",
+    fotoPerfil: "https://sm.ign.com/ign_es/news/n/netflixs-l/netflixs-live-action-avatar-the-last-airbender-gets-first-lo_ahdu.jpg",
+  },
+  {
+    id: 2,
+    contrasena: "1234",
+    rut: "111111",
+    nombre: "Camilo",
+    apellidos: "Tapia Sepulveda",
+    correo: "camilo@gmail.com",
+    rol: "cliente",
+    fotoPerfil: "https://sm.ign.com/ign_es/news/n/netflixs-l/netflixs-live-action-avatar-the-last-airbender-gets-first-lo_ahdu.jpg",
+  },
+  {
+    id: 3,
+    contrasena: "123",
+    rut: "123",
+    nombre: "Matias",
+    apellidos: "Pino Saá",
+    correo: "matias@gmail.com",
+    rol: "proveedor",
+    fotoPerfil: "https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745",
+  },
+  {
+    id: 4,
+    contrasena: "1234",
+    rut: "1234",
+    nombre: "Roberto",
+    apellidos: "Albino",
+    correo: "Roberto@gmail.com",
+    rol: "proveedor",
+    fotoPerfil:
+      "https://w1.pngwing.com/pngs/743/500/png-transparent-circle-silhouette-logo-user-user-profile-green-facial-expression-nose-cartoon.png",
+  },
+];

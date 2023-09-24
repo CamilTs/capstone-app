@@ -68,7 +68,29 @@ const MenuLateral = () => {
         {
           label: "Ver proveedores",
           icon: "pi pi-eye",
-          command: () => navigate("/proveedor"),
+          command: () => navigate("/productos"),
+        },
+      ],
+    },
+    {
+      label: "Proveedores",
+      icon: "pi pi-truck",
+      items: [
+        {
+          label: "Agregar productos",
+          icon: "pi pi-eye",
+          command: () => navigate("/proveedor/agregarProductos"),
+        },
+      ],
+    },
+    {
+      label: "Proveedores",
+      icon: "pi pi-truck",
+      items: [
+        {
+          label: "Mis productos",
+          icon: "pi pi-eye",
+          command: () => navigate("/proveedor/verProductos"),
         },
       ],
     },
@@ -101,8 +123,8 @@ const MenuLateral = () => {
       <div className="title">Ai Zi</div>
       <div className="menu">
         <PanelMenu model={itemsRuta} className="w-full md:w-25rem" onChange={handleMenuItemClick} />
+        <PerfilCard />
       </div>
-      <PerfilCard />
     </div>
   );
 };

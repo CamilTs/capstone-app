@@ -1,15 +1,18 @@
-import { Route, Routes } from "react-router-dom"
-import AgregarProveedores from "../components/AgregarProveedores"
-import { Content } from "../App"
+import { Route, Routes } from "react-router-dom";
+import { Content } from "../App";
+import { AgregarProductosProveedor } from "../components/AgregarProductosProveedor";
+import { MisProductos } from "../components/MisProductos";
+import { ProductosProvider } from "../context/ProductosContext";
 
 export const ProveedorRoutes = () => {
-
   return (
-    <Content>
-
-    <Routes>
-      <Route path="" element={<AgregarProveedores/>}/>
-    </Routes>
-    </Content>
-  )
-}
+    <ProductosProvider>
+      <Content>
+        <Routes>
+          <Route path="/agregarProductos" element={<AgregarProductosProveedor />} />
+          <Route path="/verProductos" element={<MisProductos />} />
+        </Routes>
+      </Content>
+    </ProductosProvider>
+  );
+};
