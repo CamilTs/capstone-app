@@ -4,9 +4,9 @@ import { useAuth } from "../../../context/AuthContext";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { ConfirmDialog } from "primereact/confirmdialog";
-import { CategoriasProductos } from "./components/CategoriasProductos";
-import { CamposProductos } from "./components/CamposProductos";
 import styled from "styled-components";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
 
 const ContenedorAncho = styled.div`
   width: 100%;
@@ -20,33 +20,31 @@ const ContenedorAncho = styled.div`
   }
 `;
 
+const categorias = [
+  { label: "Alimento", value: "Alimento" },
+  { label: "Electrodoméstico", value: "Electrodoméstico" },
+  { label: "Electrónica", value: "Electrónica" },
+];
+
 export const AgregarProductos = () => {
+  const { agregarProducto } = useProductos();
+  const { user } = useAuth();
+  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+
   const estructuraFormulario = {
     id: Date.now(),
     fecha: new Date(),
     codigoBarra: "",
     producto: "",
-    categoria: [],
+    imagen: "",
+    categoria: null,
     cantidad: Number(0),
     precio: Number(0),
   };
   const [producto, setProducto] = useState(estructuraFormulario);
 
-  const { agregarProducto } = useProductos();
-  const { user } = useAuth();
-  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProducto({ ...producto, [name]: value });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-  };
-
-  const handleCategoriasChange = (categoriasSeleccionadas) => {
-    setProducto({ ...producto, categoria: categoriasSeleccionadas });
   };
 
   const toast = useRef(null);
@@ -59,6 +57,7 @@ export const AgregarProductos = () => {
       agregarProducto(producto, user.id);
       mostrar();
       setConfirmDialogVisible(false);
+      setProducto(estructuraFormulario);
       console.log(producto);
     } else {
       alert("No tienes permiso para agregar productos");
@@ -67,13 +66,45 @@ export const AgregarProductos = () => {
 
   return (
     <ContenedorAncho>
+      <Toast ref={toast} />
       <h2>Agregar Productos</h2>
       <form onSubmit={handleSubmit}>
         <div className="p-fluid p-formgrid p-grid">
-          <Toast ref={toast} />
           <div className="p-field p-col">
-            <CamposProductos producto={producto} handleChange={handleChange} />
-            <CategoriasProductos onCategoriasChange={handleCategoriasChange} />
+            <div className="p-field">
+              <label htmlFor="producto">Nombre</label>
+              <InputText id="producto" value={producto.producto} onChange={(e) => setProducto({ ...producto, producto: e.target.value })} />
+            </div>
+            <div className="p-field">
+              <label htmlFor="codigoBarra">Codigo de barra</label>
+              <InputText id="codigoBarra" value={producto.codigoBarra} onChange={(e) => setProducto({ ...producto, codigoBarra: e.target.value })} />
+            </div>
+            <div className="p-field">
+              <label htmlFor="imagen">Imagen</label>
+              <InputText id="imagen" value={producto.imagen} onChange={(e) => setProducto({ ...producto, imagen: e.target.value })} />
+            </div>
+            <div className="p-field">
+              <label htmlFor="categoria">Categoría</label>
+              <Dropdown
+                id="categoria"
+                options={categorias}
+                value={producto.categoria}
+                onChange={(e) => setProducto({ ...producto, categoria: e.value })}
+                placeholder="Seleccione una categoría"
+              />
+            </div>
+            <div className="p-field">
+              <label htmlFor="cantidad">Cantidad</label>
+              <InputText
+                id="cantidad"
+                value={producto.cantidad}
+                onChange={(e) => setProducto({ ...producto, cantidad: parseFloat(e.target.value) })}
+              />
+            </div>
+            <div className="p-field">
+              <label htmlFor="precio">Precio</label>
+              <InputText id="precio" value={producto.precio} onChange={(e) => setProducto({ ...producto, precio: parseFloat(e.target.value) })} />
+            </div>
             <div className="p-field">
               <Button
                 label="Agregar"

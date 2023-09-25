@@ -7,7 +7,6 @@ export const useProductos = () => {
   return useContext(ProductosContext);
 };
 
-// eslint-disable-next-line react/prop-types
 export const ProductosProvider = ({ children }) => {
   const [productosData, setProductosData] = useState(
     productos.reduce((acc, producto) => {
@@ -31,5 +30,23 @@ export const ProductosProvider = ({ children }) => {
     setProductosData({ ...productosData, [proveedorId]: nuevosProductos });
   };
 
-  return <ProductosContext.Provider value={{ productosData, agregarProducto, eliminarProducto }}>{children}</ProductosContext.Provider>;
+  const getProductosDeHoy = () => {
+    const today = new Date();
+    const productosHoy = [];
+
+    for (const proveedorId in productosData) {
+      const productosProveedor = productosData[proveedorId];
+
+      const productosDeHoyProveedor = productosProveedor.filter((producto) => {
+        const fechaProducto = new Date(producto.fecha);
+        return fechaProducto.toDateString() === today.toDateString();
+      });
+      productosHoy.push(...productosDeHoyProveedor);
+    }
+    return productosHoy;
+  };
+
+  return (
+    <ProductosContext.Provider value={{ productosData, agregarProducto, eliminarProducto, getProductosDeHoy }}>{children}</ProductosContext.Provider>
+  );
 };

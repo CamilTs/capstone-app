@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { Card } from "primereact/card";
 import styled from "styled-components";
 
 const ImgContainer = styled.div`
@@ -10,37 +11,38 @@ const ImgContainer = styled.div`
 `;
 const Image = styled.img`
   width: 200px;
-  height: 200px;
+  height: 150px;
+  float: left;
+  object-fit: contain;
+  border-radius: 10px;
+  background-color: white;
 `;
 const DataContainer = styled.div`
-  display: flex;
-  width: 100%;
-  flex-flow: column wrap;
-  justify-content: center;
-
+  width: 35%;
   gap: 10px;
+  float: right;
+  font-size: 13px;
+  color: black;
 `;
 
-export const CardProductoReciente = ({ product }) => {
+const CardProductos = styled(Card)`
+  width: 350px;
+  height: 220px;
+  flex-grow: 1;
+  border: 1px solid black;
+  background-color: #e2e37c;
+`;
+
+export const CardProductoReciente = ({ producto }) => {
   return (
     <ImgContainer>
-      <div>
-        <Image src={product.img} alt={product.name} />
-      </div>
-      <DataContainer>
-        <div>
-          <div>
-            <span>Nombre: </span>
-          </div>
-          <span style={{ color: "#000" }}>{product.name}</span>
-        </div>
-        <div>
-          <div>
-            <span>Cantidad</span>
-          </div>
-          <span style={{ color: "#423f3f" }}>{product.quantity}</span>
-        </div>
-      </DataContainer>
+      <CardProductos>
+        <Image src={producto.imagen} alt={producto.producto} />
+        <DataContainer>
+          <span>Nombre: {producto.producto} </span>
+          <span>Cantidad: {producto.cantidad}</span>
+        </DataContainer>
+      </CardProductos>
     </ImgContainer>
   );
 };

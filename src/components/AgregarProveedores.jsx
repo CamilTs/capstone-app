@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
-import { Dropdown } from "primereact/dropdown";
 import { Dialog } from "primereact/dialog";
 import "../CSS/Proveedores.css";
 
@@ -19,19 +18,14 @@ const AgregarProveedores = () => {
   const [proveedoresGuardados, setProveedoresGuardados] = useState([]);
 
   useEffect(() => {
-    const proveedores = JSON.parse(
-      localStorage.getItem("proveedoresGuardados")
-    );
+    const proveedores = JSON.parse(localStorage.getItem("proveedoresGuardados"));
     if (proveedores) {
       setProveedoresGuardados(proveedores);
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(
-      "proveedoresGuardados",
-      JSON.stringify(proveedoresGuardados)
-    );
+    localStorage.setItem("proveedoresGuardados", JSON.stringify(proveedoresGuardados));
   }, [proveedoresGuardados]);
 
   const showDialog = () => {
@@ -76,11 +70,7 @@ const AgregarProveedores = () => {
 
   return (
     <div>
-      <Button
-        label="Agregar Proveedor"
-        icon="pi pi-plus"
-        onClick={showDialog}
-      />
+      <Button label="Agregar Proveedor" icon="pi pi-plus" onClick={showDialog} />
       <Dialog
         visible={visible}
         onHide={hideDialog}
@@ -88,30 +78,15 @@ const AgregarProveedores = () => {
         modal={true}
         footer={
           <div>
-            <Button
-              label="Guardar"
-              icon="pi pi-check"
-              onClick={handleGuardar}
-            />
-            <Button
-              label="Cancelar"
-              icon="pi pi-times"
-              onClick={hideDialog}
-              className="p-button-secondary"
-            />
+            <Button label="Guardar" icon="pi pi-check" onClick={handleGuardar} />
+            <Button label="Cancelar" icon="pi pi-times" onClick={hideDialog} className="p-button-secondary" />
           </div>
         }
       >
         <div className="p-fluid">
           <div className="p-field">
             <label htmlFor="nombre">Nombre</label>
-            <InputText
-              id="nombre"
-              value={proveedor.nombre}
-              onChange={(e) =>
-                setProveedor({ ...proveedor, nombre: e.target.value })
-              }
-            />
+            <InputText id="nombre" value={proveedor.nombre} onChange={(e) => setProveedor({ ...proveedor, nombre: e.target.value })} />
           </div>
           <div className="p-field">
             <label htmlFor="descripcion">Descripción</label>
@@ -142,13 +117,7 @@ const AgregarProveedores = () => {
           </div>
           <div className="p-field">
             <label htmlFor="correo">Correo</label>
-            <InputText
-              id="correo"
-              value={proveedor.correo}
-              onChange={(e) =>
-                setProveedor({ ...proveedor, correo: e.target.value })
-              }
-            />
+            <InputText id="correo" value={proveedor.correo} onChange={(e) => setProveedor({ ...proveedor, correo: e.target.value })} />
           </div>
         </div>
       </Dialog>
@@ -156,24 +125,14 @@ const AgregarProveedores = () => {
       {proveedoresGuardados.map((proveedorGuardado, index) => (
         <div key={index} className="mini-perfil">
           <div className="perfil-info">
-            <div className="perfil-nombre">
-              Nombre: {proveedorGuardado.nombre}
-            </div>
-            <div className="perfil-descripcion">
-              Descripción: {proveedorGuardado.descripcion}
-            </div>
+            <div className="perfil-nombre">Nombre: {proveedorGuardado.nombre}</div>
+            <div className="perfil-descripcion">Descripción: {proveedorGuardado.descripcion}</div>
             <div className="perfil-telefono">
               Teléfono: {proveedorGuardado.pais} {proveedorGuardado.numero}
             </div>
           </div>
           <div className="perfil-delete-button">
-            <Button
-              icon="pi pi-trash"
-              rounded
-              severity="danger"
-              aria-label="Cancel"
-              onClick={() => showConfirmDialog(index)}
-            />
+            <Button icon="pi pi-trash" rounded severity="danger" aria-label="Cancel" onClick={() => showConfirmDialog(index)} />
           </div>
         </div>
       ))}
@@ -186,12 +145,7 @@ const AgregarProveedores = () => {
         footer={
           <div>
             <Button label="Sí" icon="pi pi-check" onClick={confirmDelete} />
-            <Button
-              label="No"
-              icon="pi pi-times"
-              onClick={hideConfirmDialog}
-              className="p-button-secondary"
-            />
+            <Button label="No" icon="pi pi-times" onClick={hideConfirmDialog} className="p-button-secondary" />
           </div>
         }
       >

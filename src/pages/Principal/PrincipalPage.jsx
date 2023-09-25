@@ -5,24 +5,26 @@ import { Column } from "primereact/column";
 import styled from "styled-components";
 import { CardProductoReciente } from "./components/CardProductoReciente";
 
+import { useProductos } from "../../context/ProductosContext";
+
 // const Container = {
 //   backgroundColor: "white",
 //   width:'100%',
 //   height:'100%'
 // };
 
-
-
 const Content = styled.div`
   display: flex;
-  justify-content: ${({width}) => (width ? 'space-between':null)};
+  justify-content: ${({ width }) => (width ? "space-between" : null)};
   gap: 10px;
-  width: ${({width}) => (width ? `${width}%`: '100%')};
-`
-// COMPONENTES 
-
+  width: ${({ width }) => (width ? `${width}%` : "100%")};
+`;
+// COMPONENTES
 
 export const PrincipalPage = () => {
+  const { getProductosDeHoy } = useProductos();
+  const productosHoy = getProductosDeHoy();
+
   const tabla1 = [
     {
       name: "Producto1",
@@ -49,7 +51,6 @@ export const PrincipalPage = () => {
       totalSold: 4,
       quantity: 12,
     },
-    
   ];
   const tabla2 = [
     {
@@ -84,17 +85,10 @@ export const PrincipalPage = () => {
     },
   ];
 
-  const agregado = {
-    img: "https://r.btcdn.co/r/eyJzaG9wX2lkIjo0MDY0LCJnIjoiMTAwMHgifQ/f94f9d776de57d4/667046-7613030612339.jpg",
-    name: "Super 8",
-    price: 1000,
-    quantity: 200,
-  };
-
   const tabla2Formateada = tabla2.map((item) => {
-    console.log(item)
-    return {...item,date: item.date.toString()}
-});
+    console.log(item);
+    return { ...item, date: item.date.toString() };
+  });
 
   const Container = styled.div`
     padding-top: 20px;
@@ -102,26 +96,29 @@ export const PrincipalPage = () => {
     align-items: center;
     height: 100%;
     flex-flow: column;
-    gap:40px;
-  `
+    gap: 40px;
+  `;
 
   return (
-
     <Container>
+      <h1 style={{ fontSize: "25px" }}>Movimientos Recientes</h1>
       <Content width="80">
-        <CardProductoReciente product={agregado} />
-        <CardProductoReciente product={agregado} />
-        <CardProductoReciente product={agregado} />
+        {productosHoy.map((producto) => (
+          <div>
+            Añadido hoy
+            <CardProductoReciente key={producto.id} producto={producto} />
+          </div>
+        ))}
       </Content>
 
       <Content>
-        <DataTable value={tabla1} rows={5} showGridlines tableStyle={{ minWidth: '50%', height:'300px' }}>
+        <DataTable value={tabla1} rows={5} showGridlines tableStyle={{ minWidth: "50%", height: "300px" }}>
           <Column field="name" header="Producto"></Column>
           <Column field="totalSold" header="Total vendido"></Column>
           <Column field="quantity" header="Cantidad total"></Column>
         </DataTable>
 
-        <DataTable value={tabla2Formateada}  showGridlines tableStyle={{ minWidth: '50%', height:'300px' }}>
+        <DataTable value={tabla2Formateada} showGridlines tableStyle={{ minWidth: "50%", height: "300px" }}>
           <Column field="correlatives" header="Correlativos"></Column>
           <Column field="name" header="Nombre"></Column>
           <Column field="date" header="Fecha"></Column>
