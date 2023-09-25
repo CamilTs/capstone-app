@@ -85,6 +85,7 @@ export const Productos = () => {
           <Column field="producto" header="Productos" />
           <Column field="categoria" header="Categorias" />
           <Column field="cantidad" header="Cantidad" />
+          <Column field="fecha" header="Fecha" body={(rowData) => (rowData.fecha instanceof Date ? rowData.fecha.toLocaleDateString() : "")} />
           <Column field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
           <Column body={botonEliminar} />
         </DataTable>

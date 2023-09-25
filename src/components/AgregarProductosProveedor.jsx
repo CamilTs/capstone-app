@@ -22,10 +22,10 @@ export const AgregarProductosProveedor = () => {
   const estructuraFormulario = {
     id: Date.now(),
     codigoBarra: "",
-    nombre: "",
+    producto: "",
     imagen: "",
     categoria: null,
-    valor: Number(0),
+    precio: Number(0),
   };
   const [producto, setProducto] = useState(estructuraFormulario);
 
@@ -50,7 +50,7 @@ export const AgregarProductosProveedor = () => {
       <div className="p-fluid">
         <div className="p-field">
           <label htmlFor="nombre">Nombre</label>
-          <InputText id="nombre" value={producto.nombre} onChange={(e) => setProducto({ ...producto, nombre: e.target.value })} />
+          <InputText id="nombre" value={producto.producto} onChange={(e) => setProducto({ ...producto, nombre: e.target.value })} />
         </div>
         <div className="p-field">
           <label htmlFor="codigoBarra">Codigo de barra</label>
@@ -72,7 +72,7 @@ export const AgregarProductosProveedor = () => {
         </div>
         <div className="p-field">
           <label htmlFor="valor">Valor</label>
-          <InputText id="valor" value={producto.valor} onChange={(e) => setProducto({ ...producto, valor: parseFloat(e.target.value) })} />
+          <InputText id="valor" value={producto.precio} onChange={(e) => setProducto({ ...producto, valor: parseFloat(e.target.value) })} />
         </div>
         <div className="p-field">
           <Button

@@ -21,6 +21,7 @@ export const CamposProductos = ({ producto, handleChange }) => {
           name="cantidad"
           value={producto.cantidad}
           onChange={(e) => handleChange({ target: { name: "cantidad", value: e.value } })}
+          placeholder="Cantidad"
         />
       </div>
 

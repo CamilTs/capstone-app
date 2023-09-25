@@ -1,6 +1,7 @@
 export const productos = [
   {
     id: 4,
+    fecha: new Date(),
     codigoBarra: "3",
     producto: "Manzana",
     categoria: "Alimento",

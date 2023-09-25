@@ -10,6 +10,7 @@ import { CamposProductos } from "./components/CamposProductos";
 export const AgregarProductos = () => {
   const estructuraFormulario = {
     id: Date.now(),
+    fecha: new Date(),
     codigoBarra: "",
     producto: "",
     categoria: [],

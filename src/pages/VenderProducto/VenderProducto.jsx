@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { productos } from "../../productos";
+import { productos } from "../../productosCliente";
 import styled from "styled-components";
 
 const Total = styled.span``;
