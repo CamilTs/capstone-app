@@ -31,5 +31,16 @@ export const ProductosProvider = ({ children }) => {
     setProductosData({ ...productosData, [proveedorId]: nuevosProductos });
   };
 
-  return <ProductosContext.Provider value={{ productosData, agregarProducto, eliminarProducto }}>{children}</ProductosContext.Provider>;
+  const descontarCantidad = (codigoBarra, cantidad) => {
+    const index = productos.findIndex((el) => el.codigoBarra == codigoBarra);
+    const producotActualizado = productos.find((el) => el.codigoBarra == codigoBarra);
+    producotActualizado.cantidad -= cantidad;
+    productos[index] = producotActualizado;
+  };
+
+  return (
+    <ProductosContext.Provider value={{ productosData, agregarProducto, eliminarProducto, descontarCantidad, productos }}>
+      {children}
+    </ProductosContext.Provider>
+  );
 };
