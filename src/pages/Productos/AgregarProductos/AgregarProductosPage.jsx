@@ -6,6 +6,19 @@ import { Button } from "primereact/button";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { CategoriasProductos } from "./components/CategoriasProductos";
 import { CamposProductos } from "./components/CamposProductos";
+import styled from "styled-components";
+
+const ContenedorAncho = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  @media screen and (min-width: 300px) {
+    padding: 10px;
+    min-width: 240px;
+  }
+`;
 
 export const AgregarProductos = () => {
   const estructuraFormulario = {
@@ -53,7 +66,7 @@ export const AgregarProductos = () => {
   };
 
   return (
-    <>
+    <ContenedorAncho>
       <h2>Agregar Productos</h2>
       <form onSubmit={handleSubmit}>
         <div className="p-fluid p-formgrid p-grid">
@@ -89,7 +102,7 @@ export const AgregarProductos = () => {
           />
         </div>
       </form>
-    </>
+    </ContenedorAncho>
   );
 };
 

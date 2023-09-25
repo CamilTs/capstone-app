@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { productos } from "../routes/productosProveedor";
+import { productos } from "../productosCliente";
 
 const ProductosContext = createContext();
 

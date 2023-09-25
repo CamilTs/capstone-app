@@ -1,12 +1,33 @@
 import { useEffect, useState } from "react";
 import { PanelMenu } from "primereact/panelmenu";
-import "../CSS/Menu.css";
-import "../App.css";
 import { useNavigate } from "react-router-dom";
 
 import { PerfilCard } from "./PerfilCard";
 import { rutas } from "../rutas";
 import { useAuth } from "../context/AuthContext";
+import styled from "styled-components";
+
+const Fondo = styled.div`
+  width: 250px;
+  height: 100%;
+  background-color: #fff;
+  color: #fff;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  transition: height 0.3s ease-in-out;
+  }
+`;
+
+const MenuEstilo = styled.div`
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  background: #538a95;
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: rgb(255, 255, 255);
+  padding-bottom: 10px;
+`;
 
 const MenuLateral = () => {
   const [isSubMenuExtended, setIsSubMenuExtended] = useState(false);
@@ -119,13 +140,13 @@ const MenuLateral = () => {
   }, []);
 
   return (
-    <div className={`MenuLateral ${isSubMenuExtended ? "submenu-extended" : ""}`} style={{ width: "250px", minWidth: "250px" }}>
-      <div className="title">Ai Zi</div>
+    <Fondo style={{ width: "250px", minWidth: "250px" }}>
+      <MenuEstilo>Ai Zi</MenuEstilo>
       <div className="menu">
         <PanelMenu model={itemsRuta} className="w-full md:w-25rem" onChange={handleMenuItemClick} />
         <PerfilCard />
       </div>
-    </div>
+    </Fondo>
   );
 };
 

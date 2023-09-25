@@ -5,12 +5,10 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
-import "../../../CSS/Productos.css";
-
 import { useProductos } from "../../../context/ProductosContext";
 import { useAuth } from "../../../context/AuthContext";
-
 import { formatoCurrencyCLP } from "../../../components/FormatoDinero";
+import "../../../CSS/Productos.css";
 
 export const Productos = () => {
   const { user } = useAuth();
@@ -71,20 +69,20 @@ export const Productos = () => {
   };
 
   return (
-    <div className="container">
+    <div className="contenedor">
       <Toast ref={toast} />
-      <div className="tableWrapper">
+      <div className="tabla">
         <h2 className="title">Productos</h2>
         <Button className="p-button-raised p-button-success" icon="pi pi-plus">
           <Link to="/cliente/agregarProductos" style={{ textDecoration: "none", color: "white" }}>
             Agregar Productos
           </Link>
         </Button>
-        <DataTable value={productosCliente}>
-          <Column field="codigoBarra" header="Código de barra" />
-          <Column field="producto" header="Productos" />
-          <Column field="categoria" header="Categorias" />
-          <Column field="cantidad" header="Cantidad" />
+        <DataTable showGridlines value={productosCliente}>
+          <Column field="codigoBarra" header="Código de barra" body={(rowData) => rowData.codigoBarra} />
+          <Column field="producto" header="Productos" body={(rowData) => rowData.producto} />
+          <Column field="categoria" header="Categorias" body={(rowData) => rowData.categoria} />
+          <Column field="cantidad" header="Cantidad" body={(rowData) => rowData.cantidad} />
           <Column field="fecha" header="Fecha" body={(rowData) => (rowData.fecha instanceof Date ? rowData.fecha.toLocaleDateString() : "")} />
           <Column field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
           <Column body={botonEliminar} />

@@ -1,15 +1,65 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-}
+.contenedor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .tabla {
+    padding: 20px;
+    border-radius: 5px;
+    background-color: white;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .title {
+    font-size: 20px; /
+  }
+  
+  .ui-datatable {
+    width: 100%;
+  }
 
-.tableWrapper {
-  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.8);
-  padding: 20px;
-  border-radius: 5px;
-  background-color: white;
-  height: 100%;
-  width: 100%;
-}
+  .ui-datatable tbody td {
+    white-space: nowrap;
+    font-size: 16px; 
+  
+    @media (max-width: 1199.98px) {
+      font-size: 14px;
+    }
+  
+    @media (max-width: 991.98px) {
+      font-size: 12px;
+    }
+  
+    @media (max-width: 767.98px) {
+      font-size: 10px;
+    }
+  
+    @media (max-width: 575.95px) {
+      font-size: 10px;
+    }
+  }
+  
+  .ui-datatable th {
+    font-size: 16px;
+  
+    @media (max-width: 1199.98px) {
+      font-size: 14px;
+    }
+  
+    @media (max-width: 991.98px) {
+      font-size: 12px;
+    }
+  
+    @media (max-width: 767.98px) {
+      font-size: 10px;
+    }
+  
+    @media (max-width: 575.95px) {
+      font-size: 10px;
+    }
+  }
+  
