@@ -6,6 +6,7 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { productos } from "../../productosCliente";
 import styled from "styled-components";
+import { useProductos } from "../../context/ProductosContext";
 
 const Total = styled.span``;
 const UltimaVenta = styled.span``;
@@ -24,6 +25,8 @@ const ContainerVenta = styled.div`
   flex-flow: column wrap;
 `;
 export const VenderProducto = () => {
+  const { descontarCantidad, productos: productosCliente } = useProductos();
+
   const [venta, setVenta] = useState({
     total: 0,
     ultima: 0,
@@ -33,16 +36,19 @@ export const VenderProducto = () => {
   const [visible, setVisible] = useState(false);
 
   const agregarProducto = () => {
-    const producto = productos.find((el) => el.id === parseInt(value));
+    const producto = productos.find((el) => el.codigoBarra == value);
+    console.log(producto.cantidad);
     if (producto) {
-      // Si el producto ya existe en la lista, actualiza cantidad y total
-      const productoExistenteIndex = products.findIndex((el) => el.codigo === parseInt(value));
+      const productoExistenteIndex = products.findIndex((el) => el.codigoBarra == value);
+
       if (productoExistenteIndex >= 0) {
         setProducts((prevProducts) => {
           const clonProducts = [...prevProducts];
           const productoExiste = clonProducts[productoExistenteIndex];
           productoExiste.cantidad++;
           productoExiste.total = productoExiste.cantidad * productoExiste.valor;
+          console.log(productoExiste.cantidad);
+          console.log(productoExiste.precio);
           clonProducts[productoExistenteIndex] = productoExiste;
           return clonProducts;
         });
@@ -50,7 +56,7 @@ export const VenderProducto = () => {
         // Si no existe en la lista, agrégalo
         setProducts((prevProducts) => [
           ...prevProducts,
-          { nombre: producto.nombre, cantidad: 1, valor: producto.valor, total: producto.valor, codigo: producto.id },
+          { nombre: producto.producto, cantidad: 1, valor: producto.precio, total: producto.precio, codigoBarra: producto.id },
         ]);
       }
 
@@ -59,11 +65,18 @@ export const VenderProducto = () => {
         return acc + el.total;
       }, 0);
 
-      console.log(total);
-      setVenta({ total: total == 0 ? producto.valor : total, ultima: producto.valor });
+      setVenta({ total: total == 0 ? producto.precio : total, ultima: producto.precio });
     } else {
       console.log("Producto no encontrado"); // Manejar el caso en que el producto no existe
     }
+  };
+
+  const venderProductos = () => {
+    products.map((el) => {
+      descontarCantidad(el.codigoBarra, el.cantidad);
+    });
+    setProducts([]);
+    console.log(productosCliente);
   };
 
   return (
@@ -92,7 +105,7 @@ export const VenderProducto = () => {
           </DataTable>
         </div>
         <div style={{ display: "grid", placeContent: "center" }}>
-          <Button label="Vender" style={{ width: "150px" }} />
+          <Button label="Vender" style={{ width: "150px" }} onClick={venderProductos} />
         </div>
       </div>
       <div></div>

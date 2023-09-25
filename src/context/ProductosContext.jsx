@@ -45,8 +45,16 @@ export const ProductosProvider = ({ children }) => {
     }
     return productosHoy;
   };
+  const descontarCantidad = (codigoBarra, cantidad) => {
+    const index = productos.findIndex((el) => el.codigoBarra == codigoBarra);
+    const producotActualizado = productos.find((el) => el.codigoBarra == codigoBarra);
+    producotActualizado.cantidad -= cantidad;
+    productos[index] = producotActualizado;
+  };
 
   return (
-    <ProductosContext.Provider value={{ productosData, agregarProducto, eliminarProducto, getProductosDeHoy }}>{children}</ProductosContext.Provider>
+    <ProductosContext.Provider value={{ productosData, agregarProducto, eliminarProducto, getProductosDeHoy, descontarCantidad }}>
+      {children}
+    </ProductosContext.Provider>
   );
 };
