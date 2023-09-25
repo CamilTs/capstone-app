@@ -75,11 +75,11 @@ export const MisProductos = () => {
       <ProductosContainer>
         {productoDelProveedor.map((producto) => (
           <div key={producto.id} className="p-col-12 p-md-4">
-            <CardProductos title={producto.nombre} style={{ marginBottom: "1rem" }}>
-              <ImgContainer src={producto.imagen} alt={producto.nombre} style={{ maxWidth: "100%" }} />
+            <CardProductos title={producto.producto} style={{ marginBottom: "1rem" }}>
+              <ImgContainer src={producto.imagen} alt={producto.producto} style={{ maxWidth: "100%" }} />
               <div>
                 <p>Categoría: {producto.categoria}</p>
-                <p>Valor: {formatoCurrencyCLP(producto.valor)}</p>
+                <p>Valor: {formatoCurrencyCLP(producto.precio)}</p>
               </div>
               <Button
                 label="Eliminar"

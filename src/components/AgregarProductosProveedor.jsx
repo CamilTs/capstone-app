@@ -49,8 +49,8 @@ export const AgregarProductosProveedor = () => {
       <h2>Agregar Producto</h2>
       <div className="p-fluid">
         <div className="p-field">
-          <label htmlFor="nombre">Nombre</label>
-          <InputText id="nombre" value={producto.producto} onChange={(e) => setProducto({ ...producto, nombre: e.target.value })} />
+          <label htmlFor="producto">Nombre</label>
+          <InputText id="producto" value={producto.producto} onChange={(e) => setProducto({ ...producto, producto: e.target.value })} />
         </div>
         <div className="p-field">
           <label htmlFor="codigoBarra">Codigo de barra</label>
@@ -71,8 +71,8 @@ export const AgregarProductosProveedor = () => {
           />
         </div>
         <div className="p-field">
-          <label htmlFor="valor">Valor</label>
-          <InputText id="valor" value={producto.precio} onChange={(e) => setProducto({ ...producto, valor: parseFloat(e.target.value) })} />
+          <label htmlFor="precio">Valor</label>
+          <InputText id="precio" value={producto.precio} onChange={(e) => setProducto({ ...producto, precio: parseFloat(e.target.value) })} />
         </div>
         <div className="p-field">
           <Button
