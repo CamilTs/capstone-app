@@ -12,9 +12,9 @@ export const ProtectedRoutes = () => {
   }
   return (
     <Routes>
-      <Route path="/admin/*" element={<AdminRoutes />} />
-      <Route path="/cliente/*" element={<ClienteRoutes />} />
-      <Route path="/proveedor/*" element={<ProveedorRoutes />} />
+      {user.rol == "admin" && <Route path="/*" element={<AdminRoutes />} />}
+      {user.rol == "cliente" && <Route path="/*" element={<ClienteRoutes />} />}
+      {user.rol == "proveedor" && <Route path="/proveedor/*" element={<ProveedorRoutes />} />}
     </Routes>
   );
 };

@@ -1,13 +1,13 @@
 export const rutas = [
   {
-    ruta: "/cliente",
+    ruta: "/",
     rol: "cliente",
     icono: "pi pi-home",
     label: "Inicio",
     tipo: "",
   },
   {
-    ruta: "cliente/proveedor",
+    ruta: "/verProvedor",
     rol: "cliente",
     icono: "pi pi-eye",
     label: "Ver proveedores",
@@ -15,21 +15,21 @@ export const rutas = [
   },
 
   {
-    ruta: "cliente/venta",
+    ruta: "/venta",
     rol: "cliente",
-    icono: "",
+    icono: "pi pi-dollar",
     label: "Vender Producto",
     tipo: "",
   },
   {
-    ruta: "/cliente/agregarProductos",
+    ruta: "/agregarProductos",
     rol: "cliente",
     icono: "pi pi-plus",
     label: "Agregar productos",
     tipo: "productos",
   },
   {
-    ruta: "/cliente/productos",
+    ruta: "/productos",
     rol: "cliente",
     icono: "pi pi-eye",
     label: "Ver productos",
@@ -50,14 +50,14 @@ export const rutas = [
     tipo: "proveedor",
   },
   {
-    ruta: "/admin/registrar",
+    ruta: "/",
     rol: "admin",
     icono: "pi pi-user-plus",
     label: "Registrar cuentas",
     tipo: "cuentas",
   },
   {
-    ruta: "/admin/agregarProductos",
+    ruta: "/agregarProductos",
     rol: "admin",
     icono: "pi pi-plus",
     label: "Agregar productos",

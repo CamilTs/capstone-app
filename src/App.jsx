@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import MenuLateral from "./components/MenuLateral";
 import "./App.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -35,8 +35,9 @@ function App() {
       <Container>
         {user ? <MenuLateral /> : null}
         <Routes>
-          <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />
+          {!user && <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />}
           <Route path="/*" element={<ProtectedRoutes />} />
+          <Route path="**" element={<Navigate to={"/"} replace />} />
         </Routes>
       </Container>
     </>
