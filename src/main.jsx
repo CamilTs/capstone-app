@@ -7,7 +7,7 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <PrimeReactProvider>
-    <BrowserRouter>
+    <BrowserRouter basename="/capstone-app">
       <AuthProvider>
         <App />
       </AuthProvider>
