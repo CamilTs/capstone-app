@@ -12,16 +12,16 @@ import "../../../CSS/Productos.css";
 
 export const Productos = () => {
   const { user } = useAuth();
-  const { productosData, eliminarProducto } = useProductos();
+  const { productosData, eliminarProducto, productos } = useProductos();
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [productoAEliminarId, setProductoAEliminarId] = useState(null);
 
-  const productosCliente = user ? productosData[user.id] || [] : [];
+  const productosCliente = user ? productos.filter((el) => el.clienteId == user.id) : [];
 
   const handleEliminarProducto = (productoId) => {
     if (user) {
       if (user.rol === "cliente") {
-        setProductoAEliminarId(productoId, user.id);
+        setProductoAEliminarId(productoId);
         setConfirmDialogVisible(true);
       } else {
         alert("No puedes eliminar el producto");

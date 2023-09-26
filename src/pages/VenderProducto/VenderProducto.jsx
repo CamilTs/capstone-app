@@ -4,9 +4,11 @@ import { useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { productos } from "../../productosCliente";
 import styled from "styled-components";
 import { useProductos } from "../../context/ProductosContext";
+import { productos } from "../../productosCliente";
+import { useAuth } from "../../context/AuthContext";
+import { ConfirmDialog } from "primereact/confirmdialog";
 
 const Total = styled.span``;
 const UltimaVenta = styled.span``;
@@ -25,22 +27,27 @@ const ContainerVenta = styled.div`
   flex-flow: column wrap;
 `;
 export const VenderProducto = () => {
-  const { descontarCantidad, productos: productosCliente } = useProductos();
-
+  const { descontarCantidad } = useProductos();
+  const { user } = useAuth();
+  const productosCliente = productos.filter((el) => el.clienteId == user.id);
   const [venta, setVenta] = useState({
     total: 0,
     ultima: 0,
   });
+  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+
   const [products, setProducts] = useState([]);
   const [value, setValue] = useState("");
   const [visible, setVisible] = useState(false);
 
   const agregarProducto = () => {
-    const producto = productos.find((el) => el.codigoBarra == value);
-    console.log(producto.cantidad);
+    const producto = productosCliente.filter((el) => el.clienteId == user.id).find((el) => el.codigoBarra == value);
+
     if (producto) {
       const productoExistenteIndex = products.findIndex((el) => el.codigoBarra == value);
-
+      console.log(products);
+      console.log("===== ESPACIO =====");
+      console.log(productoExistenteIndex);
       if (productoExistenteIndex >= 0) {
         setProducts((prevProducts) => {
           const clonProducts = [...prevProducts];
@@ -56,7 +63,7 @@ export const VenderProducto = () => {
         // Si no existe en la lista, agrégalo
         setProducts((prevProducts) => [
           ...prevProducts,
-          { nombre: producto.producto, cantidad: 1, valor: producto.precio, total: producto.precio, codigoBarra: producto.id },
+          { nombre: producto.producto, cantidad: 1, valor: producto.precio, total: producto.precio, codigoBarra: producto.codigoBarra },
         ]);
       }
 
@@ -77,6 +84,8 @@ export const VenderProducto = () => {
     });
     setProducts([]);
     console.log(productosCliente);
+
+    setConfirmDialogVisible(false);
   };
 
   return (
@@ -105,7 +114,23 @@ export const VenderProducto = () => {
           </DataTable>
         </div>
         <div style={{ display: "grid", placeContent: "center" }}>
-          <Button label="Vender" style={{ width: "150px" }} onClick={venderProductos} />
+          <Button label="Vender" style={{ width: "150px" }} onClick={() => setConfirmDialogVisible(true)} />
+          <ConfirmDialog
+            visible={confirmDialogVisible}
+            onHide={() => setConfirmDialogVisible(false)}
+            message="Confirme para vender"
+            header="Confirmar venta"
+            icon="pi pi-question-circle"
+            acceptClassName="p-button-success"
+            acceptLabel="Sí"
+            rejectLabel="No"
+            footer={
+              <div>
+                <Button label="Si" icon="pi pi-check" className="p-button-success" onClick={venderProductos} />
+                <Button label="No" icon="pi pi-times" className="p-button-text" onClick={() => setConfirmDialogVisible(false)} />
+              </div>
+            }
+          />
         </div>
       </div>
       <div></div>

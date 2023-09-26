@@ -39,6 +39,7 @@ export const AgregarProductos = () => {
     imagen: "",
     categoria: null,
     cantidad: Number(0),
+    clienteId: user.id,
     precio: Number(0),
   };
   const [producto, setProducto] = useState(estructuraFormulario);

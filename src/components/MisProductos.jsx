@@ -54,6 +54,7 @@ export const MisProductos = () => {
     if (productoAEliminarId) {
       console.log("ID del producto a eliminar:", productoAEliminarId);
       const proveedorId = proveedorActual;
+
       eliminarProducto(productoAEliminarId, proveedorId);
       mostrar();
       setConfirmDialogVisible(false);

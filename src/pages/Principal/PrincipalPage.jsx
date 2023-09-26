@@ -86,7 +86,6 @@ export const PrincipalPage = () => {
   ];
 
   const tabla2Formateada = tabla2.map((item) => {
-    console.log(item);
     return { ...item, date: item.date.toString() };
   });
 
@@ -98,16 +97,12 @@ export const PrincipalPage = () => {
     flex-flow: column;
     gap: 40px;
   `;
-
   return (
     <Container>
       <h1 style={{ fontSize: "25px" }}>Movimientos Recientes</h1>
       <Content width="80">
         {productosHoy.map((producto) => (
-          <div>
-            Añadido hoy
-            <CardProductoReciente key={producto.id} producto={producto} />
-          </div>
+          <CardProductoReciente key={producto.id} producto={producto} />
         ))}
       </Content>
 
