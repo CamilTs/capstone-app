@@ -1,7 +1,7 @@
 export const productos = [
   {
-    id: 0,
-    codigoBarra: "0",
+    id: 1,
+    codigoBarra: "1",
     producto: "Leche",
     categoria: "Alimentos y bebidas",
     cantidad: 1,
@@ -12,8 +12,8 @@ export const productos = [
     proveedorId: 4,
   },
   {
-    id: 1,
-    codigoBarra: "1",
+    id: 2,
+    codigoBarra: "2",
     producto: "Televisor",
     categoria: "Electrónica",
     fecha: new Date(),
@@ -24,8 +24,8 @@ export const productos = [
     proveedorId: 3,
   },
   {
-    id: 2,
-    codigoBarra: "2",
+    id: 3,
+    codigoBarra: "3",
     fecha: new Date(),
     imagen: "https://imag.bonviveur.com/pan-de-trigo-rustico-foto-principal.jpg",
     producto: "Pan",
@@ -36,8 +36,8 @@ export const productos = [
     proveedorId: 4,
   },
   {
-    id: 3,
-    codigoBarra: "3",
+    id: 4,
+    codigoBarra: "4",
     fecha: new Date(),
     imagen: "https://www.lg.com/cl/images/lavadoras/md07521005/gallery/D-1.jpg",
     producto: "Lavadora",
@@ -48,8 +48,8 @@ export const productos = [
     proveedorId: 3,
   },
   {
-    id: 4,
-    codigoBarra: "4",
+    id: 5,
+    codigoBarra: "5",
     producto: "Manzanas",
     fecha: new Date(),
     imagen: "https://andreuprados.com/wp-content/uploads/2017/01/apple_0.jpg.webp",
@@ -61,8 +61,8 @@ export const productos = [
     proveedorId: 4,
   },
   {
-    id: 5,
-    codigoBarra: "5",
+    id: 6,
+    codigoBarra: "6",
     fecha: new Date(),
     imagen: "https://www.lg.com/cl/images/refrigeradores/md07551794/gallery/DZ-01.jpg",
     producto: "Refrigerador",
@@ -73,8 +73,8 @@ export const productos = [
     proveedorId: 3,
   },
   {
-    id: 6,
-    codigoBarra: "6",
+    id: 7,
+    codigoBarra: "7",
     fecha: new Date(),
     imagen: "https://comercialdavila.cl/wp-content/uploads/2020/07/arroz-agroprodex-1kg.jpg",
     producto: "Arroz",
@@ -85,8 +85,8 @@ export const productos = [
     proveedorId: 4,
   },
   {
-    id: 7,
-    codigoBarra: "7",
+    id: 8,
+    codigoBarra: "8",
     fecha: new Date(),
     imagen: "https://www.lg.com/cl/images/microondas/md06033256/gallery/M001.jpg",
     producto: "Horno de microondas",
@@ -97,8 +97,8 @@ export const productos = [
     proveedorId: 3,
   },
   {
-    id: 8,
-    codigoBarra: "8",
+    id: 9,
+    codigoBarra: "9",
     fecha: new Date(),
     imagen: "https://andreuprados.com/wp-content/uploads/2017/01/apple_0.jpg.webp",
     producto: "Cereal",
@@ -109,8 +109,8 @@ export const productos = [
     proveedorId: 4,
   },
   {
-    id: 9,
-    codigoBarra: "9",
+    id: 10,
+    codigoBarra: "10",
     fecha: new Date(),
     imagen: "https://www.hbt.cl/media/catalog/product/cache/2334da356b40c2e91982d081e902ff54/3/2/32713FotoAmbientada6_2.jpg",
     producto: "Lavavajillas",

@@ -5,11 +5,12 @@
 import { useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
-import { Messages } from "primereact/messages";
 import { Content } from "../../../App";
 import { useAuth } from "../../../context/AuthContext";
+import styled from "styled-components";
+import { Toast } from "primereact/toast";
 
 export const IniciarSesionPage = () => {
   const { login } = useAuth();
@@ -19,11 +20,14 @@ export const IniciarSesionPage = () => {
     contrasena: "",
   });
 
-  const messagesRef = useRef(null);
-
   const handleChange = ({ target }) => {
     const { name, value } = target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const toast = useRef(null);
+  const mostrar = () => {
+    toast.current.show({ severity: "success", summary: "Listo", detail: "Producto Agregado", life: 2000 });
   };
 
   const submit = () => {
@@ -31,15 +35,30 @@ export const IniciarSesionPage = () => {
     navigate("/");
   };
 
+  const Titulo = styled.h2`
+    text-transform: uppercase;
+    margin: 2rem 0 2rem 0;
+  `;
+
+  // ====== Revisar ======
+  // const InputContainer = styled.div`
+  //   display: flex;
+  //   flex-direction: column;
+  //   justify-content: space-around;
+  //   align-items: center;
+  //   height: 20%;
+  //   width: 100%;
+  // `;
+
   return (
-    <Content width="30%" margin="auto">
-      <h2>Iniciar Sesión</h2>
+    <Content width="auto" margin="auto">
+      <Titulo>Iniciar Sesión</Titulo>
       <div style={{ display: "grid", placeContent: "center" }}>
         <span className="p-float-label">
           <InputText value={formData.rut} name="rut" onChange={handleChange} />
           <label htmlFor="rut">Rut</label>
         </span>
-        <span className="p-float-label" style={{ marginTop: "25px" }}>
+        <span className="p-float-label" style={{ marginTop: "20px", marginBottom: "20px" }}>
           <Password value={formData.contrasena} name="contrasena" onChange={handleChange} feedback={false} />
           <label style={{ textAlign: "center" }} htmlFor="password">
             Contraseña
@@ -49,15 +68,6 @@ export const IniciarSesionPage = () => {
       <div className="card flex justify-content-center">
         <Button style={{ margin: "auto" }} label="Iniciar Sesión" severity="success" onClick={submit} />
       </div>
-      <p style={{ fontSize: "10px" }}>
-        ¿Tienes problemas para iniciar sesión? Presiona{" "}
-        <Link to="/registrar" style={{ color: "blue" }}>
-          aquí
-        </Link>
-        .
-      </p>
-
-      <Messages ref={messagesRef} />
     </Content>
   );
 };

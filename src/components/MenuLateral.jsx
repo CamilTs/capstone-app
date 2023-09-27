@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PanelMenu } from "primereact/panelmenu";
+import { Menu } from "primereact/menu";
 import { useNavigate } from "react-router-dom";
 
 import { PerfilCard } from "./PerfilCard";
@@ -19,6 +19,7 @@ const Fondo = styled.div`
 `;
 
 const MenuEstilo = styled.div`
+  display: flex-row;
   border-radius: 4px;
   border: 1px solid rgba(0, 0, 0, 0.35);
   background: #538a95;
@@ -30,7 +31,6 @@ const MenuEstilo = styled.div`
 `;
 
 const MenuLateral = () => {
-  const [isSubMenuExtended, setIsSubMenuExtended] = useState(false);
   const [itemsRuta, setItemsRuta] = useState([]);
   const { user } = useAuth();
   let itemsPrueba = [];
@@ -51,10 +51,6 @@ const MenuLateral = () => {
     setItemsRuta(itemsPrueba);
   };
 
-  const handleMenuItemClick = () => {
-    setIsSubMenuExtended(!isSubMenuExtended); // Invertir el estado al hacer clic en un elemento del submenú
-  };
-
   useEffect(() => {
     prueba();
   }, []);
@@ -63,7 +59,7 @@ const MenuLateral = () => {
     <Fondo style={{ width: "250px", minWidth: "250px" }}>
       <MenuEstilo>Ai Zi</MenuEstilo>
       <div className="menu">
-        <PanelMenu model={itemsRuta} className="w-full md:w-25rem" onChange={handleMenuItemClick} />
+        <Menu model={itemsRuta} className="w-full md:w-25rem" />
         <PerfilCard />
       </div>
     </Fondo>

@@ -24,6 +24,13 @@ export const Content = styled.div`
   background-color: #fff;
   border-radius: 10px;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8.5px);
+  color: black;
+  letter-spacing: 0.4;
   }
 `;
 

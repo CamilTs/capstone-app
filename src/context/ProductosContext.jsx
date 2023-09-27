@@ -21,21 +21,15 @@ export const ProductosProvider = ({ children }) => {
     }, {})
   );
 
-  const agregarProducto = (nuevoProducto, proveedorId = 0) => {
+  const agregarProducto = (nuevoProducto) => {
     productos.push(nuevoProducto);
-
     console.log(nuevoProducto);
-    // const productosProveedor = productosData[proveedorId] || [];
-    // productosProveedor.push(nuevoProducto);
-    // setProductosData({ ...productosData, [proveedorId]: productosProveedor });
   };
 
   const eliminarProducto = (productoId) => {
     const indice = productos.findIndex((el) => el.id === productoId);
     productos.splice(indice, 1);
-    // const productosProveedor = productosData[proveedorId] || [];
-    // const nuevosProductos = productosProveedor.filter((producto) => producto.id !== productoId);
-    // setProductosData({ ...productosData, [proveedorId]: nuevosProductos });
+    console.log(productoId);
   };
 
   const getProductosDeHoy = () => {
@@ -48,40 +42,8 @@ export const ProductosProvider = ({ children }) => {
         return b.fecha - a.fecha; // Ordena por fecha de forma descendente
       });
 
-    // Toma los primeros 3 productos de la lista ordenada
     const productosRecientes = productosOrdenados.slice(0, 3);
-
     return productosRecientes;
-
-    // const productosHoy = [];
-    // console.log(user);
-    // const today = new Date();
-
-    // let index = 0;
-    // for (const proveedorId in productosData) {
-    //   if (index >= 3) {
-    //     break; // Si ya hemos agregado 3 elementos, detenemos el ciclo
-    //   }
-
-    //   const productosProveedor = productosData[proveedorId];
-
-    //   const productosDeHoyProveedor = productosProveedor.filter((producto) => {
-    //     const fechaProducto = new Date(producto.fecha);
-    //     return fechaProducto.toDateString() === today.toDateString();
-    //   });
-
-    //   // Verificamos cuántos elementos se pueden agregar sin exceder 3
-    //   const elementosRestantes = 3 - index;
-
-    //   // Agregamos los elementos que no excedan el límite de 3
-    //   productosHoy.push(...productosDeHoyProveedor.slice(0, elementosRestantes));
-
-    //   // Actualizamos el índice con la cantidad de elementos agregados
-    //   index += productosDeHoyProveedor.length;
-    // }
-
-    // console.log({ productosHoy });
-    // return productosHoy;
   };
 
   const descontarCantidad = (codigoBarra, cantidad) => {

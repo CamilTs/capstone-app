@@ -12,7 +12,7 @@ import "../../../CSS/Productos.css";
 
 export const Productos = () => {
   const { user } = useAuth();
-  const { productosData, eliminarProducto, productos } = useProductos();
+  const { eliminarProducto, productos } = useProductos();
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [productoAEliminarId, setProductoAEliminarId] = useState(null);
 
@@ -74,7 +74,7 @@ export const Productos = () => {
       <div className="tabla">
         <h2 className="title">Productos</h2>
         <Button className="p-button-raised p-button-success" icon="pi pi-plus">
-          <Link to="/cliente/agregarProductos" style={{ textDecoration: "none", color: "white" }}>
+          <Link to="/agregarProductos" style={{ textDecoration: "none", color: "white" }}>
             Agregar Productos
           </Link>
         </Button>
