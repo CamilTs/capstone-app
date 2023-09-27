@@ -32,6 +32,16 @@ export const ProductosProvider = ({ children }) => {
     console.log(productoId);
   };
 
+  const modificarProducto = (productoId, nuevoProducto) => {
+    const indice = productos.findIndex((el) => el.id === productoId);
+    if (indice !== -1) {
+      productos[indice] = { ...productos[indice], ...nuevoProducto };
+      console.log("Producto editado:", productos[indice]);
+    } else {
+      console.log("Producto no encontrado");
+    }
+  };
+
   const getProductosDeHoy = () => {
     const productosOrdenados = productos
       .filter((el) => el.clienteId == user.id)
@@ -54,7 +64,9 @@ export const ProductosProvider = ({ children }) => {
   };
 
   return (
-    <ProductosContext.Provider value={{ productosData, agregarProducto, eliminarProducto, getProductosDeHoy, descontarCantidad, productos }}>
+    <ProductosContext.Provider
+      value={{ productosData, agregarProducto, eliminarProducto, getProductosDeHoy, descontarCantidad, productos, modificarProducto }}
+    >
       {children}
     </ProductosContext.Provider>
   );

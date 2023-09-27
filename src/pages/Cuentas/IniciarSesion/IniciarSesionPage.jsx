@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
 // En IniciarSesionPage.jsx (Componente de página)
-// import { IniciarSesionForm } from '../IniciarSesion/components/IniciarSesionForm';
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +9,6 @@ import { Button } from "primereact/button";
 import { Content } from "../../../App";
 import { useAuth } from "../../../context/AuthContext";
 import styled from "styled-components";
-import { Toast } from "primereact/toast";
 
 export const IniciarSesionPage = () => {
   const { login } = useAuth();
@@ -25,10 +23,10 @@ export const IniciarSesionPage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const toast = useRef(null);
-  const mostrar = () => {
-    toast.current.show({ severity: "success", summary: "Listo", detail: "Producto Agregado", life: 2000 });
-  };
+  // const toast = useRef(null);
+  // const mostrar = () => {
+  //   toast.current.show({ severity: "success", summary: "Listo", detail: "Producto Agregado", life: 2000 });
+  // };
 
   const submit = () => {
     login(formData.rut, formData.contrasena);
@@ -41,14 +39,14 @@ export const IniciarSesionPage = () => {
   `;
 
   // ====== Revisar ======
-  // const InputContainer = styled.div`
-  //   display: flex;
-  //   flex-direction: column;
-  //   justify-content: space-around;
-  //   align-items: center;
-  //   height: 20%;
-  //   width: 100%;
-  // `;
+  const InputContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 20%;
+    width: 100%;
+  `;
 
   return (
     <Content width="auto" margin="auto">

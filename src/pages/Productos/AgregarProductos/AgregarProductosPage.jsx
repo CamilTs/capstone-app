@@ -21,7 +21,7 @@ const ContenedorAncho = styled.div`
 `;
 
 const categorias = [
-  { label: "Alimento", value: "Alimento" },
+  { label: "Alimentos y bebidas", value: "Alimentos y bebidas" },
   { label: "Electrodoméstico", value: "Electrodoméstico" },
   { label: "Electrónica", value: "Electrónica" },
 ];
