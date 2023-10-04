@@ -11,7 +11,7 @@ export const useProductos = () => {
 
 export const ProductosProvider = ({ children }) => {
   const { user } = useAuth();
-  const [productosData, setProductosData] = useState(
+  const [productosData] = useState(
     productos.reduce((acc, producto) => {
       if (!acc[producto.proveedorId]) {
         acc[producto.proveedorId] = [];

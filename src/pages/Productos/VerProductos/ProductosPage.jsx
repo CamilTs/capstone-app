@@ -73,6 +73,12 @@ export const Productos = () => {
     setFormularioVisible(false);
   };
 
+  const hadleChange = (e) => {
+    const nuevoTexto = e.target.value;
+    setBuscarText(nuevoTexto);
+    handleBuscar(nuevoTexto);
+  };
+
   const botonEliminar = (rowData) => {
     return (
       <div>
@@ -154,8 +160,7 @@ export const Productos = () => {
       <div className="tabla">
         <div className="contenedorFiltro">
           <div className="search">
-            <InputText style={{ width: "100%" }} placeholder="Search" value={buscarText} onChange={(e) => setBuscarText(e.target.value)} />
-            <Button icon="pi pi-search" onClick={handleBuscar} />
+            <InputText style={{ width: "100%" }} placeholder="Buscar" value={buscarText} onChange={hadleChange} />
           </div>
           <div className="agregarProducto">
             <Button className="p-button-raised p-button-success" icon="pi pi-plus">
