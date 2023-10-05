@@ -1,3 +1,4 @@
+import * as XLSX from "xlsx";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "primereact/button";
@@ -77,6 +78,45 @@ export const Productos = () => {
     const nuevoTexto = e.target.value;
     setBuscarText(nuevoTexto);
     handleBuscar(nuevoTexto);
+  };
+
+  const exportarExcel = () => {
+    const datosExportar = productosFiltrados.length > 0 ? productosFiltrados : productosCliente;
+
+    // Crear matiz de objetos que represente los datos de la tabla
+    const datos = datosExportar.map((producto) => ({
+      Codigo_de_barra: producto.codigoBarra,
+      Producto: producto.producto,
+      Categoria: producto.categoria,
+      Cantidad: producto.cantidad,
+      Fecha: producto.fecha instanceof Date ? producto.fecha.toLocaleDateString() : "",
+      Precio: formatoCurrencyCLP(producto.precio),
+    }));
+
+    // Crear una hoja de calculo excel
+    const ws = XLSX.utils.json_to_sheet(datos);
+
+    // Crear un libro de trabajo y adjuntar la hoja de calculo en el libro
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Productos");
+
+    // Generar el archivo excel en formato blob
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+
+    // Convertir el arraybuffer en blob y poder descargarlo
+    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+    // Crear un objeto URL para el blob y crear un enlace de descarga del archivo
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "productos.xlsx";
+    document.body.appendChild(a);
+    a.click();
+
+    // Liberar el objeto URL blob
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   };
 
   const acciones = (rowData) => {
@@ -173,6 +213,9 @@ export const Productos = () => {
             <Column field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
             <Column header="Acciones" body={acciones} />
           </DataTable>
+          <div>
+            <Button className="p-button-raised p-button-success" label="Exportar a Excel" icon="pi pi-file-excel" onClick={exportarExcel} />
+          </div>
         </div>
       </div>
     </div>

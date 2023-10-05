@@ -13,12 +13,14 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "file-saver": "^2.0.5",
     "primeicons": "^6.0.1",
     "primereact": "^9.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
-    "styled-components": "^6.0.8"
+    "styled-components": "^6.0.8",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
