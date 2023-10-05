@@ -12,14 +12,15 @@ const Contenedor = styled.div`
   align-items: center;
   height: 100%;
   flex-flow: column;
-  gap: 40px;
+  gap: 20px;
+  overflow: auto;
 `;
 
 const PrimerContenedor = styled.div`
   display: flex;
   justify-content: center;
   gap: 10px;
-  width: 80%;
+  width: 90%;
 `;
 
 // COMPONENTES
