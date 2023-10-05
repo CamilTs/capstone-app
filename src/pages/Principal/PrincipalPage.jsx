@@ -7,18 +7,21 @@ import { CardProductoReciente } from "./components/CardProductoReciente";
 
 import { useProductos } from "../../context/ProductosContext";
 
-// const Container = {
-//   backgroundColor: "white",
-//   width:'100%',
-//   height:'100%'
-// };
-
-const Content = styled.div`
+const Contenedor = styled.div`
   display: flex;
-  justify-content: ${({ width }) => (width ? "space-between" : null)};
-  gap: 10px;
-  width: ${({ width }) => (width ? `${width}%` : "100%")};
+  align-items: center;
+  height: 100%;
+  flex-flow: column;
+  gap: 40px;
 `;
+
+const PrimerContenedor = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 80%;
+`;
+
 // COMPONENTES
 
 export const PrincipalPage = () => {
@@ -89,24 +92,16 @@ export const PrincipalPage = () => {
     return { ...item, date: item.date.toString() };
   });
 
-  const Container = styled.div`
-    padding-top: 20px;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    flex-flow: column;
-    gap: 40px;
-  `;
   return (
-    <Container>
+    <Contenedor>
       <h1 style={{ fontSize: "25px" }}>Movimientos Recientes</h1>
-      <Content width="80">
+      <PrimerContenedor>
         {productosHoy.map((producto) => (
           <CardProductoReciente key={producto.id} producto={producto} />
         ))}
-      </Content>
+      </PrimerContenedor>
 
-      <Content>
+      <PrimerContenedor>
         <DataTable value={tabla1} rows={5} showGridlines tableStyle={{ minWidth: "50%", height: "300px" }}>
           <Column field="name" header="Producto"></Column>
           <Column field="totalSold" header="Total vendido"></Column>
@@ -119,7 +114,7 @@ export const PrincipalPage = () => {
           <Column field="date" header="Fecha"></Column>
           <Column field="sale" header="Venta"></Column>
         </DataTable>
-      </Content>
-    </Container>
+      </PrimerContenedor>
+    </Contenedor>
   );
 };

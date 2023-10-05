@@ -3,34 +3,39 @@ import { Card } from "primereact/card";
 import styled from "styled-components";
 
 const ImgContainer = styled.div`
-  border: 1px solid #fff;
-  box-shadow: 0px 0px 5px 0px rgb(0, 0, 0, 0.25);
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px 0px rgb(0, 0, 0, 0.5);
   flex: 1;
   display: flex;
   flex-direction: row;
 `;
 const Image = styled.img`
-  width: 200px;
-  height: 150px;
-  float: left;
-  object-fit: contain;
+  width: 100%;
+  height: 300px;
+  float: top;
+  object-fit: cover;
   border-radius: 10px;
   background-color: white;
 `;
 const DataContainer = styled.div`
-  width: 35%;
+  width: 100%;
   gap: 10px;
-  float: right;
-  font-size: 13px;
+  font-size: 16px;
   color: black;
+  display: flex;
+  padding: 10px;
+  justify-content: space-evenly;
 `;
 
 const CardProductos = styled(Card)`
-  width: 350px;
-  height: 220px;
+  width: 100%;
+  height: 100%;
   flex-grow: 1;
   border: 1px solid black;
   background-color: #e2e37c;
+  overflow: auto;
 `;
 
 export const CardProductoReciente = ({ producto }) => {

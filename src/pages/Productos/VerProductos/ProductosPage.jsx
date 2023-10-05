@@ -79,31 +79,7 @@ export const Productos = () => {
     handleBuscar(nuevoTexto);
   };
 
-  const botonEliminar = (rowData) => {
-    return (
-      <div>
-        <Button icon="pi pi-times" rounded severity="danger" aria-label="Cancel" onClick={() => handleEliminarProducto(rowData.id)} />
-        <ConfirmDialog
-          visible={confirmDialogVisible}
-          onHide={() => setConfirmDialogVisible(false)}
-          message="¿Seguro que deseas eliminar este producto?"
-          header="Confirmar Eliminación"
-          icon="pi pi-exclamation-triangle"
-          acceptClassName="p-button-danger"
-          acceptLabel="Sí"
-          rejectLabel="No"
-          footer={
-            <div>
-              <Button label="Eliminar" icon="pi pi-trash" className="p-button-danger" onClick={handleEliminarProductoClick} />
-              <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={() => setConfirmDialogVisible(false)} />
-            </div>
-          }
-        />
-      </div>
-    );
-  };
-
-  const botonModificar = (rowData) => {
+  const acciones = (rowData) => {
     return (
       <div>
         <Button className="p-button p-button-info p-button-icon-only" onClick={() => abrirFormularioEdicion(rowData)}>
@@ -149,6 +125,23 @@ export const Productos = () => {
             <Button label="Guardar Cambios" onClick={guardarCambios} />
           </div>
         </Dialog>
+        <Button icon="pi pi-times" rounded severity="danger" aria-label="Cancel" onClick={() => handleEliminarProducto(rowData.id)} />
+        <ConfirmDialog
+          visible={confirmDialogVisible}
+          onHide={() => setConfirmDialogVisible(false)}
+          message="¿Seguro que deseas eliminar este producto?"
+          header="Confirmar Eliminación"
+          icon="pi pi-exclamation-triangle"
+          acceptClassName="p-button-danger"
+          acceptLabel="Sí"
+          rejectLabel="No"
+          footer={
+            <div>
+              <Button label="Eliminar" icon="pi pi-trash" className="p-button-danger" onClick={handleEliminarProductoClick} />
+              <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={() => setConfirmDialogVisible(false)} />
+            </div>
+          }
+        />
       </div>
     );
   };
@@ -178,8 +171,7 @@ export const Productos = () => {
             <Column field="cantidad" header="Cantidad" body={(rowData) => rowData.cantidad} />
             <Column field="fecha" header="Fecha" body={(rowData) => (rowData.fecha instanceof Date ? rowData.fecha.toLocaleDateString() : "")} />
             <Column field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
-            <Column body={botonEliminar} />
-            <Column body={botonModificar} />
+            <Column header="Acciones" body={acciones} />
           </DataTable>
         </div>
       </div>
