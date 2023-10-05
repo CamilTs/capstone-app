@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { CardProductoReciente } from "./components/CardProductoReciente";
 
 import { useProductos } from "../../context/ProductosContext";
+import { useState } from "react";
 
 const Contenedor = styled.div`
   display: flex;
@@ -29,73 +30,23 @@ export const PrincipalPage = () => {
   const { getProductosDeHoy } = useProductos();
   const productosHoy = getProductosDeHoy();
 
-  const tabla1 = [
-    {
-      name: "Producto1",
-      totalSold: 4,
-      quantity: 12,
-    },
-    {
-      name: "Producto2",
-      totalSold: 4,
-      quantity: 12,
-    },
-    {
-      name: "Producto3",
-      totalSold: 4,
-      quantity: 12,
-    },
-    {
-      name: "Producto4",
-      totalSold: 4,
-      quantity: 12,
-    },
-    {
-      name: "Producto5",
-      totalSold: 4,
-      quantity: 12,
-    },
-  ];
-  const tabla2 = [
-    {
-      correlatives: "Producto1",
-      name: 4,
-      date: new Date(),
-      sale: 1000,
-    },
-    {
-      correlatives: "Producto1",
-      name: 4,
-      date: new Date(),
-      sale: 1000,
-    },
-    {
-      correlatives: "Producto1",
-      name: 4,
-      date: new Date(),
-      sale: 1000,
-    },
-    {
-      correlatives: "Producto1",
-      name: 4,
-      date: new Date(),
-      sale: 1000,
-    },
-    {
-      correlatives: "Producto1",
-      name: 4,
-      date: new Date(),
-      sale: 1000,
-    },
-  ];
+  const formatearFecha = (fecha) => {
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    return new Date(fecha).toLocaleString("es-ES", options);
+  };
 
-  const tabla2Formateada = tabla2.map((item) => {
-    return { ...item, date: item.date.toString() };
+  const productosRecientesTabla = productosHoy.map((producto) => {
+    return {
+      nombre: producto.producto,
+      cantidad: producto.cantidad,
+      precio: producto.precio,
+      fecha: formatearFecha(producto.fecha),
+    };
   });
 
   return (
     <Contenedor>
-      <h1 style={{ fontSize: "25px" }}>Movimientos Recientes</h1>
+      <h1 style={{ fontSize: "25px" }}>Movimientos recientes</h1>
       <PrimerContenedor>
         {productosHoy.map((producto) => (
           <CardProductoReciente key={producto.id} producto={producto} />
@@ -103,18 +54,15 @@ export const PrincipalPage = () => {
       </PrimerContenedor>
 
       <PrimerContenedor>
-        <DataTable value={tabla1} rows={5} showGridlines tableStyle={{ minWidth: "50%", height: "300px" }}>
-          <Column field="name" header="Producto"></Column>
-          <Column field="totalSold" header="Total vendido"></Column>
-          <Column field="quantity" header="Cantidad total"></Column>
-        </DataTable>
-
-        <DataTable value={tabla2Formateada} showGridlines tableStyle={{ minWidth: "50%", height: "300px" }}>
-          <Column field="correlatives" header="Correlativos"></Column>
-          <Column field="name" header="Nombre"></Column>
-          <Column field="date" header="Fecha"></Column>
-          <Column field="sale" header="Venta"></Column>
-        </DataTable>
+        <div>
+          <h1 style={{ fontSize: "20px" }}>Recientes agregados</h1>
+          <DataTable value={productosRecientesTabla} rows={5} showGridlines tableStyle={{ minWidth: "50%", height: "300px" }}>
+            <Column field="nombre" header="Producto"></Column>
+            <Column field="cantidad" header="Cantidad"></Column>
+            <Column field="precio" header="Precio"></Column>
+            <Column field="fecha" header="Fecha de movimiento"></Column>
+          </DataTable>
+        </div>
       </PrimerContenedor>
     </Contenedor>
   );
