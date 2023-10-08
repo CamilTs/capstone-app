@@ -9,7 +9,7 @@ import { ProductosProvider } from "../context/ProductosContext";
 export const ClienteRoutes = () => {
   return (
     <ProductosProvider>
-      <Content width="100%">
+      <Content>
         <Routes>
           <Route path="" element={<PrincipalPage />} />
           <Route path="productos" element={<Productos />} />

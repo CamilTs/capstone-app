@@ -14,6 +14,13 @@ const Container = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
+  justify-content: center;
+`;
+
+const ContenedorMenuPagina = styled.div`
+  width: 100%;
+  hight: 100vh;
+  display: flex;
 `;
 
 export const Content = styled.div`
@@ -37,16 +44,16 @@ function App() {
   const { user } = useAuth();
 
   return (
-    <>
+    <ContenedorMenuPagina>
+      {user ? <MenuLateral /> : null}
       <Container>
-        {user ? <MenuLateral /> : null}
         <Routes>
           {!user && <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />}
           <Route path="/*" element={<ProtectedRoutes />} />
           <Route path="**" element={<Navigate to={"/"} replace />} />
         </Routes>
       </Container>
-    </>
+    </ContenedorMenuPagina>
   );
 }
 

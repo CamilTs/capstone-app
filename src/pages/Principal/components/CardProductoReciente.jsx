@@ -13,7 +13,7 @@ const ImgContainer = styled.div`
 `;
 const Image = styled.img`
   width: 100%;
-  height: 300px;
+  height: 320px;
   object-fit: cover;
   border-radius: 10px;
   background-color: white;
@@ -30,6 +30,7 @@ const DataContainer = styled.div`
 
 const CardProductos = styled(Card)`
   width: 100%;
+  max-width: 422px;
   height: 100%;
   flex-grow: 1;
   border: 1px solid black;

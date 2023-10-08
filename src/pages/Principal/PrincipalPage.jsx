@@ -6,22 +6,25 @@ import styled from "styled-components";
 import { CardProductoReciente } from "./components/CardProductoReciente";
 
 import { useProductos } from "../../context/ProductosContext";
-import { useState } from "react";
 
 const Contenedor = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
-  flex-flow: column;
+  flex-direction: column;
   gap: 20px;
-  overflow: auto;
+  overflow-y: auto;
 `;
 
 const PrimerContenedor = styled.div`
   display: flex;
+  height: 450px;
   justify-content: center;
+  align-items: center;
+  // flex-direction: column;
+  flex-wrap: wrap;
   gap: 10px;
-  width: 90%;
+  width: 100%;
 `;
 
 // COMPONENTES
