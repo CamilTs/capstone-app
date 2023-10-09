@@ -16,7 +16,7 @@ const categorias = [
 
 export const AgregarProductosProveedor = () => {
   const { agregarProducto } = useProductos();
-  const { proveedorActual } = useAuth();
+  const { user } = useAuth();
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
 
   const estructuraFormulario = {
@@ -26,6 +26,7 @@ export const AgregarProductosProveedor = () => {
     imagen: "",
     categoria: null,
     precio: Number(0),
+    proveedorId: user.id,
   };
   const [producto, setProducto] = useState(estructuraFormulario);
 
@@ -35,12 +36,15 @@ export const AgregarProductosProveedor = () => {
   };
 
   const handleAgregarProducto = () => {
-    const productoConProveedor = { ...producto, proveedorId: proveedorActual };
-    agregarProducto(productoConProveedor, proveedorActual);
-    mostrar();
-    console.log(producto);
-    setConfirmDialogVisible(false);
-    setProducto(estructuraFormulario);
+    if (user && user.rol === "proveedor") {
+      agregarProducto(producto, user);
+      mostrar();
+      setConfirmDialogVisible(false);
+      setProducto(estructuraFormulario);
+      console.log(producto);
+    } else {
+      console.log("No se pudo agregar el producto");
+    }
   };
 
   return (

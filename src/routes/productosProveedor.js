@@ -13,6 +13,6 @@ export const productos = [
     imagen: "https://www.lg.com/cl/images/refrigeradores/md07545957/gallery/MZ-11.jpg",
     categoria: "Electrodoméstico",
     precio: 75000,
-    proveedorId: 4,
+    proveedorId: 3,
   },
 ];

@@ -38,12 +38,11 @@ const ImgContainer = styled.img`
 `;
 
 export const MisProductos = () => {
-  const { productosData, eliminarProducto } = useProductos();
-  const { proveedorActual } = useAuth();
+  const { user } = useAuth();
+  const { eliminarProducto, productos } = useProductos();
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [productoAEliminarId, setProductoAEliminarId] = useState(null);
-
-  const productoDelProveedor = productosData[proveedorActual] || [];
+  const productosProveedor = user ? productos.filter((el) => el.proveedorId == user.id) : [];
 
   const toast = useRef(null);
   const mostrar = () => {
@@ -53,8 +52,7 @@ export const MisProductos = () => {
   const handleEliminarProductoClick = () => {
     if (productoAEliminarId) {
       console.log("ID del producto a eliminar:", productoAEliminarId);
-      const proveedorId = proveedorActual;
-
+      const proveedorId = user;
       eliminarProducto(productoAEliminarId, proveedorId);
       mostrar();
       setConfirmDialogVisible(false);
@@ -62,19 +60,12 @@ export const MisProductos = () => {
     }
   };
 
-  // const cargarProducto = () => {
-  //   let prueba = productos.filter(el => el.proveedorId == user.id)
-  // }
-  // useEffect(() => {
-  //   cargarProducto()
-  // }, [])
-
   return (
     <div>
       <Toast ref={toast} />
       <h2>Lista de Productos</h2>
       <ProductosContainer>
-        {productoDelProveedor.map((producto) => (
+        {productosProveedor.map((producto) => (
           <div key={producto.id} className="p-col-12 p-md-4">
             <CardProductos title={producto.producto} style={{ marginBottom: "1rem" }}>
               <ImgContainer src={producto.imagen} alt={producto.producto} style={{ maxWidth: "100%" }} />
