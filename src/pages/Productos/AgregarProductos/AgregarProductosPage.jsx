@@ -33,7 +33,8 @@ export const AgregarProductos = () => {
   const { agregarProducto } = useProductos();
   const { user } = useAuth();
   const [imagen, setimagen] = useState(null);
-  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+  const [confirmDialogAgregar, setConfirmDialogAgregar] = useState(false);
+  const [confirmDialogLimpiar, setConfirmDialogLimpiar] = useState(false);
   const toast = useRef(null);
 
   const estructuraFormulario = {
@@ -72,7 +73,7 @@ export const AgregarProductos = () => {
     agregarProducto(producto, user.id);
     toast.current.show({ severity: "success", summary: "Listo", detail: "Producto Agregado", life: 2000 });
 
-    setConfirmDialogVisible(false);
+    setConfirmDialogAgregar(false);
     setProducto(estructuraFormulario);
     console.log(producto);
   };
@@ -80,12 +81,20 @@ export const AgregarProductos = () => {
   const handleLimpiarFormulario = () => {
     setProducto(estructuraFormulario);
     setimagen(null);
+    toast.current.show({ severity: "info", summary: "Realizado", detail: "Formulario limpiado", life: 2000 });
   };
 
   const agregarProductoDialog = (
     <React.Fragment>
       <Button label="Agregar" icon="pi pi-check" severity="success" onClick={handleAgregarProducto} />
-      <Button label="Cancelar" icon="pi pi-times" severity="danger" onClick={() => setConfirmDialogVisible(false)} />
+      <Button label="Cancelar" icon="pi pi-times" severity="danger" onClick={() => setConfirmDialogAgregar(false)} />
+    </React.Fragment>
+  );
+
+  const limpiarFormularioDialog = (
+    <React.Fragment>
+      <Button label="Limpiar" icon="pi pi-trash" severity="danger" onClick={handleLimpiarFormulario} />
+      <Button label="Cancelar" icon="pi pi-times" severity="info" onClick={() => setConfirmDialogLimpiar(false)} />
     </React.Fragment>
   );
 
@@ -153,21 +162,30 @@ export const AgregarProductos = () => {
                 className="p-button-success"
                 rounded
                 onClick={() => {
-                  setConfirmDialogVisible(true);
+                  setConfirmDialogAgregar(true);
                 }}
               />
-              <Button label="Limpiar" icon="pi pi-trash" className="p-button-danger" rounded onClick={handleLimpiarFormulario} />
+              <Button label="Limpiar" icon="pi pi-trash" className="p-button-danger" rounded onClick={() => setConfirmDialogLimpiar(true)} />
             </Opciones>
           </ContenedorCampos>
         </ContenedorPrimario>
         <ConfirmDialog
-          visible={confirmDialogVisible}
-          onHide={() => setConfirmDialogVisible(false)}
+          visible={confirmDialogAgregar}
+          onHide={() => setConfirmDialogAgregar(false)}
           message="¿Seguro que deseas agregar el producto?"
           header="Confirmar Agregado"
           icon="pi pi-question-circle"
           acceptClassName="p-button-success"
           footer={agregarProductoDialog}
+        />
+        <ConfirmDialog
+          visible={confirmDialogLimpiar}
+          onHide={() => setConfirmDialogLimpiar(false)}
+          message="¿Seguro de limpiar el formulario?"
+          header="Formulario limpiado"
+          icon="pi pi-question-circle"
+          acceptClassName="p-button-success"
+          footer={limpiarFormularioDialog}
         />
       </form>
     </ContenedorAncho>
