@@ -2,30 +2,19 @@
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import styled from "styled-components";
-import { CardProductoReciente } from "./components/CardProductoReciente";
-
 import { useProductos } from "../../context/ProductosContext";
-
-const Contenedor = styled.div`
-  display: flex;
-  align-items: center;
-  height: 100%;
-  flex-direction: column;
-  gap: 20px;
-  overflow-y: auto;
-`;
-
-const PrimerContenedor = styled.div`
-  display: flex;
-  height: 450px;
-  justify-content: center;
-  align-items: center;
-  // flex-direction: column;
-  flex-wrap: wrap;
-  gap: 10px;
-  width: 100%;
-`;
+import {
+  Contenedor,
+  ContenedorCard,
+  CardProductos,
+  Imagen,
+  TituloCard,
+  NombreContenedor,
+  TituloPrincipal,
+  TituloTabla,
+  ContenedorMovimientos,
+  ContenedorTabla,
+} from "./components/StyledPaginaPrincipal";
 
 // COMPONENTES
 
@@ -49,24 +38,28 @@ export const PrincipalPage = () => {
 
   return (
     <Contenedor>
-      <h1 style={{ fontSize: "25px" }}>Movimientos recientes</h1>
-      <PrimerContenedor>
+      <TituloPrincipal>Movimientos recientes</TituloPrincipal>
+      <ContenedorCard>
         {productosHoy.map((producto) => (
-          <CardProductoReciente key={producto.id} producto={producto} />
+          <CardProductos key={producto.id}>
+            <Imagen src={producto.imagen} />
+            <NombreContenedor>
+              <TituloCard>{producto.producto}</TituloCard>
+            </NombreContenedor>
+          </CardProductos>
         ))}
-      </PrimerContenedor>
-
-      <PrimerContenedor>
-        <div>
-          <h1 style={{ fontSize: "20px" }}>Recientes agregados</h1>
+      </ContenedorCard>
+      <ContenedorMovimientos>
+        <ContenedorTabla>
+          <TituloTabla>Recientes agregados</TituloTabla>
           <DataTable value={productosRecientesTabla} rows={5} showGridlines tableStyle={{ minWidth: "50%", height: "300px" }}>
             <Column field="nombre" header="Producto"></Column>
             <Column field="cantidad" header="Cantidad"></Column>
             <Column field="precio" header="Precio"></Column>
             <Column field="fecha" header="Fecha de movimiento"></Column>
           </DataTable>
-        </div>
-      </PrimerContenedor>
+        </ContenedorTabla>
+      </ContenedorMovimientos>
     </Contenedor>
   );
 };

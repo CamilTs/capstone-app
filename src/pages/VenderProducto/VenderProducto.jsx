@@ -1,31 +1,70 @@
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
 import styled from "styled-components";
 import { useProductos } from "../../context/ProductosContext";
 import { productos } from "../../productosCliente";
 import { useAuth } from "../../context/AuthContext";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
+import { useNavigate } from "react-router-dom";
+import { InputNumber } from "primereact/inputnumber";
 
-const Total = styled.span``;
-const UltimaVenta = styled.span``;
-const Container = styled.div`
+const ContenedorPrincipal = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-content: space-between;
+  gap: 1rem;
+`;
+
+const ContenedorInfoVenta = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
   width: 100%;
 `;
-const ContainerVenta = styled.div`
+
+const OpcionesBotones = styled.div`
+  gap: 0.5rem;
+  display: flex;
+`;
+
+const TotalContenedor = styled.div`
+  font-size: 44px;
+`;
+
+const UltimaContenedor = styled.span`
+  font-size: 25px;
+`;
+
+const ContenedorDatos = styled.div`
+  display: flex;
+  flex-direction: column;
   min-width: 400px;
-  width: 30%;
-  /* border: 1px solid black; */
+`;
+
+const DatosVenta = styled.div`
+  width: 70%;
+  min-width: 400px;
   display: flex;
   align-items: end;
   flex-flow: column wrap;
 `;
+
+const OpcionesVenta = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+`;
+
+const AgregarVenta = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
 export const VenderProducto = () => {
   const { descontarCantidad } = useProductos();
   const { user } = useAuth();
@@ -34,11 +73,14 @@ export const VenderProducto = () => {
     total: 0,
     ultima: 0,
   });
-  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+  const [confirmDialogVenta, setConfirmDialogVenta] = useState(false);
+  const [confirmDialogLimpiar, setConfirmDialogLimpiar] = useState(false);
 
   const [products, setProducts] = useState([]);
   const [value, setValue] = useState("");
   const [visible, setVisible] = useState(false);
+  const toast = useRef(null);
+  const navigateProductos = useNavigate();
 
   const agregarProducto = () => {
     const producto = productosCliente.filter((el) => el.clienteId == user.id).find((el) => el.codigoBarra == value);
@@ -85,58 +127,100 @@ export const VenderProducto = () => {
     setProducts([]);
     console.log(productosCliente);
 
-    setConfirmDialogVisible(false);
+    setConfirmDialogVenta(false);
+    toast.current.show({ severity: "success", summary: "Listo", detail: "¡Venta realizada con exito!", life: 2000 });
   };
+
+  const hadleLimpiarTabla = () => {
+    setProducts([]);
+    setVenta({ total: 0, ultima: 0 });
+    setConfirmDialogLimpiar(false);
+    toast.current.show({ severity: "info", summary: "Listo", detail: "¡Tabla limpiada con exito!", life: 2000 });
+  };
+
+  const botonesHeader = (
+    <React.Fragment>
+      <Button label="Agregar" severity="success" icon="pi pi-plus" onClick={() => setVisible(true)} />
+      <Button label="Ir a Productos" severity="info" icon="pi pi-search" onClick={() => navigateProductos("/productos")} />
+    </React.Fragment>
+  );
+
+  const botonesVenta = (
+    <React.Fragment>
+      <Button label="Vender" severity="info" icon="pi pi-check" onClick={() => setConfirmDialogVenta(true)} />
+      <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={() => setConfirmDialogLimpiar(true)} />
+    </React.Fragment>
+  );
+
+  const venderProductosDialog = (
+    <React.Fragment>
+      <Button label="Si" icon="pi pi-check" className="p-button-success" onClick={venderProductos} />
+      <Button label="No" icon="pi pi-times" className="p-button-text" onClick={() => setConfirmDialogVenta(false)} />
+    </React.Fragment>
+  );
+
+  const limpiarTablaDialog = (
+    <React.Fragment>
+      <Button label="Si" icon="pi pi-trash" severity="danger" className="p-button-success" onClick={hadleLimpiarTabla} />
+      <Button label="No" icon="pi pi-times" severity="info" className="p-button-text" onClick={() => setConfirmDialogLimpiar(false)} />
+    </React.Fragment>
+  );
 
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", alignContent: "space-between" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <Button severity="success" icon="pi pi-plus" onClick={() => setVisible(true)} />
-          <Container>
-            <ContainerVenta>
-              <div style={{ fontSize: "44px" }}>
-                <label style={{ fontWeight: "bold" }}>Total:</label>
-                <Total>{venta.total}</Total>
-              </div>
-
-              <div style={{ fontSize: "25px" }}>
-                <label style={{ fontWeight: "bold" }}>Ultimo:</label>
-                <UltimaVenta>{venta.ultima}</UltimaVenta>
-              </div>
-            </ContainerVenta>
-          </Container>
+      <ContenedorPrincipal>
+        <ContenedorInfoVenta>
+          <Toast ref={toast} />
+          <OpcionesBotones>{botonesHeader}</OpcionesBotones>
+          <ContenedorDatos>
+            <DatosVenta>
+              <TotalContenedor>
+                <b>Total: </b>
+                <span>{venta.total}</span>
+              </TotalContenedor>
+              <UltimaContenedor>
+                <b>Ultimo: </b>
+                <span>{venta.ultima}</span>
+              </UltimaContenedor>
+            </DatosVenta>
+          </ContenedorDatos>
           <DataTable value={products} showGridlines>
             <Column field="nombre" header="Nombre" />
             <Column field="cantidad" header="Cantidad" />
             <Column field="valor" header="Valor U." />
             <Column field="total" header="Valor T." />
           </DataTable>
-        </div>
-        <div style={{ display: "grid", placeContent: "center" }}>
-          <Button label="Vender" style={{ width: "150px" }} onClick={() => setConfirmDialogVisible(true)} />
-          <ConfirmDialog
-            visible={confirmDialogVisible}
-            onHide={() => setConfirmDialogVisible(false)}
-            message="Confirme para vender"
-            header="Confirmar venta"
-            icon="pi pi-question-circle"
-            acceptClassName="p-button-success"
-            acceptLabel="Sí"
-            rejectLabel="No"
-            footer={
-              <div>
-                <Button label="Si" icon="pi pi-check" className="p-button-success" onClick={venderProductos} />
-                <Button label="No" icon="pi pi-times" className="p-button-text" onClick={() => setConfirmDialogVisible(false)} />
-              </div>
-            }
-          />
-        </div>
-      </div>
-      <div></div>
+        </ContenedorInfoVenta>
+        <OpcionesVenta>{botonesVenta}</OpcionesVenta>
+      </ContenedorPrincipal>
+      <ConfirmDialog
+        visible={confirmDialogVenta}
+        onHide={() => setConfirmDialogVenta(false)}
+        message="¿Deseas confirmar la venta?"
+        header="Confirmar venta"
+        icon="pi pi-question-circle"
+        acceptClassName="p-button-success"
+        acceptLabel="Sí"
+        rejectLabel="No"
+        footer={venderProductosDialog}
+      />
+      <ConfirmDialog
+        visible={confirmDialogLimpiar}
+        onHide={() => setConfirmDialogLimpiar(false)}
+        message="¿Seguro de limpiar la tabla?"
+        header="Confirmar limpieza de tabla"
+        icon="pi pi-question-circle"
+        acceptClassName="p-button-success"
+        acceptLabel="Limpiar"
+        rejectLabel="Cancelar"
+        footer={limpiarTablaDialog}
+      />
       <Dialog header="Ingresar producto" visible={visible} onHide={() => setVisible(false)}>
-        <InputText placeholder="Ingrese codigo de barras" value={value} onChange={(e) => setValue(e.target.value)} />
-        <Button severity="success" label="Agregar" onClick={agregarProducto} />
+        <AgregarVenta className="p-float-label">
+          <InputNumber id="codigoBarra" value={value} onValueChange={(e) => setValue(e.target.value)} />
+          <label htmlFor="codigoBarra">Codigo de barra</label>
+          <Button severity="success" label="Agregar" onClick={agregarProducto} />
+        </AgregarVenta>
       </Dialog>
     </>
   );

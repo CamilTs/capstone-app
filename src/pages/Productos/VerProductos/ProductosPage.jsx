@@ -7,11 +7,19 @@ import { Toast } from "primereact/toast";
 import { useProductos } from "../../../context/ProductosContext";
 import { useAuth } from "../../../context/AuthContext";
 import { formatoCurrencyCLP } from "../../../components/FormatoDinero";
-import "../../../CSS/Productos.css";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
 import { InputNumber } from "primereact/inputnumber";
+import {
+  Contenedor,
+  ContenedorHeader,
+  ContenedorExportar,
+  ContenedorTabla,
+  Titulo,
+  CustomCircle,
+  ContenedorOpciones,
+} from "./components/StyledVerProductos";
 
 export const Productos = () => {
   const { user } = useAuth();
@@ -54,15 +62,30 @@ export const Productos = () => {
     setConfirmDialogVisible(false);
   };
 
+  const op = useRef(null);
+
+  // Muestra la imagen del producto en un overlaypanel actualizar cuando este el backend //
+
+  // const productoImagen = (rowData) => {
+  //   return (
+  //     <div>
+  //       <Button type="button" icon="pi pi-image" label="Imagen" onClick={(e) => op.current.toggle(e)} />
+  //       <OverlayPanel ref={op}>
+  //         <img src={rowData.imagen} alt={rowData.producto} />
+  //       </OverlayPanel>
+  //     </div>
+  //   );
+  // };
+
   // Diferentes colores para la cantidad de productos //
 
   const cantidadProductos = (rowData) => {
-    const cantidadClase = classNames("custom-circle", {
-      "bg-red-100 text-red-900": rowData.cantidad > 0 && rowData.cantidad < 8,
-      "bg-yellow-100 text-yellow-900": rowData.cantidad > 7 && rowData.cantidad < 15,
-      "bg-green-100 text-green-900": rowData.cantidad > 14,
+    const cantidadClase = classNames({
+      "bg-red-100 text-red-900": rowData.cantidad <= 9,
+      "bg-yellow-100 text-yellow-900": rowData.cantidad >= 10 && rowData.cantidad <= 15,
+      "bg-green-100 text-green-900": rowData.cantidad > 15,
     });
-    return <div className={cantidadClase}>{rowData.cantidad}</div>;
+    return <CustomCircle className={cantidadClase}>{rowData.cantidad}</CustomCircle>;
   };
 
   // Exportar Archivos Excel, PDF //
@@ -120,21 +143,18 @@ export const Productos = () => {
 
   // Buscar productos, ademas de mostrar los botones de agregar, exportar y pdf //
   const controlInventario = (
-    <div>
-      <div className="contendedorHeader">
-        <div>
-          <span className="p-input-icon-left">
-            <i className="pi pi-search" />
-            <InputText type="search" placeholder="Buscar" onInput={(e) => setGlobalFiltro(e.target.value)} />
-          </span>
-        </div>
-        <div className="exportarOption">
-          <Button label="Agregar" icon="pi pi-plus" severity="info" rounded onClick={() => navigateAgregar("/agregarProductos")} />
-          <Button label="Excel" icon="pi pi-file-excel" severity="success" rounded onClick={exportarExcel} data-pr-tooltip="XLS" />
-          <Button label="PDF" icon="pi pi-file-pdf" severity="danger" rounded onClick={exportarPdf} data-pr-tooltip="PDF" />
-        </div>
-      </div>
-    </div>
+    <ContenedorHeader>
+      <span className="p-input-icon-left">
+        <i className="pi pi-search" />
+        <InputText type="search" placeholder="Buscar" onInput={(e) => setGlobalFiltro(e.target.value)} />
+      </span>
+
+      <ContenedorExportar>
+        <Button label="Agregar" icon="pi pi-plus" severity="info" rounded onClick={() => navigateAgregar("/agregarProductos")} />
+        <Button label="Excel" icon="pi pi-file-excel" severity="success" rounded onClick={exportarExcel} data-pr-tooltip="XLS" />
+        <Button label="PDF" icon="pi pi-file-pdf" severity="danger" rounded onClick={exportarPdf} data-pr-tooltip="PDF" />
+      </ContenedorExportar>
+    </ContenedorHeader>
   );
 
   // Llama los dialogos de editar y eliminar productos //
@@ -147,10 +167,10 @@ export const Productos = () => {
 
   const actionBodyTemplate = (rowData) => {
     return (
-      <React.Fragment>
+      <ContenedorOpciones>
         <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => abrirFormularioEdicion(rowData)} />
         <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => handleEliminarProducto(rowData.id, rowData.producto)} />
-      </React.Fragment>
+      </ContenedorOpciones>
     );
   };
 
@@ -162,112 +182,114 @@ export const Productos = () => {
   );
 
   return (
-    <div className="contenedor">
+    <Contenedor>
       <Toast ref={toast} />
-      <h2 className="title">Control Inventario</h2>
-      <div className="tabla">
-        <div>
-          <DataTable
-            stripedRows
-            removableSort
-            header={controlInventario}
-            value={productosCliente}
-            paginator
-            rows={5}
-            rowsPerPageOptions={[5, 10, 15, 20]}
-            scrollable
-            scrollHeight="480px"
-            style={{ width: "100%" }}
-            globalFilter={globalFiltro}
-          >
-            <Column field="codigoBarra" header="Código de barra" body={(rowData) => rowData.codigoBarra} />
-            <Column field="producto" header="Productos" body={(rowData) => rowData.producto} />
-            <Column field="categoria" header="Categorias" body={(rowData) => rowData.categoria} />
-            <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
-            <Column field="fecha" header="Fecha" body={(rowData) => (rowData.fecha instanceof Date ? rowData.fecha.toLocaleDateString() : "")} />
-            <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
-            <Column header="Acciones" body={actionBodyTemplate} exportable={false} style={{ minWidth: "12rem" }} />
-          </DataTable>
-        </div>
-        <Dialog
-          header="Editar Producto"
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          className="p-fluid"
-          visible={formularioVisible}
-          footer={productDialogFooter}
-          onHide={setFormularioVisible}
+      <Titulo>Control Inventario</Titulo>
+      <ContenedorTabla>
+        <DataTable
+          stripedRows
+          removableSort
+          header={controlInventario}
+          value={productosCliente}
+          paginator
+          rows={5}
+          rowsPerPageOptions={[5, 10, 15]}
+          scrollable
+          scrollHeight="500px"
+          globalFilter={globalFiltro}
         >
-          <div className="field">
-            <label htmlFor="codigoBarra" className="font-bold">
-              Código de barra
-            </label>
-            <InputText
-              value={productoAModificar.codigoBarra}
-              onChange={(e) => setProductoAModificar({ ...productoAModificar, codigoBarra: e.target.value })}
-              required
-              autoFocus
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="producto" className="font-bold">
-              Nombre
-            </label>
-            <InputText
-              value={productoAModificar.producto}
-              onChange={(e) => setProductoAModificar({ ...productoAModificar, producto: e.target.value })}
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="categoria" className="font-bold">
-              Categoría
-            </label>
-            <InputText
-              value={productoAModificar.categoria}
-              onChange={(e) => setProductoAModificar({ ...productoAModificar, categoria: e.target.value })}
-            />
-          </div>
-          <div className="formgrid grid">
-            <div className="field col">
-              <label htmlFor="cantidad" className="font-bold">
-                Cantidad
-              </label>
-              <InputNumber
-                id="cantidad"
-                value={productoAModificar.cantidad}
-                onValueChange={(e) => setProductoAModificar({ ...productoAModificar, cantidad: e.target.value })}
-              />
-            </div>
-            <div className="field col">
-              <label htmlFor="precio" className="font-bold">
-                Precio
-              </label>
-              <InputNumber
-                id="precio"
-                value={productoAModificar.precio}
-                onValueChange={(e) => setProductoAModificar({ ...productoAModificar, precio: e.target.value })}
-                mode="currency"
-                currency="CLP"
-                locale="es-CL"
-              />
-            </div>
-          </div>
-        </Dialog>
+          <Column field="codigoBarra" header="Código de barra" body={(rowData) => rowData.codigoBarra} />
+          <Column field="producto" header="Productos" body={(rowData) => rowData.producto} />
+          <Column field="categoria" header="Categorias" body={(rowData) => rowData.categoria} />
+          <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
+          <Column field="fecha" header="Fecha" body={(rowData) => (rowData.fecha instanceof Date ? rowData.fecha.toLocaleDateString() : "")} />
+          <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
+          <Column header="Acciones" body={actionBodyTemplate} exportable={false} />
+        </DataTable>
+      </ContenedorTabla>
 
-        <Dialog
-          visible={confirmDialogVisible}
-          onHide={() => setConfirmDialogVisible(false)}
-          header="Confirmar Eliminación"
-          modal
-          footer={eliminarProductoDialog}
-        >
-          <i className="pi pi-exclamation-triangle" style={{ fontSize: "2rem" }}></i>
-          {productoAEliminarNombre && (
-            <span>
-              ¿Seguro que deseas eliminar <b>{productoAEliminarNombre}</b>?
-            </span>
-          )}
-        </Dialog>
-      </div>
-    </div>
+      <Dialog
+        header="Editar Producto"
+        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+        className="p-fluid"
+        visible={formularioVisible}
+        footer={productDialogFooter}
+        onHide={setFormularioVisible}
+      >
+        <div>
+          <label htmlFor="codigoBarra" className="font-bold">
+            Código de barra
+          </label>
+          <InputText
+            value={productoAModificar.codigoBarra}
+            onChange={(e) => setProductoAModificar({ ...productoAModificar, codigoBarra: e.target.value })}
+            required
+            autoFocus
+          />
+        </div>
+        <div>
+          <label htmlFor="producto" className="font-bold">
+            Nombre
+          </label>
+          <InputText
+            value={productoAModificar.producto}
+            onChange={(e) => setProductoAModificar({ ...productoAModificar, producto: e.target.value })}
+          />
+        </div>
+        <div>
+          <label htmlFor="categoria" className="font-bold">
+            Categoría
+          </label>
+          <InputText
+            value={productoAModificar.categoria}
+            onChange={(e) => setProductoAModificar({ ...productoAModificar, categoria: e.target.value })}
+          />
+        </div>
+        <div>
+          <div className="field col">
+            <label htmlFor="cantidad" className="font-bold">
+              Cantidad
+            </label>
+            <InputNumber
+              id="cantidad"
+              value={productoAModificar.cantidad}
+              onValueChange={(e) => setProductoAModificar({ ...productoAModificar, cantidad: e.target.value })}
+              mode="decimal"
+              showButtons
+              min={0}
+              max={100}
+            />
+          </div>
+          <div>
+            <label htmlFor="precio" className="font-bold">
+              Precio
+            </label>
+            <InputNumber
+              id="precio"
+              value={productoAModificar.precio}
+              onValueChange={(e) => setProductoAModificar({ ...productoAModificar, precio: e.target.value })}
+              mode="currency"
+              currency="CLP"
+              locale="es-CL"
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      <Dialog
+        visible={confirmDialogVisible}
+        onHide={() => setConfirmDialogVisible(false)}
+        header="Confirmar Eliminación"
+        modal
+        footer={eliminarProductoDialog}
+      >
+        <i className="pi pi-exclamation-triangle" style={{ fontSize: "2rem" }}></i>
+        {productoAEliminarNombre && (
+          <span>
+            ¿Seguro que deseas eliminar <b>{productoAEliminarNombre}</b>?
+          </span>
+        )}
+      </Dialog>
+    </Contenedor>
   );
 };
