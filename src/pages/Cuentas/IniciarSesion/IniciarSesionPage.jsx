@@ -9,9 +9,11 @@ import { Button } from "primereact/button";
 import { Content } from "../../../App";
 import { useAuth } from "../../../context/AuthContext";
 import styled from "styled-components";
+import { api, useApi } from "../../../api/api";
 
 export const IniciarSesionPage = () => {
   const { login } = useAuth();
+  const { post, loading } = useApi();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     rut: "",
@@ -28,8 +30,11 @@ export const IniciarSesionPage = () => {
   //   toast.current.show({ severity: "success", summary: "Listo", detail: "Producto Agregado", life: 2000 });
   // };
 
-  const submit = () => {
+  const submit = async () => {
     login(formData.rut, formData.contrasena);
+    const res = await post("autenticacion/login", formData);
+
+    console.log(res);
     navigate("/");
   };
 
@@ -64,7 +69,7 @@ export const IniciarSesionPage = () => {
         </span>
       </div>
       <div className="card flex justify-content-center">
-        <Button style={{ margin: "auto" }} label="Iniciar Sesión" severity="success" onClick={submit} />
+        <Button style={{ margin: "auto" }} label="Iniciar Sesión" disabled={loading} severity="success" onClick={submit} />
       </div>
     </Content>
   );
