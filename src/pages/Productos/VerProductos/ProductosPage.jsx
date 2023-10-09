@@ -62,7 +62,7 @@ export const Productos = () => {
     setConfirmDialogVisible(false);
   };
 
-  const op = useRef(null);
+  // const op = useRef(null);
 
   // Muestra la imagen del producto en un overlaypanel actualizar cuando este el backend //
 
