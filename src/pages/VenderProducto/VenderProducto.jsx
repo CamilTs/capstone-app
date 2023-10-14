@@ -1,6 +1,6 @@
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import styled from "styled-components";
@@ -11,6 +11,7 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
 import { InputNumber } from "primereact/inputnumber";
+import { useContextSocket } from "../../context/SocketContext";
 
 const ContenedorPrincipal = styled.div`
   display: flex;
@@ -67,6 +68,7 @@ const AgregarVenta = styled.div`
 
 export const VenderProducto = () => {
   const { descontarCantidad } = useProductos();
+  const { socket, online } = useContextSocket();
   const { user } = useAuth();
   const productosCliente = productos.filter((el) => el.clienteId == user.id);
   const [venta, setVenta] = useState({
@@ -82,11 +84,12 @@ export const VenderProducto = () => {
   const toast = useRef(null);
   const navigateProductos = useNavigate();
 
-  const agregarProducto = () => {
-    const producto = productosCliente.filter((el) => el.clienteId == user.id).find((el) => el.codigoBarra == value);
+  const agregarProducto = (codigoBarra = "") => {
+    console.log(user.id);
+    const producto = productosCliente.filter((el) => el.clienteId == user.id).find((el) => el.codigoBarra == codigoBarra);
 
     if (producto) {
-      const productoExistenteIndex = products.findIndex((el) => el.codigoBarra == value);
+      const productoExistenteIndex = products.findIndex((el) => el.codigoBarra == codigoBarra);
       console.log(products);
       console.log("===== ESPACIO =====");
       console.log(productoExistenteIndex);
@@ -142,6 +145,7 @@ export const VenderProducto = () => {
     <React.Fragment>
       <Button label="Agregar" severity="success" icon="pi pi-plus" onClick={() => setVisible(true)} />
       <Button label="Ir a Productos" severity="info" icon="pi pi-search" onClick={() => navigateProductos("/productos")} />
+      <Button label="Prueba" severity="danger" icon="pi pi-trash" onClick={() => escucharWSCodigoBarra()} />
     </React.Fragment>
   );
 
@@ -165,6 +169,17 @@ export const VenderProducto = () => {
       <Button label="No" icon="pi pi-times" severity="info" className="p-button-text" onClick={() => setConfirmDialogLimpiar(false)} />
     </React.Fragment>
   );
+
+  const escucharWSCodigoBarra = () => {
+    socket.on("venderProducto", (data) => {
+      const { codigoBarra } = data;
+      console.log(codigoBarra);
+      agregarProducto(data);
+    });
+  };
+  useEffect(() => {
+    escucharWSCodigoBarra();
+  }, []);
 
   return (
     <>

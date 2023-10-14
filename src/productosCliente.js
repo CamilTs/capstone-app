@@ -49,11 +49,11 @@ export const productos = [
   },
   {
     id: 5,
-    codigoBarra: "5",
-    producto: "Manzanas",
+    codigoBarra: "7800026789858",
+    producto: "Aradix 20 mg 30 comprimidos",
     fecha: new Date(),
     imagen: "https://andreuprados.com/wp-content/uploads/2017/01/apple_0.jpg.webp",
-    categoria: "Alimentos y bebidas",
+    categoria: "medicina",
 
     cantidad: 5,
     precio: 500,

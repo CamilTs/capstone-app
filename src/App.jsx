@@ -10,6 +10,7 @@ import { useAuth } from "./context/AuthContext";
 import { ProtectedRoutes } from "./routes/ProtectedRoutes";
 import { Button } from "primereact/button";
 import { useState } from "react";
+import { SocketProvider } from "./context/SocketContext";
 
 const Container = styled.div`
   background-color: #538a95;
@@ -83,15 +84,17 @@ function App() {
 
   return (
     <ContenedorMenuPagina>
-      {user ? <MenuLateral style={{ display: menuVisible ? "block" : "none" }} /> : null}
-      <Container>
-        <ButtonMenu icon={menuVisible ? "pi pi-chevron-left" : "pi pi-chevron-right"} onClick={botonMenu} />
-        <Routes>
-          {!user && <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />}
-          <Route path="/*" element={<ProtectedRoutes />} />
-          <Route path="**" element={<Navigate to={"/"} replace />} />
-        </Routes>
-      </Container>
+      <SocketProvider>
+        {user ? <MenuLateral style={{ display: menuVisible ? "block" : "none" }} /> : null}
+        <Container>
+          <ButtonMenu icon={menuVisible ? "pi pi-chevron-left" : "pi pi-chevron-right"} onClick={botonMenu} />
+          <Routes>
+            {!user && <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />}
+            <Route path="/*" element={<ProtectedRoutes />} />
+            <Route path="**" element={<Navigate to={"/"} replace />} />
+          </Routes>
+        </Container>
+      </SocketProvider>
     </ContenedorMenuPagina>
   );
 }
