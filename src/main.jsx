@@ -9,12 +9,12 @@ import { store } from "./store";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <PrimeReactProvider>
-    {/* <Provider store={store}> */}
-    <BrowserRouter basename="/capstone-app/">
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </BrowserRouter>
-    {/* </Provider> */}
+    <Provider store={store}>
+      <BrowserRouter basename="/capstone-app/">
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </BrowserRouter>
+    </Provider>
   </PrimeReactProvider>
 );

@@ -12,8 +12,9 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   const login = (rut, contrasena) => {
+    console.log(rut, contrasena);
     const usuarioEncontrado = cuentas.find((el) => el.rut == rut && el.contrasena == contrasena);
-
+    console.log(usuarioEncontrado);
     setUser(usuarioEncontrado);
   };
 

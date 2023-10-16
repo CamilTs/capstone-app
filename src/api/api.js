@@ -14,10 +14,8 @@ export const useApi = () => {
     setLoading(true);
     try {
       const response = await api.get(endpoint);
-      setLoading(false);
       return response.data;
     } catch (error) {
-      setLoading(false);
       return { success: false, error: error.message };
     } finally {
       setLoading(false);
@@ -25,13 +23,11 @@ export const useApi = () => {
   };
 
   const post = async (endpoint, data) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await api.post(endpoint, data);
-      setLoading(false);
       return response.data;
     } catch (error) {
-      setLoading(false);
       return { success: false, error: error.message };
     } finally {
       setLoading(false);

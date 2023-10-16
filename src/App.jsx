@@ -9,8 +9,10 @@ import { IniciarSesionPage } from "./pages";
 import { useAuth } from "./context/AuthContext";
 import { ProtectedRoutes } from "./routes/ProtectedRoutes";
 import { Button } from "primereact/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SocketProvider } from "./context/SocketContext";
+import { useDispatch } from "react-redux";
+import { checkAuthToken } from "./store/auth";
 
 const Container = styled.div`
   background-color: #538a95;
@@ -65,6 +67,7 @@ const ButtonMenu = styled(Button)`
 function App() {
   const { user } = useAuth();
   const [menuVisible, setMenuVisible] = useState(true);
+  const dispatch = useDispatch();
 
   const abrirMenu = () => {
     setMenuVisible(true);
@@ -81,7 +84,9 @@ function App() {
       abrirMenu();
     }
   };
-
+  useEffect(() => {
+    dispatch(checkAuthToken());
+  }, []);
   return (
     <ContenedorMenuPagina>
       <SocketProvider>

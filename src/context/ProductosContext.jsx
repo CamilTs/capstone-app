@@ -27,6 +27,7 @@ export const ProductosProvider = ({ children }) => {
   };
 
   const eliminarProducto = (productoId) => {
+    // if (productoId == 0) return;
     const indice = productos.findIndex((el) => el.id === productoId);
     productos.splice(indice, 1);
     console.log(productoId);

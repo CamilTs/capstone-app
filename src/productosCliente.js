@@ -1,6 +1,6 @@
 export const productos = [
   {
-    id: 1,
+    id: 0,
     codigoBarra: "1",
     producto: "Leche",
     categoria: "Alimentos y bebidas",

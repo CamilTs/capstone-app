@@ -2,8 +2,9 @@
 // En IniciarSesionPage.jsx (Componente de página)
 
 // import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
+import { Messages } from "primereact/messages";
 import { Password } from "primereact/password";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
@@ -11,8 +12,10 @@ import { Content } from "../../../App";
 import { useAuth } from "../../../context/AuthContext";
 import styled from "styled-components";
 import { api, useApi } from "../../../api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { autenticando, revisandoAutentication } from "../../../store/auth";
 // import { autenticado, revisandoAutentication } from "../../../store/auth";
-
+import { useMountEffect } from "primereact/hooks";
 const Contenedor = styled.div`
   width: 100%;
   display: flex;
@@ -62,11 +65,13 @@ const ContenedorSpan = styled.span`
 `;
 
 export const IniciarSesionPage = () => {
+  const msgs = useRef(null);
   const { login } = useAuth();
-  const { post, loading } = useApi();
+  const { status, errorMessage } = useSelector((state) => state.auth);
+  const loading = useMemo(() => status === "revisando-autenticacion", [status]);
   const navigate = useNavigate();
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     rut: "",
@@ -78,12 +83,17 @@ export const IniciarSesionPage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const submit = async () => {
-    await login(formData.rut, formData.contrasena);
+  const submit = async (e) => {
+    e.preventDefault();
+    // await login(formData.rut, formData.contrasena);
+    login(formData.rut, formData.contrasena);
 
-    const res = await post("autenticacion/login", formData);
+    dispatch(autenticando(formData));
+    console.log(errorMessage);
+    // dispatch(revisandoAutentication());
+    // const res = await post("autenticacion/login", formData);
 
-    console.log(res);
+    // console.log(res);
     navigate("/");
   };
 
@@ -105,6 +115,12 @@ export const IniciarSesionPage = () => {
   //   }
   // };
 
+  // useEffect(() => {
+  //   if (msgs.current) {
+  //     msgs.current.clear();
+  //     msgs.current.show({ id: "1", sticky: true, severity: "error", summary: "Error", detail: errorMessage, closable: false });
+  //   }
+  // }, [errorMessage]);
   return (
     <Contenedor>
       <Form onSubmit={submit}>
@@ -121,8 +137,13 @@ export const IniciarSesionPage = () => {
             <label htmlFor="password">Contraseña</label>
           </ContenedorSpan>
         </ContenedorCampos>
+        {errorMessage && (
+          <div>
+            <Messages ref={msgs} />
+          </div>
+        )}
         <div>
-          <Button label="Iniciar Sesión" disabled={loading} severity="success" rounded onClick={submit} />
+          <Button label="Iniciar Sesión" disabled={loading} severity="success" rounded type="submit" />
         </div>
       </Form>
     </Contenedor>
