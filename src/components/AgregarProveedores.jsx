@@ -85,6 +85,7 @@ const AgregarProveedores = () => {
   }, [proveedoresGuardados]);
 
   const verFormulario = () => {
+    limpiarFormulario();
     setMostrarFormulario(true);
   };
 

@@ -4,10 +4,12 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: {
     status: "no-autenticado", // revisando-autenticacion, autenticado, no-autenticado
+    id: null,
     rut: null,
     nombre: null,
     apellido: null,
-    email: null,
+    correo: null,
+    comercio: null,
     rol: null,
     token: null,
     errorMessage: null,
@@ -16,10 +18,12 @@ export const authSlice = createSlice({
     login: (state, { payload }) => {
       console.log(payload);
       state.status = "autenticado";
+      state.id = payload.id;
       state.rut = payload.rut;
       state.nombre = payload.nombre;
       state.apellido = payload.apellido;
-      state.email = payload.email;
+      state.correo = payload.correo;
+      state.comercio = payload.comercio;
       state.rol = payload.rol;
       state.token = payload.token;
       state.errorMessage = null;
@@ -27,11 +31,12 @@ export const authSlice = createSlice({
     logout: (state, { payload }) => {
       console.log(payload);
       state.status = "no-autenticado";
-
+      state.id = null;
       state.rut = null;
       state.nombre = null;
       state.apellido = null;
-      state.email = null;
+      state.correo = null;
+      state.comercio = null;
       state.rol = null;
       state.token = null;
       state.errorMessage = payload.errorMessage;

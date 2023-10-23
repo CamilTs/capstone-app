@@ -4,6 +4,7 @@ import styled from "styled-components";
 export const CardProductos = styled.div`
   background-color: #538a95;
   box-shadow: 0px 0px 10px 0px rgb(0, 0, 0, 0.5);
+  width: 300px;
 `;
 
 export const Imagen = styled.img`
@@ -16,7 +17,7 @@ export const Imagen = styled.img`
 export const TituloCard = styled.h2`
   background: white;
   border-radius: 5px;
-  width: 50%;
+  width: 70%;
   text-align: center;
   box-shadow: 0px 0px 5px 0px rgb(0, 0, 0, 0.5);
 `;
@@ -41,8 +42,9 @@ export const ContenedorCard = styled.div`
   display: flex;
   justify-content: center;
   gap: 15px;
+  height: 100%;
 
-  @media (max-width: 1366px) {
+  @media (max-width: 1100px) {
     overflow-y: auto;
     overflow-x: hidden;
     flex-wrap: wrap;
