@@ -14,7 +14,6 @@ import styled from "styled-components";
 import { api, useApi } from "../../../api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { autenticando, revisandoAutentication } from "../../../store/auth";
-// import { autenticado, revisandoAutentication } from "../../../store/auth";
 import { useMountEffect } from "primereact/hooks";
 const Contenedor = styled.div`
   width: 100%;
@@ -92,7 +91,7 @@ export const IniciarSesionPage = () => {
     console.log(errorMessage);
     // dispatch(revisandoAutentication());
     // const res = await post("autenticacion/login", formData);
-
+    console.log("HOLA");
     // console.log(res);
     navigate("/");
   };

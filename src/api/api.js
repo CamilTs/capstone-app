@@ -11,6 +11,7 @@ export const useApi = () => {
   const [loading, setLoading] = useState(false);
 
   const get = async (endpoint) => {
+    console.log(endpoint);
     setLoading(true);
     try {
       const response = await api.get(endpoint);

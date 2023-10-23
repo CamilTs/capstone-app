@@ -12,7 +12,7 @@ export const cuentas = [
   {
     id: 2,
     contrasena: "1234",
-    rut: "11",
+    rut: "20597279k",
     nombre: "Camilo",
     apellidos: "Tapia Sepulveda",
     correo: "camilo@gmail.com",

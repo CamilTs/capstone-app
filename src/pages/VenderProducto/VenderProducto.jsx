@@ -12,6 +12,7 @@ import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
 import { InputNumber } from "primereact/inputnumber";
 import { useContextSocket } from "../../context/SocketContext";
+import { useApi } from "../../api/api";
 
 const ContenedorPrincipal = styled.div`
   display: flex;
@@ -69,6 +70,7 @@ const AgregarVenta = styled.div`
 export const VenderProducto = () => {
   const { descontarCantidad } = useProductos();
   const { socket, online } = useContextSocket();
+  const { get } = useApi();
   const { user } = useAuth();
   const productosCliente = productos.filter((el) => el.clienteId == user.id);
   const [venta, setVenta] = useState({
@@ -84,43 +86,54 @@ export const VenderProducto = () => {
   const toast = useRef(null);
   const navigateProductos = useNavigate();
 
-  const agregarProducto = (codigoBarra = "") => {
-    console.log(user.id);
-    const producto = productosCliente.filter((el) => el.clienteId == user.id).find((el) => el.codigoBarra == codigoBarra);
+  const agregarProducto = async (codigoBarra = "") => {
+    buscarProducto(codigoBarra);
+    try {
+      console.log(codigoBarra);
+      const response = await get(`producto/${codigoBarra}`);
+      console.log(response);
+      const producto = response.data;
+      console.log("====================================");
+      console.log(producto);
 
-    if (producto) {
-      const productoExistenteIndex = products.findIndex((el) => el.codigoBarra == codigoBarra);
-      console.log(products);
-      console.log("===== ESPACIO =====");
-      console.log(productoExistenteIndex);
-      if (productoExistenteIndex >= 0) {
-        setProducts((prevProducts) => {
-          const clonProducts = [...prevProducts];
-          const productoExiste = clonProducts[productoExistenteIndex];
-          productoExiste.cantidad++;
-          productoExiste.total = productoExiste.cantidad * productoExiste.valor;
-          console.log(productoExiste.cantidad);
-          console.log(productoExiste.precio);
-          clonProducts[productoExistenteIndex] = productoExiste;
-          return clonProducts;
-        });
+      if (producto) {
+        const productoExistenteIndex = products.findIndex((el) => el.codigoBarra === producto.codigo_barra);
+
+        if (productoExistenteIndex >= 0) {
+          setProducts((prevProducts) => {
+            const clonProducts = [...prevProducts];
+            const productoExiste = clonProducts[productoExistenteIndex];
+            productoExiste.cantidad++;
+            productoExiste.total = productoExiste.cantidad * productoExiste.valor;
+            clonProducts[productoExistenteIndex] = productoExiste;
+            return clonProducts;
+          });
+        } else {
+          // Si no existe en la lista, agrégalo
+          setProducts((prevProducts) => [
+            ...prevProducts,
+            { nombre: producto.nombre, cantidad: 1, valor: producto.precio, total: producto.precio, codigoBarra: producto.codigo_barra },
+          ]);
+        }
+
+        const total = products.reduce((acc, el) => {
+          return acc + el.total;
+        }, 0);
+
+        setVenta({ total: total === 0 ? producto.precio : total, ultima: producto.precio });
       } else {
-        // Si no existe en la lista, agrégalo
-        setProducts((prevProducts) => [
-          ...prevProducts,
-          { nombre: producto.producto, cantidad: 1, valor: producto.precio, total: producto.precio, codigoBarra: producto.codigoBarra },
-        ]);
+        console.log("Producto no encontrado");
+        // Manejar el caso en que el producto no existe
       }
-
-      const total = products.reduce((acc, el) => {
-        console.log({ acc, el });
-        return acc + el.total;
-      }, 0);
-
-      setVenta({ total: total == 0 ? producto.precio : total, ultima: producto.precio });
-    } else {
-      console.log("Producto no encontrado"); // Manejar el caso en que el producto no existe
+    } catch (error) {
+      console.error("Error al obtener el producto:", error);
+      // Manejar errores de la API, por ejemplo, mostrar un mensaje al usuario.
     }
+  };
+
+  const buscarProducto = async (codigoBarra) => {
+    const response = await get(`producto/${codigoBarra}`);
+    console.log(response);
   };
 
   const venderProductos = () => {
@@ -174,7 +187,8 @@ export const VenderProducto = () => {
     socket.on("venderProducto", (data) => {
       const { codigoBarra } = data;
       console.log(codigoBarra);
-      agregarProducto(data);
+      // buscarProducto(codigoBarra);
+      agregarProducto(codigoBarra);
     });
   };
   useEffect(() => {
