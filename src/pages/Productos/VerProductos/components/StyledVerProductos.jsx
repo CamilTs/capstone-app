@@ -2,11 +2,10 @@ import styled from "styled-components";
 
 export const Contenedor = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  height: 100%;
   width: 100%;
-  padding: 1rem 2rem 1rem 2rem;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 export const ContenedorHeader = styled.div`
@@ -29,9 +28,10 @@ export const ContenedorExportar = styled.div`
 `;
 
 export const ContenedorTabla = styled.div`
-  padding: 1rem;
-  border-radius: 5px;
-  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  height: 100%;
   width: 100%;
 `;
 

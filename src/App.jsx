@@ -66,24 +66,27 @@ const ButtonMenu = styled(Button)`
 
 function App() {
   const { user } = useAuth();
-  const [menuVisible, setMenuVisible] = useState(true);
+  // const [menuVisible, setMenuVisible] = useState(true);
   const dispatch = useDispatch();
 
-  const abrirMenu = () => {
-    setMenuVisible(true);
-  };
+  // const abrirMenu = () => {
+  //
+  // };
 
-  const cerrarMenu = () => {
-    setMenuVisible(false);
-  };
+  // const cerrarMenu = () => {
+  //
+  // };
 
   const botonMenu = () => {
     if (menuVisible) {
-      cerrarMenu();
+      setMenuVisible(false);
     } else {
-      abrirMenu();
+      setMenuVisible(true);
     }
   };
+
+  const [menuVisible, setMenuVisible] = useState(true);
+
   useEffect(() => {
     dispatch(checkAuthToken());
   }, []);

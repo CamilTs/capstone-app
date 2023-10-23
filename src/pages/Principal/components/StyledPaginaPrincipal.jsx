@@ -5,6 +5,9 @@ export const CardProductos = styled.div`
   background-color: #538a95;
   box-shadow: 0px 0px 10px 0px rgb(0, 0, 0, 0.5);
   width: 300px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 `;
 
 export const Imagen = styled.img`
@@ -17,6 +20,11 @@ export const Imagen = styled.img`
 export const TituloCard = styled.h2`
   background: white;
   border-radius: 5px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
   width: 70%;
   text-align: center;
   box-shadow: 0px 0px 5px 0px rgb(0, 0, 0, 0.5);
@@ -24,8 +32,8 @@ export const TituloCard = styled.h2`
 
 export const NombreContenedor = styled.div`
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  flex-direction: column;
+  align-items: center;
 `;
 
 // Estilos para la pagina principal //

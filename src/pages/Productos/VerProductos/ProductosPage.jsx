@@ -169,7 +169,7 @@ export const Productos = () => {
     return (
       <ContenedorOpciones>
         <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => abrirFormularioEdicion(rowData)} />
-        <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => handleEliminarProducto(rowData.id, rowData.producto)} />
+        <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => handleEliminarProducto(rowData.id, rowData.nombre)} />
       </ContenedorOpciones>
     );
   };
@@ -199,7 +199,7 @@ export const Productos = () => {
           globalFilter={globalFiltro}
         >
           <Column field="codigoBarra" header="Código de barra" body={(rowData) => rowData.codigoBarra} />
-          <Column field="producto" header="Productos" body={(rowData) => rowData.nombre} />
+          <Column field="nombre" header="Productos" body={(rowData) => rowData.nombre} />
           <Column field="categoria" header="Categorias" body={(rowData) => rowData.categoria} />
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
           <Column field="fecha" header="Fecha" body={(rowData) => (rowData.fecha instanceof Date ? rowData.fecha.toLocaleDateString() : "")} />
@@ -231,7 +231,7 @@ export const Productos = () => {
           <label htmlFor="producto" className="font-bold">
             Nombre
           </label>
-          <InputText value={productoAModificar.nombre} onChange={(e) => setProductoAModificar({ ...productoAModificar, producto: e.target.value })} />
+          <InputText value={productoAModificar.nombre} onChange={(e) => setProductoAModificar({ ...productoAModificar, nombre: e.target.value })} />
         </div>
         <div>
           <label htmlFor="categoria" className="font-bold">
