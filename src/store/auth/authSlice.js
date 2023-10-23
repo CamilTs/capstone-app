@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const authSlice = createSlice({
   name: "auth",
   initialState: {
-    status: "no-autenticado", // revisando-autenticacion, autenticado, no-autenticado
+    status: "no-autenticado", // cargando, autenticado, no-autenticado
     id: null,
     rut: null,
     nombre: null,
@@ -16,7 +16,6 @@ export const authSlice = createSlice({
   },
   reducers: {
     login: (state, { payload }) => {
-      console.log(payload);
       state.status = "autenticado";
       state.id = payload.id;
       state.rut = payload.rut;
@@ -29,7 +28,6 @@ export const authSlice = createSlice({
       state.errorMessage = null;
     },
     logout: (state, { payload }) => {
-      console.log(payload);
       state.status = "no-autenticado";
       state.id = null;
       state.rut = null;
@@ -42,7 +40,7 @@ export const authSlice = createSlice({
       state.errorMessage = payload.errorMessage;
     },
     revisando: (state, { payload }) => {
-      state.status = "revisando-autenticacion";
+      state.status = "cargando";
     },
   },
 });

@@ -1,11 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { useProductos } from "../../../context/ProductosContext";
-import { useAuth } from "../../../context/AuthContext";
 import { formatoCurrencyCLP } from "../../../components/FormatoDinero";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
@@ -20,16 +19,16 @@ import {
   CustomCircle,
   ContenedorOpciones,
 } from "./components/StyledVerProductos";
+import { api } from "../../../api/api";
 
 export const Productos = () => {
-  const { user } = useAuth();
-  const { eliminarProducto, productos, modificarProducto } = useProductos();
+  const { eliminarProducto, modificarProducto } = useProductos();
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [productoAEliminarId, setProductoAEliminarId] = useState(null);
   const [productoAEliminarNombre, setProductoAEliminarNombre] = useState(null);
   const [productoAModificar, setProductoAModificar] = useState({});
   const [formularioVisible, setFormularioVisible] = useState(false);
-  const productosCliente = user ? productos.filter((el) => el.clienteId == user.id) : [];
+  const [productos, setProductos] = useState([]);
   const navigateAgregar = useNavigate();
   const [globalFiltro, setGlobalFiltro] = useState(null);
   const toast = useRef(null);
@@ -105,14 +104,14 @@ export const Productos = () => {
     import("jspdf").then((jsPDF) => {
       import("jspdf-autotable").then(() => {
         const doc = new jsPDF.default(0, 0);
-        doc.autoTable(exportarColumnas, productosCliente);
+        doc.autoTable(exportarColumnas, productos);
         doc.save("productos.pdf");
       });
     });
   };
 
   const exportarExcel = () => {
-    const datosExportar = productosCliente;
+    const datosExportar = productos;
     const datosExcel = datosExportar.map((producto) => ({
       Codigo_de_barra: producto.codigoBarra,
       Producto: producto.nombre,
@@ -181,6 +180,21 @@ export const Productos = () => {
     </React.Fragment>
   );
 
+  const traerProductos = async () => {
+    try {
+      const response = await api.get("producto/comercio");
+      const { data } = response;
+      console.log(data);
+      setProductos(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    traerProductos();
+  }, []);
+
   return (
     <Contenedor>
       <Toast ref={toast} />
@@ -190,7 +204,7 @@ export const Productos = () => {
           stripedRows
           removableSort
           header={controlInventario}
-          value={productosCliente}
+          value={productos}
           paginator
           rows={5}
           rowsPerPageOptions={[5, 10, 15]}

@@ -1,6 +1,6 @@
 import { revisando, login, logout } from "./authSlice";
 import { api } from "../../api/api";
-
+import jwt_decode from "jwt-decode";
 export const revisandoAutentication = (rut, contrasena) => {
   return async (dispatch) => {
     dispatch(revisando());
@@ -38,15 +38,21 @@ export const cerrarSesion = () => {
 
 export const checkAuthToken = () => {
   return async (dispatch) => {
-    dispatch(revisando());
-    const token = localStorage.getItem("token");
-    console.log(token);
-    if (!token) return dispatch(logout({ errorMessage: null }));
-
     try {
-      const res = await api.post(`verificarToken`, { token });
-      console.log(res);
-      dispatch(login({ ...res.data.data }));
+      dispatch(revisando());
+
+      const token = localStorage.getItem("token");
+      if (!token) return dispatch(logout({ errorMessage: null }));
+      const decoded = jwt_decode(token);
+      const { exp } = decoded;
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (exp <= currentTime) {
+        localStorage.removeItem("token");
+
+        return dispatch(logout({ errorMessage: null }));
+      }
+
+      dispatch(login({ ...decoded }));
     } catch (error) {
       console.log(error);
       dispatch(logout({ errorMessage: error.message }));

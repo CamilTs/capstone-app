@@ -2,19 +2,24 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AdminRoutes } from "./AdminRoutes";
 import { ClienteRoutes } from "./ClienteRoutes";
 import { ProveedorRoutes } from "./ProveedorRoutes";
-import { useAuth } from "../context/AuthContext";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 export const ProtectedRoutes = () => {
-  const { user } = useAuth();
-
-  if (!user) {
+  const { status, rol } = useSelector((state) => state.auth);
+  if (status == "no-autenticado") {
     return <Navigate to={"/iniciar-sesion"} />;
   }
+  // useEffect(() => {
+
+  // }, [status]);
   return (
-    <Routes>
-      {user.rol == "admin" && <Route path="/*" element={<AdminRoutes />} />}
-      {user.rol == "cliente" && <Route path="/*" element={<ClienteRoutes />} />}
-      {user.rol == "proveedor" && <Route path="/proveedor/*" element={<ProveedorRoutes />} />}
-    </Routes>
+    <>
+      <Routes>
+        {rol == "admin" && <Route path="/*" element={<AdminRoutes />} />}
+        {rol == "cliente" && <Route path="/*" element={<ClienteRoutes />} />}
+        {rol == "proveedor" && <Route path="/proveedor/*" element={<ProveedorRoutes />} />}
+      </Routes>
+    </>
   );
 };

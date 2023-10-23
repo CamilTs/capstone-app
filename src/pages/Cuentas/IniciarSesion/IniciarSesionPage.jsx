@@ -9,7 +9,6 @@ import { Password } from "primereact/password";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Content } from "../../../App";
-import { useAuth } from "../../../context/AuthContext";
 import styled from "styled-components";
 import { api, useApi } from "../../../api/api";
 import { useDispatch, useSelector } from "react-redux";
@@ -65,10 +64,8 @@ const ContenedorSpan = styled.span`
 
 export const IniciarSesionPage = () => {
   const msgs = useRef(null);
-  const { login } = useAuth();
   const { status, errorMessage } = useSelector((state) => state.auth);
-  const loading = useMemo(() => status === "revisando-autenticacion", [status]);
-  const navigate = useNavigate();
+  const loading = useMemo(() => status === "cargando", [status]);
 
   const dispatch = useDispatch();
 
@@ -84,16 +81,7 @@ export const IniciarSesionPage = () => {
 
   const submit = async (e) => {
     e.preventDefault();
-    // await login(formData.rut, formData.contrasena);
-    login(formData.rut, formData.contrasena);
-
     dispatch(autenticando(formData));
-    console.log(errorMessage);
-    // dispatch(revisandoAutentication());
-    // const res = await post("autenticacion/login", formData);
-    console.log("HOLA");
-    // console.log(res);
-    navigate("/");
   };
 
   // Intento de login con redux

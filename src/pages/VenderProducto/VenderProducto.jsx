@@ -6,13 +6,13 @@ import { Dialog } from "primereact/dialog";
 import styled from "styled-components";
 import { useProductos } from "../../context/ProductosContext";
 import { productos } from "../../productosCliente";
-import { useAuth } from "../../context/AuthContext";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
 import { InputNumber } from "primereact/inputnumber";
 import { useContextSocket } from "../../context/SocketContext";
 import { useApi } from "../../api/api";
+import { useSelector } from "react-redux";
 
 const ContenedorPrincipal = styled.div`
   display: flex;
@@ -69,10 +69,10 @@ const AgregarVenta = styled.div`
 
 export const VenderProducto = () => {
   const { descontarCantidad } = useProductos();
-  const { socket, online } = useContextSocket();
+  const { socket } = useContextSocket();
   const { get } = useApi();
-  const { user } = useAuth();
-  const productosCliente = productos.filter((el) => el.clienteId == user.id);
+  const { id } = useSelector((state) => state.auth);
+  const productosCliente = productos.filter((el) => el.clienteId == id);
   const [venta, setVenta] = useState({
     total: 0,
     ultima: 0,

@@ -5,8 +5,8 @@ import { Toast } from "primereact/toast";
 import { useRef, useState } from "react";
 
 import { useProductos } from "../context/ProductosContext";
-import { useAuth } from "../context/AuthContext";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import { useSelector } from "react-redux";
 
 const categorias = [
   { label: "Alimento", value: "Alimento" },
@@ -15,8 +15,7 @@ const categorias = [
 ];
 
 export const AgregarProductosProveedor = () => {
-  const { agregarProducto } = useProductos();
-  const { user } = useAuth();
+  const { rol, id } = useSelector((state) => state.auth);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
 
   const estructuraFormulario = {
@@ -26,7 +25,7 @@ export const AgregarProductosProveedor = () => {
     imagen: "",
     categoria: null,
     precio: Number(0),
-    proveedorId: user.id,
+    proveedorId: id,
   };
   const [producto, setProducto] = useState(estructuraFormulario);
 
@@ -36,15 +35,15 @@ export const AgregarProductosProveedor = () => {
   };
 
   const handleAgregarProducto = () => {
-    if (user && user.rol === "proveedor") {
-      agregarProducto(producto, user);
-      mostrar();
-      setConfirmDialogVisible(false);
-      setProducto(estructuraFormulario);
-      console.log(producto);
-    } else {
-      console.log("No se pudo agregar el producto");
-    }
+    // if (user && rol === "proveedor") {
+    //   // agregarProducto(producto, user);
+    //   mostrar();
+    //   setConfirmDialogVisible(false);
+    //   setProducto(estructuraFormulario);
+    //   console.log(producto);
+    // } else {
+    //   console.log("No se pudo agregar el producto");
+    // }
   };
 
   return (

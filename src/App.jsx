@@ -5,14 +5,13 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import styled from "styled-components";
-import { IniciarSesionPage } from "./pages";
-import { useAuth } from "./context/AuthContext";
 import { ProtectedRoutes } from "./routes/ProtectedRoutes";
 import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
 import { SocketProvider } from "./context/SocketContext";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { checkAuthToken } from "./store/auth";
+import { PublicRoutes } from "./routes/PublicRoutes";
 
 const Container = styled.div`
   background-color: #538a95;
@@ -41,62 +40,27 @@ export const Content = styled.div`
   backdrop-filter: blur(8.5px);
   color: black;
   letter-spacing: 0.4;
-  }
-`;
-
-const ButtonMenu = styled(Button)`
-  border-radius: 0;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background: white;
-  color: black;
-  display: flex;
-  width: 1rem;
-  height: 2rem;
-  padding: 0.5rem;
-  border: 0px solid black;
-
-  &:enabled:hover {
-    background: #538a95;
-    color: white;
-    border: 1px solid black;
-  }
-  }
 `;
 
 function App() {
-  const { user } = useAuth();
-  const [menuVisible, setMenuVisible] = useState(true);
+  const { status, token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const abrirMenu = () => {
-    setMenuVisible(true);
-  };
-
-  const cerrarMenu = () => {
-    setMenuVisible(false);
-  };
-
-  const botonMenu = () => {
-    if (menuVisible) {
-      cerrarMenu();
-    } else {
-      abrirMenu();
-    }
-  };
   useEffect(() => {
     dispatch(checkAuthToken());
   }, []);
   return (
     <ContenedorMenuPagina>
       <SocketProvider>
-        {user ? <MenuLateral style={{ display: menuVisible ? "block" : "none" }} /> : null}
+        {status == "autenticado" ? <MenuLateral /> : null}
         <Container>
-          <ButtonMenu icon={menuVisible ? "pi pi-chevron-left" : "pi pi-chevron-right"} onClick={botonMenu} />
           <Routes>
-            {!user && <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />}
-            <Route path="/*" element={<ProtectedRoutes />} />
-            <Route path="**" element={<Navigate to={"/"} replace />} />
+            {status == "autenticado" ? (
+              <Route path="/*" element={<ProtectedRoutes />} />
+            ) : (
+              <Route path="/*" element={<PublicRoutes status={status} />} />
+            )}
+            {/* <Route path="**" element={<h1>Hola mundo</h1>} /> */}
           </Routes>
         </Container>
       </SocketProvider>

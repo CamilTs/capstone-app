@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { useProductos } from "../../../context/ProductosContext";
-import { useAuth } from "../../../context/AuthContext";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { ConfirmDialog } from "primereact/confirmdialog";
@@ -23,6 +22,7 @@ import {
   Opciones,
   Titulo,
 } from "./components/StyledAgregarProductos";
+import { useSelector } from "react-redux";
 
 const categorias = [
   { label: "Alimentos y bebidas", value: "Alimentos y bebidas" },
@@ -32,7 +32,7 @@ const categorias = [
 
 export const AgregarProductos = () => {
   const { agregarProducto } = useProductos();
-  const { user } = useAuth();
+  const { id } = useSelector((state) => state.auth);
   const [imagen, setimagen] = useState(null);
   const [confirmDialogAgregar, setConfirmDialogAgregar] = useState(false);
   const [confirmDialogLimpiar, setConfirmDialogLimpiar] = useState(false);
@@ -46,7 +46,7 @@ export const AgregarProductos = () => {
     imagen: "",
     categoria: null,
     cantidad: Number(0),
-    clienteId: user.id,
+    clienteId: id,
     precio: Number(0),
   };
   const [producto, setProducto] = useState(estructuraFormulario);
@@ -71,7 +71,7 @@ export const AgregarProductos = () => {
   };
 
   const handleAgregarProducto = () => {
-    agregarProducto(producto, user.id);
+    agregarProducto(producto, id);
     toast.current.show({ severity: "success", summary: "Listo", detail: "Producto Agregado", life: 2000 });
 
     setConfirmDialogAgregar(false);

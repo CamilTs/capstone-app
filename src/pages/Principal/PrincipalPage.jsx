@@ -15,19 +15,21 @@ import {
   ContenedorMovimientos,
   ContenedorTabla,
 } from "./components/StyledPaginaPrincipal";
+import { useState } from "react";
 
 // COMPONENTES
 
 export const PrincipalPage = () => {
-  const { getProductosDeHoy } = useProductos();
-  const productosHoy = getProductosDeHoy();
+  // const { getProductosDeHoy } = useProductos();
+  // const productos = getProductosDeHoy();
+  const [productos, setProductos] = useState([]);
 
   const formatearFecha = (fecha) => {
     const options = { year: "numeric", month: "numeric", day: "numeric" };
     return new Date(fecha).toLocaleString("es-ES", options);
   };
 
-  const productosRecientesTabla = productosHoy.map((producto) => {
+  const productosRecientesTabla = productos.map((producto) => {
     return {
       nombre: producto.nombre,
       cantidad: producto.cantidad,
@@ -40,7 +42,7 @@ export const PrincipalPage = () => {
     <Contenedor>
       <TituloPrincipal>Movimientos recientes</TituloPrincipal>
       <ContenedorCard>
-        {productosHoy.map((producto) => (
+        {productos.map((producto) => (
           <CardProductos key={producto.id}>
             <Imagen src={producto.imagen} />
             <NombreContenedor>

@@ -3,8 +3,8 @@ import { Menu } from "primereact/menu";
 import { useNavigate } from "react-router-dom";
 import { PerfilCard } from "./PerfilCard";
 import { rutas } from "../rutas";
-import { useAuth } from "../context/AuthContext";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const Fondo = styled.div`
   padding: 15px;
@@ -32,13 +32,30 @@ const OpcionesMenu = styled.div`
 
 const MenuLateral = ({ style }) => {
   const [itemsRuta, setItemsRuta] = useState([]);
-  const { user } = useAuth();
   let itemsPrueba = [];
-  const navigate = useNavigate();
+  const { rol } = useSelector((state) => state.auth);
 
+  const navigate = useNavigate();
+  const [menuVisible, setMenuVisible] = useState(true);
+
+  const abrirMenu = () => {
+    setMenuVisible(true);
+  };
+
+  const cerrarMenu = () => {
+    setMenuVisible(false);
+  };
+
+  const botonMenu = () => {
+    if (menuVisible) {
+      cerrarMenu();
+    } else {
+      abrirMenu();
+    }
+  };
   const prueba = () => {
     itemsPrueba = rutas
-      .filter((el) => el.rol == user.rol)
+      .filter((el) => el.rol == rol)
       .map((el) => {
         return {
           label: el.label,
@@ -56,12 +73,14 @@ const MenuLateral = ({ style }) => {
   }, []);
 
   return (
-    <Fondo style={style}>
+    <Fondo style={{ display: menuVisible ? "block" : "none" }}>
       <TituloMenu>Ai Zi</TituloMenu>
-      <OpcionesMenu>
-        <Menu model={itemsRuta} className="w-full md:w-25rem" />
-        <PerfilCard />
-      </OpcionesMenu>
+      {itemsRuta.length > 0 && (
+        <OpcionesMenu>
+          <Menu model={itemsRuta} className="w-full md:w-25rem" />
+          <PerfilCard />
+        </OpcionesMenu>
+      )}
     </Fondo>
   );
 };

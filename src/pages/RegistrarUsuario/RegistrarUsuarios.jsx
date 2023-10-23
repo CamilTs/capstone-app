@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "primereact/button";
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
@@ -10,7 +10,7 @@ import { Formulario, InputRow, Inputs } from "./components/StyledComponents";
 
 export const RegistrarUsuarios = () => {
   const [fotoPerfil, setFotoPerfil] = useState(null);
-  const { signUp } = useAuth();
+  // const { signUp } = useAuth();
   const estructuraFormulario = {
     rut: "",
     nombre: "",
@@ -58,7 +58,7 @@ export const RegistrarUsuarios = () => {
   const submit = () => {
     const data = { ...formData };
     delete data.repetir;
-    signUp(data);
+    // signUp(data);
     resetForm();
   };
 

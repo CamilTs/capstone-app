@@ -1,7 +1,10 @@
 import { Button } from "primereact/button";
 import { Image } from "primereact/image";
 import styled from "styled-components";
-import { useAuth } from "../context/AuthContext";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { api } from "../api/api";
+import { cerrarSesion } from "../store/auth";
 
 const Content = styled.div`
   display: flex;
@@ -16,24 +19,37 @@ const TextoUsuario = styled.span`
 `;
 
 export const PerfilCard = () => {
-  const { user, logout } = useAuth();
+  const [usuario, setUsuario] = useState(null);
+  const dispatch = useDispatch();
+  const { id } = useSelector((state) => state.auth);
+
+  const traerUsuario = async () => {
+    const res = await api.get(`usuario/${id}`);
+    setUsuario(res.data.data);
+  };
+  const cerrarCuenta = () => {
+    dispatch(cerrarSesion());
+  };
+  useEffect(() => {
+    traerUsuario();
+  }, []);
   return (
     <Content>
-      {user && (
+      {usuario && (
         <>
-          <Image src={user.fotoPerfil} alt="Image" width="150" height="150" imageStyle={{ borderRadius: 100, objectFit: "cover" }} />
+          <Image src={usuario.imagen} alt="Image" width="150" height="150" imageStyle={{ borderRadius: 100, objectFit: "cover" }} />
           <div>
             <TextoUsuario>
-              {user.nombre} {user.apellidos}
+              {usuario.nombre} {usuario.apellidos}
             </TextoUsuario>
           </div>
           <div>
-            <TextoUsuario>{user.rol}</TextoUsuario>
+            <TextoUsuario>{usuario.rol.rol}</TextoUsuario>
           </div>
           <div>
-            <TextoUsuario>{user.correo}</TextoUsuario>
+            <TextoUsuario>{usuario.correo}</TextoUsuario>
           </div>
-          <Button severity="danger" onClick={logout}>
+          <Button severity="danger" onClick={cerrarCuenta}>
             Cerrar Sesión
           </Button>
         </>

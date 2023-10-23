@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { PrincipalPage, VenderProducto } from "../pages";
 import { Productos } from "../pages/Productos/VerProductos/ProductosPage";
 import { Content } from "../App";
@@ -16,6 +16,7 @@ export const ClienteRoutes = () => {
           <Route path="venta" element={<VenderProducto />} />
           <Route path="agregarProductos" element={<AgregarProductos />} />
           <Route path="verProvedor" element={<AgregarProveedores />} />
+          <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
       </Content>
     </ProductosProvider>
