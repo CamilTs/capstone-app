@@ -90,8 +90,8 @@ export const Productos = () => {
   // Exportar Archivos Excel, PDF //
 
   const cols = [
-    { field: "codigoBarra", header: "Código de barra" },
-    { field: "producto", header: "Productos" },
+    { field: "codigo_barra", header: "Código de barra" },
+    { field: "nombre", header: "Productos" },
     { field: "categoria", header: "Categorias" },
     { field: "cantidad", header: "Cantidad" },
     { field: "fecha", header: "Fecha" },
@@ -113,7 +113,7 @@ export const Productos = () => {
   const exportarExcel = () => {
     const datosExportar = productos;
     const datosExcel = datosExportar.map((producto) => ({
-      Codigo_de_barra: producto.codigoBarra,
+      Codigo_de_barra: producto.codigo_barra,
       Producto: producto.nombre,
       Categoria: producto.categoria,
       Cantidad: producto.cantidad,
@@ -212,7 +212,7 @@ export const Productos = () => {
           scrollHeight="500px"
           globalFilter={globalFiltro}
         >
-          <Column field="codigoBarra" header="Código de barra" body={(rowData) => rowData.codigoBarra} />
+          <Column field="codigo_barra" header="Código de barra" body={(rowData) => rowData.codigo_barra} />
           <Column field="nombre" header="Productos" body={(rowData) => rowData.nombre} />
           <Column field="categoria" header="Categorias" body={(rowData) => rowData.categoria} />
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
@@ -231,12 +231,12 @@ export const Productos = () => {
         onHide={setFormularioVisible}
       >
         <div>
-          <label htmlFor="codigoBarra" className="font-bold">
+          <label htmlFor="codigo_barra" className="font-bold">
             Código de barra
           </label>
           <InputText
-            value={productoAModificar.codigoBarra}
-            onChange={(e) => setProductoAModificar({ ...productoAModificar, codigoBarra: e.target.value })}
+            value={productoAModificar.codigo_barra}
+            onChange={(e) => setProductoAModificar({ ...productoAModificar, codigo_barra: e.target.value })}
             required
             autoFocus
           />

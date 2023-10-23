@@ -32,7 +32,7 @@ const categorias = [
 
 export const AgregarProductos = () => {
   const { agregarProducto } = useProductos();
-  const { id } = useSelector((state) => state.auth);
+  const { id, comercio } = useSelector((state) => state.auth);
   const [imagen, setimagen] = useState(null);
   const [confirmDialogAgregar, setConfirmDialogAgregar] = useState(false);
   const [confirmDialogLimpiar, setConfirmDialogLimpiar] = useState(false);
@@ -41,7 +41,7 @@ export const AgregarProductos = () => {
   const estructuraFormulario = {
     id: Date.now(),
     fecha: new Date(),
-    codigoBarra: "",
+    codigo_barra: "",
     nombre: "",
     imagen: "",
     categoria: null,
@@ -79,17 +79,17 @@ export const AgregarProductos = () => {
     console.log(producto);
   };
 
-  const agregarProductoDB = async ({ nombre, precio, comercio, codigo_barra, imagenes }) => {
+  const agregarProductoDB = async () => {
     try {
       const response = await api.post("producto/agregarProducto", {
-        nombre: producto.nombre,
-        precio: producto.precio,
-        codigo_barra: producto.codigoBarra,
-        comercio: "652b66d69e4a21853923c348",
+        ...producto,
+        comercio,
         imagenes: [producto.imagen],
       });
       const { data } = response;
       setConfirmDialogAgregar(false);
+      toast.current.show({ severity: "success", summary: "Listo", detail: "Producto Agregado", life: 2000 });
+      handleLimpiarFormulario();
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -142,8 +142,12 @@ export const AgregarProductos = () => {
             <Campos>
               <label htmlFor="producto">Nombre</label>
               <InputText id="producto" value={producto.nombre} onChange={(e) => setProducto({ ...producto, nombre: e.target.value })} />
-              <label htmlFor="codigoBarra">Codigo de barra</label>
-              <InputText id="codigoBarra" value={producto.codigoBarra} onChange={(e) => setProducto({ ...producto, codigoBarra: e.target.value })} />
+              <label htmlFor="codigo_barra">Codigo de barra</label>
+              <InputText
+                id="codigo_barra"
+                value={producto.codigo_barra}
+                onChange={(e) => setProducto({ ...producto, codigo_barra: e.target.value })}
+              />
               <label htmlFor="categoria">Categoría</label>
               <Dropdown
                 id="categoria"
