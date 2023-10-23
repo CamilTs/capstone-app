@@ -108,7 +108,7 @@ export const VenderProducto = () => {
         // Si no existe en la lista, agrégalo
         setProducts((prevProducts) => [
           ...prevProducts,
-          { nombre: producto.producto, cantidad: 1, valor: producto.precio, total: producto.precio, codigoBarra: producto.codigoBarra },
+          { nombre: producto.nombre, cantidad: 1, valor: producto.precio, total: producto.precio, codigoBarra: producto.codigoBarra },
         ]);
       }
 
@@ -144,7 +144,7 @@ export const VenderProducto = () => {
   const botonesHeader = (
     <React.Fragment>
       <Button label="Agregar" severity="success" icon="pi pi-plus" onClick={() => setVisible(true)} />
-      <Button label="Ir a Productos" severity="info" icon="pi pi-search" onClick={() => navigateProductos("/productos")} />
+      <Button label="Ver Productos" severity="info" icon="pi pi-search" onClick={() => navigateProductos("/productos")} />
       <Button label="Prueba" severity="danger" icon="pi pi-trash" onClick={() => escucharWSCodigoBarra()} />
     </React.Fragment>
   );
@@ -159,14 +159,14 @@ export const VenderProducto = () => {
   const venderProductosDialog = (
     <React.Fragment>
       <Button label="Si" icon="pi pi-check" className="p-button-success" onClick={venderProductos} />
-      <Button label="No" icon="pi pi-times" className="p-button-text" onClick={() => setConfirmDialogVenta(false)} />
+      <Button label="No" icon="pi pi-times" className="p-button-info" onClick={() => setConfirmDialogVenta(false)} />
     </React.Fragment>
   );
 
   const limpiarTablaDialog = (
     <React.Fragment>
       <Button label="Si" icon="pi pi-trash" severity="danger" className="p-button-success" onClick={hadleLimpiarTabla} />
-      <Button label="No" icon="pi pi-times" severity="info" className="p-button-text" onClick={() => setConfirmDialogLimpiar(false)} />
+      <Button label="No" icon="pi pi-times" className="p-button-info" onClick={() => setConfirmDialogLimpiar(false)} />
     </React.Fragment>
   );
 

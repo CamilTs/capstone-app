@@ -8,6 +8,7 @@ import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
+import { api } from "../../../api/api";
 import {
   ContenedorAncho,
   ContenedorPrimario,
@@ -41,7 +42,7 @@ export const AgregarProductos = () => {
     id: Date.now(),
     fecha: new Date(),
     codigoBarra: "",
-    producto: "",
+    nombre: "",
     imagen: "",
     categoria: null,
     cantidad: Number(0),
@@ -78,15 +79,34 @@ export const AgregarProductos = () => {
     console.log(producto);
   };
 
+  const agregarProductoDB = async ({ nombre, precio, comercio, codigo_barra, imagenes }) => {
+    try {
+      const response = await api.post("producto/agregarProducto", {
+        nombre: producto.nombre,
+        precio: producto.precio,
+        codigo_barra: producto.codigoBarra,
+        comercio: "652b66d69e4a21853923c348",
+        imagenes: [producto.imagen],
+      });
+      const { data } = response;
+      setConfirmDialogAgregar(false);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      console.log("se intento agregar el producto");
+    }
+  };
+
   const handleLimpiarFormulario = () => {
     setProducto(estructuraFormulario);
     setimagen(null);
+    setConfirmDialogLimpiar(false);
     toast.current.show({ severity: "info", summary: "Realizado", detail: "Formulario limpiado", life: 2000 });
   };
 
   const agregarProductoDialog = (
     <React.Fragment>
-      <Button label="Agregar" icon="pi pi-check" severity="success" onClick={handleAgregarProducto} />
+      <Button label="Agregar" icon="pi pi-check" severity="success" onClick={agregarProductoDB} />
       <Button label="Cancelar" icon="pi pi-times" severity="danger" onClick={() => setConfirmDialogAgregar(false)} />
     </React.Fragment>
   );
@@ -121,7 +141,7 @@ export const AgregarProductos = () => {
           <ContenedorCampos>
             <Campos>
               <label htmlFor="producto">Nombre</label>
-              <InputText id="producto" value={producto.producto} onChange={(e) => setProducto({ ...producto, producto: e.target.value })} />
+              <InputText id="producto" value={producto.nombre} onChange={(e) => setProducto({ ...producto, nombre: e.target.value })} />
               <label htmlFor="codigoBarra">Codigo de barra</label>
               <InputText id="codigoBarra" value={producto.codigoBarra} onChange={(e) => setProducto({ ...producto, codigoBarra: e.target.value })} />
               <label htmlFor="categoria">Categoría</label>

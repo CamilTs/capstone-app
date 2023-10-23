@@ -115,7 +115,7 @@ export const Productos = () => {
     const datosExportar = productosCliente;
     const datosExcel = datosExportar.map((producto) => ({
       Codigo_de_barra: producto.codigoBarra,
-      Producto: producto.producto,
+      Producto: producto.nombre,
       Categoria: producto.categoria,
       Cantidad: producto.cantidad,
       Fecha: producto.fecha instanceof Date ? producto.fecha.toLocaleDateString() : "",
@@ -199,7 +199,7 @@ export const Productos = () => {
           globalFilter={globalFiltro}
         >
           <Column field="codigoBarra" header="Código de barra" body={(rowData) => rowData.codigoBarra} />
-          <Column field="producto" header="Productos" body={(rowData) => rowData.producto} />
+          <Column field="producto" header="Productos" body={(rowData) => rowData.nombre} />
           <Column field="categoria" header="Categorias" body={(rowData) => rowData.categoria} />
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
           <Column field="fecha" header="Fecha" body={(rowData) => (rowData.fecha instanceof Date ? rowData.fecha.toLocaleDateString() : "")} />
@@ -231,10 +231,7 @@ export const Productos = () => {
           <label htmlFor="producto" className="font-bold">
             Nombre
           </label>
-          <InputText
-            value={productoAModificar.producto}
-            onChange={(e) => setProductoAModificar({ ...productoAModificar, producto: e.target.value })}
-          />
+          <InputText value={productoAModificar.nombre} onChange={(e) => setProductoAModificar({ ...productoAModificar, producto: e.target.value })} />
         </div>
         <div>
           <label htmlFor="categoria" className="font-bold">

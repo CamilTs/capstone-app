@@ -29,7 +29,7 @@ export const PrincipalPage = () => {
 
   const productosRecientesTabla = productosHoy.map((producto) => {
     return {
-      nombre: producto.producto,
+      nombre: producto.nombre,
       cantidad: producto.cantidad,
       precio: producto.precio,
       fecha: formatearFecha(producto.fecha),
@@ -44,7 +44,7 @@ export const PrincipalPage = () => {
           <CardProductos key={producto.id}>
             <Imagen src={producto.imagen} />
             <NombreContenedor>
-              <TituloCard>{producto.producto}</TituloCard>
+              <TituloCard>{producto.nombre}</TituloCard>
             </NombreContenedor>
           </CardProductos>
         ))}
