@@ -1,36 +1,46 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "primereact/button";
-// import { useAuth } from "../../context/AuthContext";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
-import { Image } from "primereact/image";
 import { InputContainer } from "./components/InputContainer";
-import { Formulario, InputRow, Inputs } from "./components/StyledComponents";
+import {
+  Formulario,
+  InputRow,
+  Inputs,
+  Campos,
+  ContenedorImg,
+  ImagenPreview,
+  ImagenImagen,
+  SpanImagen,
+  ContenedorCampos,
+  Opciones,
+  Titulo,
+  Contenedor,
+} from "./components/StyledComponents";
+import { api } from "../../api/api";
 
 export const RegistrarUsuarios = () => {
-  const [fotoPerfil, setFotoPerfil] = useState(null);
-  // const { signUp } = useAuth();
+  const [imagen, setImagen] = useState(null);
   const estructuraFormulario = {
     rut: "",
     nombre: "",
-    apellidos: "",
+    apellido: "",
     correo: "",
     contrasena: "",
     repetir: "",
-    fotoPerfil: "",
+    imagen: "",
     rol: "",
   };
+  const [formulario, setFormulario] = useState(estructuraFormulario);
 
-  const [formData, setFormData] = useState(estructuraFormulario);
-  const resetForm = () => {
-    setFormData(estructuraFormulario);
-    setFotoPerfil(null);
+  const limpiarFormulario = () => {
+    setFormulario(estructuraFormulario);
+    setImagen(null);
   };
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
-    setFormData({ ...formData, [name]: value });
+    setFormulario({ ...formulario, [name]: value });
   };
 
   const handleFileChange = (e) => {
@@ -41,7 +51,7 @@ export const RegistrarUsuarios = () => {
       reader.onloadend = () => {
         // Cuando se completa la lectura del archivo, el resultado estará en reader.result
         const base64String = reader.result;
-        setFormData({ ...formData, fotoPerfil: base64String });
+        setFormulario({ ...formulario, imagen: base64String });
       };
 
       // Lee el archivo como una URL de datos (base64)
@@ -55,19 +65,28 @@ export const RegistrarUsuarios = () => {
     { label: "Proveedor", value: "proveedor" },
   ];
 
-  const submit = () => {
-    const data = { ...formData };
-    delete data.repetir;
-    // signUp(data);
-    resetForm();
+  const crearUsuario = async () => {
+    try {
+      const response = await api.post("usuario", {
+        ...formulario,
+      });
+      const { data } = response;
+      limpiarFormulario();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      console.log("se intento crear el usuario");
+    }
   };
 
   return (
-    <>
-      <h2>Registrar cuenta</h2>
+    <Contenedor>
+      <Titulo>
+        <h2>Registrar cuenta</h2>
+      </Titulo>
       <Formulario>
-        <Inputs direction="column" className="CONTENEDOR FORM 1">
-          <div style={{ width: "60%" }}>
+        <Inputs>
+          <div style={{ width: "100%" }}>
             <Dropdown
               style={{ width: "100%" }}
               id="rol"
@@ -75,64 +94,60 @@ export const RegistrarUsuarios = () => {
               onChange={handleChange}
               placeholder="Seleccionar Rol"
               name="rol"
-              value={formData.rol}
+              value={formulario.rol}
             />
           </div>
-          <div
-            style={{
-              border: "1px solid #999999bf",
-              width: "200px",
-              height: "200px",
-              backgroundColor: "#e8f1f3",
-              display: "grid",
-              placeContent: "center",
-            }}
-          >
-            {formData.fotoPerfil == "" ? (
-              <span
-                style={{
-                  fontSize: "50px",
-                  color: "white",
-                }}
-                className="pi pi-camera"
-              ></span>
-            ) : (
-              <Image src={formData.fotoPerfil} width="200" height="200" />
+        </Inputs>
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <ContenedorImg>
+            <ImagenPreview>
+              {formulario.imagen == "" ? <SpanImagen className="pi pi-camera" /> : <ImagenImagen src={formulario.imagen} />}
+            </ImagenPreview>
+            {imagen && (
+              <div style={{ marginTop: "10px" }}>
+                <img src={URL.createObjectURL(imagen)} alt="Vista previa de la foto de perfil" />
+              </div>
             )}
-          </div>
-          <FileUpload id="fotoPerfil" mode="basic" accept="image/*" onSelect={handleFileChange} />
-          {fotoPerfil && (
-            <div style={{ marginTop: "10px" }}>
-              <img src={URL.createObjectURL(fotoPerfil)} alt="Vista previa de la foto de perfil" style={{ maxWidth: "100px" }} />
-            </div>
-          )}
-        </Inputs>
-        <Inputs>
-          <InputRow>
-            <InputContainer value={formData.rut} label="Rut" name="rut" handleChange={handleChange} />
-            <InputContainer value={formData.nombre} label="Nombre" name="nombre" handleChange={handleChange} />
-          </InputRow>
-          <InputRow>
-            <InputContainer value={formData.apellidos} label="Apellidos" name="apellidos" handleChange={handleChange} />
-            <InputContainer value={formData.correo} label="Correo" name="correo" handleChange={handleChange} />
-          </InputRow>
-          <InputRow>
-            <InputContainer value={formData.contrasena} label="Contraseña" name="contrasena" type={"password"} handleChange={handleChange} />
-            <InputContainer value={formData.repetir} label="Repita su contraseña" name="repetir" type={"password"} handleChange={handleChange} />
-          </InputRow>
-        </Inputs>
+            <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} auto chooseLabel="Seleccionar" onSelect={handleFileChange} />
+          </ContenedorImg>
+          <ContenedorCampos>
+            <InputRow>
+              <Campos>
+                <label htmlFor="rut">Rut</label>
+                <InputContainer name="rut" value={formulario.rut} handleChange={handleChange} />
+              </Campos>
+              <Campos>
+                <label htmlFor="nombre">Nombre</label>
+                <InputContainer name="nombre" value={formulario.nombre} handleChange={handleChange} />
+              </Campos>
+            </InputRow>
+            <InputRow>
+              <Campos>
+                <label htmlFor="apellido">Apellido</label>
+                <InputContainer name="apellido" value={formulario.apellido} handleChange={handleChange} />
+              </Campos>
+              <Campos>
+                <label htmlFor="correo">Correo</label>
+                <InputContainer name="correo" value={formulario.correo} handleChange={handleChange} />
+              </Campos>
+            </InputRow>
+            <InputRow>
+              <Campos>
+                <label htmlFor="contrasena">Contraseña</label>
+                <InputContainer name="contrasena" value={formulario.contrasena} type={"password"} handleChange={handleChange} />
+              </Campos>
+              <Campos>
+                <label htmlFor="correo">Repetir contraseña</label>
+                <InputContainer name="repetir" value={formulario.repetir} type={"password"} handleChange={handleChange} />
+              </Campos>
+            </InputRow>
+            <Opciones>
+              <Button label="Registrar" severity="success" rounded onClick={crearUsuario} />
+              <Button label="Limpiar" severity="danger" rounded onClick={limpiarFormulario} />
+            </Opciones>
+          </ContenedorCampos>
+        </div>
       </Formulario>
-      <div className="flex">
-        <Button label="Crear" severity="success" onClick={submit} />
-        <Button severity="info" label="Borrar" onClick={resetForm} />
-      </div>
-      <p style={{ fontSize: "10px" }}>
-        ¿Ya tienes una cuenta? Presiona{" "}
-        <Link to="/Iniciar-sesion" style={{ color: "blue" }}>
-          aquí
-        </Link>
-        .
-      </p>
-    </>
+    </Contenedor>
   );
 };

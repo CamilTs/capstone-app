@@ -31,7 +31,6 @@ const categorias = [
 ];
 
 export const AgregarProductos = () => {
-  const { agregarProducto } = useProductos();
   const { id, comercio } = useSelector((state) => state.auth);
   const [imagen, setimagen] = useState(null);
   const [confirmDialogAgregar, setConfirmDialogAgregar] = useState(false);
@@ -68,15 +67,6 @@ export const AgregarProductos = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  };
-
-  const handleAgregarProducto = () => {
-    agregarProducto(producto, id);
-    toast.current.show({ severity: "success", summary: "Listo", detail: "Producto Agregado", life: 2000 });
-
-    setConfirmDialogAgregar(false);
-    setProducto(estructuraFormulario);
-    console.log(producto);
   };
 
   const agregarProductoDB = async () => {
