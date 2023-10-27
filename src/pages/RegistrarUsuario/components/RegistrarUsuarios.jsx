@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
-import { InputContainer } from "./components/InputContainer";
+import { InputContainer } from "./InputContainer";
 import {
   Formulario,
   InputRow,
@@ -14,10 +14,9 @@ import {
   SpanImagen,
   ContenedorCampos,
   Opciones,
-  Titulo,
   Contenedor,
-} from "./components/StyledComponents";
-import { api } from "../../api/api";
+} from "./StyledComponents";
+import { api } from "../../../api/api";
 
 export const RegistrarUsuarios = () => {
   const [imagen, setImagen] = useState(null);
@@ -81,9 +80,6 @@ export const RegistrarUsuarios = () => {
 
   return (
     <Contenedor>
-      <Titulo>
-        <h2>Registrar cuenta</h2>
-      </Titulo>
       <Formulario>
         <Inputs>
           <div style={{ width: "100%" }}>
