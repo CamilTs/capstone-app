@@ -3,7 +3,7 @@ import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { InputContainer } from "./InputContainer";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import {
   Formulario,
   InputRow,
@@ -19,7 +19,6 @@ import {
 } from "./StyledComponents";
 import { api } from "../../../api/api";
 import { classNames } from "primereact/utils";
-import { set } from "react-hook-form";
 
 export const RegistrarUsuarios = () => {
   const [imagen, setImagen] = useState(null);
@@ -32,6 +31,7 @@ export const RegistrarUsuarios = () => {
     repetir: "",
     imagen: "",
     rol: "",
+    comercio: "652b66d69e4a21853923c348",
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
 
@@ -42,12 +42,7 @@ export const RegistrarUsuarios = () => {
   ];
 
   const limpiarFormulario = () => {
-    formik.resetForm(
-      setFormulario({
-        ...estructuraFormulario,
-      }),
-      setImagen(null)
-    );
+    formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
   };
 
   const handleFileChange = (e) => {
@@ -69,7 +64,8 @@ export const RegistrarUsuarios = () => {
   const crearUsuario = async () => {
     try {
       const response = await api.post("usuario", {
-        ...formulario,
+        ...formik,
+        comercio: formulario.comercio,
       });
       const { data } = response;
       limpiarFormulario();
@@ -82,14 +78,8 @@ export const RegistrarUsuarios = () => {
 
   const formik = useFormik({
     initialValues: {
-      rut: "",
-      nombre: "",
-      apellido: "",
-      correo: "",
-      contrasena: "",
-      repetir: "",
-      imagen: "",
-      rol: "",
+      ...formulario,
+      comercio: formulario.comercio,
     },
 
     validate: (data) => {
@@ -124,7 +114,7 @@ export const RegistrarUsuarios = () => {
       }
       if (!data.repetir) {
         errors.repetir = "Debe repetir la contraseña";
-      } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.repetir)) {
+      } else if (!/^[a-zA-Z0-9À-ÿ\s]{4,40}$/.test(data.repetir)) {
         errors.repetir = "Repetir contraseña invalida";
       }
       if (data.contrasena !== data.repetir) {
@@ -142,7 +132,6 @@ export const RegistrarUsuarios = () => {
       console.log(data);
       crearUsuario();
       limpiarFormulario();
-      formik.resetForm();
     },
   });
 
@@ -156,7 +145,8 @@ export const RegistrarUsuarios = () => {
     <Contenedor>
       <Formulario onSubmit={formik.handleSubmit}>
         <Inputs>
-          <div style={{ width: "100%" }}>
+          <Campos>
+            <label htmlFor="rol">Rol</label>
             <Dropdown
               style={{ width: "100%" }}
               id="rol"
@@ -169,7 +159,7 @@ export const RegistrarUsuarios = () => {
               name="rol"
               value={formik.values.rol}
             />
-          </div>
+          </Campos>
           {getFormErrorMessage("rol")}
         </Inputs>
         <div style={{ display: "flex", gap: "1rem" }}>
@@ -201,6 +191,7 @@ export const RegistrarUsuarios = () => {
                 <label for="rut">Rut</label>
                 <InputContainer
                   name="rut"
+                  placeholder="Ingrese rut sin puntos ni guión.."
                   value={formik.values.rut}
                   handleChange={(e) => {
                     const inputValue = e.target.value;
@@ -220,6 +211,7 @@ export const RegistrarUsuarios = () => {
                 <label for="nombre">Nombre</label>
                 <InputContainer
                   name="nombre"
+                  placeholder="Ingrese su nombre.."
                   value={formik.values.nombre}
                   handleChange={(e) => {
                     formik.setFieldValue("nombre", e.target.value);
@@ -234,6 +226,7 @@ export const RegistrarUsuarios = () => {
                 <label for="apellido">Apellido</label>
                 <InputContainer
                   name="apellido"
+                  placeholder="Ingrese su apellido.."
                   value={formik.values.apellido}
                   handleChange={(e) => {
                     formik.setFieldValue("apellido", e.target.value);
@@ -246,6 +239,7 @@ export const RegistrarUsuarios = () => {
                 <label for="correo">Correo</label>
                 <InputContainer
                   name="correo"
+                  placeholder="El correo debe llevar @.."
                   value={formik.values.correo}
                   handleChange={(e) => {
                     formik.setFieldValue("correo", e.target.value);
@@ -260,6 +254,7 @@ export const RegistrarUsuarios = () => {
                 <label for="contrasena">Contraseña</label>
                 <InputContainer
                   name="contrasena"
+                  placeholder="Ingrese su contraseña.."
                   value={formik.values.contrasena}
                   type={"password"}
                   handleChange={(e) => {
@@ -273,6 +268,7 @@ export const RegistrarUsuarios = () => {
                 <label for="correo">Repetir contraseña</label>
                 <InputContainer
                   name="repetir"
+                  placeholder="Repita su contraseña.."
                   value={formik.values.repetir}
                   type={"password"}
                   handleChange={(e) => {

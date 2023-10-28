@@ -13,10 +13,10 @@ const Container = styled.span`
   width: 100%;
 `;
 
-export const InputContainer = ({ value, name, handleChange, type }) => {
+export const InputContainer = ({ value, name, handleChange, type, placeholder }) => {
   return (
     <Container>
-      <Input value={value} name={name} onChange={handleChange} type={type ? type : "text"} />
+      <Input value={value} name={name} onChange={handleChange} type={type ? type : "text"} placeholder={placeholder} />
     </Container>
   );
 };

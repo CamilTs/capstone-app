@@ -3,6 +3,9 @@ import { InputContainer } from "./InputContainer";
 import { Formulario, Opciones, Campos, ContenedorCampos, Contenedor, Inputs } from "./StyledComponents";
 import { api } from "../../../api/api";
 import { Button } from "primereact/button";
+import { useFormik } from "formik";
+import { classNames } from "primereact/utils";
+import { Dropdown } from "primereact/dropdown";
 
 export const RegistrarComercio = () => {
   const estructuraFormulario = {
@@ -13,13 +16,8 @@ export const RegistrarComercio = () => {
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
 
-  const onInputChange = ({ target }) => {
-    const { name, value } = target;
-    setFormulario({ ...formulario, [name]: value });
-  };
-
   const limpiarFormulario = () => {
-    setFormulario(estructuraFormulario);
+    formik.resetForm();
   };
 
   const crearComercio = async () => {
@@ -36,29 +34,107 @@ export const RegistrarComercio = () => {
     }
   };
 
+  const formik = useFormik({
+    initialValues: {
+      ...formulario,
+    },
+
+    validate: (data) => {
+      let errors = {};
+      if (!data.nombre) {
+        errors.nombre = "Nombre requerido";
+      } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.nombre)) {
+        errors.nombre = "Nombre invalido";
+      }
+      if (!data.direccion) {
+        errors.direccion = "Dirección requerida";
+      } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.direccion)) {
+        errors.direccion = "Dirección invalida";
+      }
+      if (!data.propietario) {
+        errors.propietario = "Propietario requerido";
+      }
+      if (!data.telefono) {
+        errors.telefono = "Teléfono requerido";
+      } else if (!/^[a-zA-Z0-9À-ÿ\s]{4,40}$/.test(data.telefono)) {
+        errors.telefono = "Teléfono invalido";
+      }
+      return errors;
+    },
+    onSubmit: (data) => {
+      console.log(data);
+      crearComercio();
+      limpiarFormulario();
+    },
+  });
+
+  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
+
+  const getFormErrorMessage = (name) => {
+    return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
+  };
+
   return (
     <Contenedor>
-      <Formulario>
+      <Formulario onSubmit={formik.handleSubmit}>
         <div>
           <Inputs>
             <Campos>
               <label htmlFor="nombre">Nombre</label>
-              <InputContainer name="nombre" value={formulario.nombre} handleChange={onInputChange} />
+              <InputContainer
+                name="nombre"
+                placeholder="Ingrese el nombre del comercio.."
+                value={formik.values.nombre}
+                handleChange={(e) => {
+                  formik.setFieldValue("nombre", e.target.value);
+                }}
+                className={classNames({ "p-invalid": isFormFieldInvalid("nombre") })}
+              />
+              {getFormErrorMessage("nombre")}
             </Campos>
             <Campos>
               <label htmlFor="direccion">Dirrección</label>
-              <InputContainer name="direccion" value={formulario.direccion} handleChange={onInputChange} />
+              <InputContainer
+                name="direccion"
+                placeholder="Ingrese la dirección del comercio.."
+                value={formik.values.direccion}
+                handleChange={(e) => {
+                  formik.setFieldValue("direccion", e.target.value);
+                }}
+                className={classNames({ "p-invalid": isFormFieldInvalid("direccion") })}
+              />
+              {getFormErrorMessage("direccion")}
             </Campos>
             <Campos>
               <label htmlFor="propietario">Propietario</label>
-              <InputContainer name="propietario" value={formulario.propietario} handleChange={onInputChange} />
+              <Dropdown
+                id="propietario"
+                value={formik.values.propietario}
+                options={["Jorge", "Juan", "Pedro"]}
+                onChange={(e) => {
+                  formik.setFieldValue("propietario", e.target.value);
+                }}
+                placeholder="Seleccione un propietario.."
+                name="propietario"
+                className={classNames({ "p-invalid": isFormFieldInvalid("propietario") })}
+              />
+              {getFormErrorMessage("propietario")}
             </Campos>
             <Campos>
               <label htmlFor="telefono">Teléfono</label>
-              <InputContainer name="telefono" value={formulario.telefono} handleChange={onInputChange} />
+              <InputContainer
+                name="telefono"
+                placeholder="El telefono debe llevar '9' al inicio.."
+                value={formik.values.telefono}
+                handleChange={(e) => {
+                  formik.setFieldValue("telefono", e.target.value);
+                }}
+                className={classNames({ "p-invalid": isFormFieldInvalid("telefono") })}
+              />
+              {getFormErrorMessage("telefono")}
             </Campos>
             <Opciones>
-              <Button label="Registrar" severity="success" rounded onClick={crearComercio} />
+              <Button label="Registrar" severity="success" rounded type="submit" />
               <Button label="Limpiar" severity="danger" rounded onClick={limpiarFormulario} />
             </Opciones>
           </Inputs>
