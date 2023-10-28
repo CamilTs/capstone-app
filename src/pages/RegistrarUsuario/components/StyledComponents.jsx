@@ -5,7 +5,7 @@ export const Contenedor = styled.div`
   width: 100%;
 `;
 
-export const Formulario = styled.div`
+export const Formulario = styled.form`
   display: flex;
   padding: 1rem 2rem 1rem 2rem;
   flex-direction: column;

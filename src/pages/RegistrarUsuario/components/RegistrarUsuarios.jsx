@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { InputContainer } from "./InputContainer";
+import { Formik, useFormik } from "formik";
 import {
   Formulario,
   InputRow,
@@ -17,6 +18,8 @@ import {
   Contenedor,
 } from "./StyledComponents";
 import { api } from "../../../api/api";
+import { classNames } from "primereact/utils";
+import { set } from "react-hook-form";
 
 export const RegistrarUsuarios = () => {
   const [imagen, setImagen] = useState(null);
@@ -32,14 +35,19 @@ export const RegistrarUsuarios = () => {
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
 
-  const limpiarFormulario = () => {
-    setFormulario(estructuraFormulario);
-    setImagen(null);
-  };
+  const rolOptions = [
+    { label: "Administrador", value: "administrador" },
+    { label: "Cliente", value: "cliente" },
+    { label: "Proveedor", value: "proveedor" },
+  ];
 
-  const handleChange = ({ target }) => {
-    const { name, value } = target;
-    setFormulario({ ...formulario, [name]: value });
+  const limpiarFormulario = () => {
+    formik.resetForm(
+      setFormulario({
+        ...estructuraFormulario,
+      }),
+      setImagen(null)
+    );
   };
 
   const handleFileChange = (e) => {
@@ -58,12 +66,6 @@ export const RegistrarUsuarios = () => {
     }
   };
 
-  const rolOptions = [
-    { label: "Administrador", value: "administrador" },
-    { label: "Cliente", value: "cliente" },
-    { label: "Proveedor", value: "proveedor" },
-  ];
-
   const crearUsuario = async () => {
     try {
       const response = await api.post("usuario", {
@@ -78,21 +80,97 @@ export const RegistrarUsuarios = () => {
     }
   };
 
+  const formik = useFormik({
+    initialValues: {
+      rut: "",
+      nombre: "",
+      apellido: "",
+      correo: "",
+      contrasena: "",
+      repetir: "",
+      imagen: "",
+      rol: "",
+    },
+
+    validate: (data) => {
+      let errors = {};
+      if (!data.rut) {
+        errors.rut = "Rut requerido";
+      } else {
+        const rutSinFormato = data.rut.replace(/[.-]/g, "");
+        if (!/^[0-9]{7,8}[0-9kK]$/.test(rutSinFormato)) {
+          errors.rut = "Rut invalido";
+        }
+      }
+      if (!data.nombre) {
+        errors.nombre = "Nombre requerido";
+      } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.nombre)) {
+        errors.nombre = "Nombre invalido";
+      }
+      if (!data.apellido) {
+        errors.apellido = "Apellido requerido";
+      } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.apellido)) {
+        errors.apellido = "Apellido invalido";
+      }
+      if (!data.correo) {
+        errors.correo = "Correo requerido";
+      } else if (!/\S+@\S+\.\S+/.test(data.correo)) {
+        errors.correo = "Correo invalido";
+      }
+      if (!data.contrasena) {
+        errors.contrasena = "Contraseña requerida";
+      } else if (!/^[a-zA-Z0-9À-ÿ\s]{4,40}$/.test(data.contrasena)) {
+        errors.contrasena = "Contraseña invalida";
+      }
+      if (!data.repetir) {
+        errors.repetir = "Debe repetir la contraseña";
+      } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.repetir)) {
+        errors.repetir = "Repetir contraseña invalida";
+      }
+      if (data.contrasena !== data.repetir) {
+        errors.repetir = "Las contraseñas no coinciden";
+      }
+      if (!data.imagen) {
+        errors.imagen = "Imagen requerida";
+      }
+      if (!data.rol) {
+        errors.rol = "Rol requerido";
+      }
+      return errors;
+    },
+    onSubmit: (data) => {
+      console.log(data);
+      crearUsuario();
+      limpiarFormulario();
+      formik.resetForm();
+    },
+  });
+
+  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
+
+  const getFormErrorMessage = (name) => {
+    return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
+  };
+
   return (
     <Contenedor>
-      <Formulario>
+      <Formulario onSubmit={formik.handleSubmit}>
         <Inputs>
           <div style={{ width: "100%" }}>
             <Dropdown
               style={{ width: "100%" }}
               id="rol"
               options={rolOptions}
-              onChange={handleChange}
+              onChange={(e) => {
+                formik.setFieldValue("rol", e.target.value);
+              }}
+              className={classNames({ "p-invalid": isFormFieldInvalid("rol") })}
               placeholder="Seleccionar Rol"
               name="rol"
-              value={formulario.rol}
+              value={formik.values.rol}
             />
           </div>
+          {getFormErrorMessage("rol")}
         </Inputs>
         <div style={{ display: "flex", gap: "1rem" }}>
           <ContenedorImg>
@@ -104,41 +182,109 @@ export const RegistrarUsuarios = () => {
                 <img src={URL.createObjectURL(imagen)} alt="Vista previa de la foto de perfil" />
               </div>
             )}
-            <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} auto chooseLabel="Seleccionar" onSelect={handleFileChange} />
+            <FileUpload
+              mode="basic"
+              accept="image/*"
+              maxFileSize={1000000}
+              auto
+              chooseLabel="Seleccionar"
+              onSelect={(e) => {
+                formik.setFieldValue("imagen", e.files[0]);
+                handleFileChange(e);
+              }}
+            />
+            {getFormErrorMessage("imagen")}
           </ContenedorImg>
           <ContenedorCampos>
             <InputRow>
               <Campos>
-                <label htmlFor="rut">Rut</label>
-                <InputContainer name="rut" value={formulario.rut} handleChange={handleChange} />
+                <label for="rut">Rut</label>
+                <InputContainer
+                  name="rut"
+                  value={formik.values.rut}
+                  handleChange={(e) => {
+                    const inputValue = e.target.value;
+                    const rutSinFormato = inputValue.replace(/[.-]/g, "");
+                    const rutFormateado =
+                      rutSinFormato.slice(0, 2) + "." + rutSinFormato.slice(2, 5) + "." + rutSinFormato.slice(5, 8) + "-" + rutSinFormato.slice(8, 9);
+
+                    e.target.value = rutFormateado;
+                    formik.setFieldValue("rut", rutFormateado);
+                    formik.handleChange(e);
+                  }}
+                  className={classNames({ "p-invalid": isFormFieldInvalid("rut") })}
+                />
+                {getFormErrorMessage("rut")}
               </Campos>
               <Campos>
-                <label htmlFor="nombre">Nombre</label>
-                <InputContainer name="nombre" value={formulario.nombre} handleChange={handleChange} />
+                <label for="nombre">Nombre</label>
+                <InputContainer
+                  name="nombre"
+                  value={formik.values.nombre}
+                  handleChange={(e) => {
+                    formik.setFieldValue("nombre", e.target.value);
+                  }}
+                  className={classNames({ "p-invalid": isFormFieldInvalid("nombre") })}
+                />
+                {getFormErrorMessage("nombre")}
               </Campos>
             </InputRow>
             <InputRow>
               <Campos>
-                <label htmlFor="apellido">Apellido</label>
-                <InputContainer name="apellido" value={formulario.apellido} handleChange={handleChange} />
+                <label for="apellido">Apellido</label>
+                <InputContainer
+                  name="apellido"
+                  value={formik.values.apellido}
+                  handleChange={(e) => {
+                    formik.setFieldValue("apellido", e.target.value);
+                  }}
+                  className={classNames({ "p-invalid": isFormFieldInvalid("apellido") })}
+                />
+                {getFormErrorMessage("apellido")}
               </Campos>
               <Campos>
-                <label htmlFor="correo">Correo</label>
-                <InputContainer name="correo" value={formulario.correo} handleChange={handleChange} />
+                <label for="correo">Correo</label>
+                <InputContainer
+                  name="correo"
+                  value={formik.values.correo}
+                  handleChange={(e) => {
+                    formik.setFieldValue("correo", e.target.value);
+                  }}
+                  className={classNames({ "p-invalid": isFormFieldInvalid("correo") })}
+                />
+                {getFormErrorMessage("correo")}
               </Campos>
             </InputRow>
             <InputRow>
               <Campos>
-                <label htmlFor="contrasena">Contraseña</label>
-                <InputContainer name="contrasena" value={formulario.contrasena} type={"password"} handleChange={handleChange} />
+                <label for="contrasena">Contraseña</label>
+                <InputContainer
+                  name="contrasena"
+                  value={formik.values.contrasena}
+                  type={"password"}
+                  handleChange={(e) => {
+                    formik.setFieldValue("contrasena", e.target.value);
+                  }}
+                  className={classNames({ "p-invalid": isFormFieldInvalid("contrasena") })}
+                />
+                {getFormErrorMessage("contrasena")}
               </Campos>
               <Campos>
-                <label htmlFor="correo">Repetir contraseña</label>
-                <InputContainer name="repetir" value={formulario.repetir} type={"password"} handleChange={handleChange} />
+                <label for="correo">Repetir contraseña</label>
+                <InputContainer
+                  name="repetir"
+                  value={formik.values.repetir}
+                  type={"password"}
+                  handleChange={(e) => {
+                    formik.setFieldValue("repetir", e.target.value);
+                  }}
+                  className={classNames({ "p-invalid": isFormFieldInvalid("repetir") })}
+                />
+                {getFormErrorMessage("repetir")}
               </Campos>
             </InputRow>
             <Opciones>
-              <Button label="Registrar" severity="success" rounded onClick={crearUsuario} />
+              <Button label="Registrar" severity="success" rounded type="submit" />
               <Button label="Limpiar" severity="danger" rounded onClick={limpiarFormulario} />
             </Opciones>
           </ContenedorCampos>
