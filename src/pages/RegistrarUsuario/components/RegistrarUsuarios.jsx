@@ -31,7 +31,6 @@ export const RegistrarUsuarios = () => {
     repetir: "",
     imagen: "",
     rol: "",
-    comercio: "652b66d69e4a21853923c348",
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
 
@@ -53,7 +52,7 @@ export const RegistrarUsuarios = () => {
       reader.onloadend = () => {
         // Cuando se completa la lectura del archivo, el resultado estará en reader.result
         const base64String = reader.result;
-        setFormulario({ ...formulario, imagen: base64String });
+        formik.setFieldValue("imagen", base64String);
       };
 
       // Lee el archivo como una URL de datos (base64)
@@ -64,8 +63,7 @@ export const RegistrarUsuarios = () => {
   const crearUsuario = async () => {
     try {
       const response = await api.post("usuario", {
-        ...formik,
-        comercio: formulario.comercio,
+        ...formik.values,
       });
       const { data } = response;
       limpiarFormulario();
@@ -79,7 +77,6 @@ export const RegistrarUsuarios = () => {
   const formik = useFormik({
     initialValues: {
       ...formulario,
-      comercio: formulario.comercio,
     },
 
     validate: (data) => {
@@ -165,30 +162,20 @@ export const RegistrarUsuarios = () => {
         <div style={{ display: "flex", gap: "1rem" }}>
           <ContenedorImg>
             <ImagenPreview>
-              {formulario.imagen == "" ? <SpanImagen className="pi pi-camera" /> : <ImagenImagen src={formulario.imagen} />}
+              {formik.values.imagen == "" ? <SpanImagen className="pi pi-camera" /> : <ImagenImagen src={formik.values.imagen} />}
             </ImagenPreview>
             {imagen && (
               <div style={{ marginTop: "10px" }}>
                 <img src={URL.createObjectURL(imagen)} alt="Vista previa de la foto de perfil" />
               </div>
             )}
-            <FileUpload
-              mode="basic"
-              accept="image/*"
-              maxFileSize={1000000}
-              auto
-              chooseLabel="Seleccionar"
-              onSelect={(e) => {
-                formik.setFieldValue("imagen", e.files[0]);
-                handleFileChange(e);
-              }}
-            />
+            <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} auto chooseLabel="Seleccionar" onSelect={handleFileChange} />
             {getFormErrorMessage("imagen")}
           </ContenedorImg>
           <ContenedorCampos>
             <InputRow>
               <Campos>
-                <label for="rut">Rut</label>
+                <label htmlFor="rut">Rut</label>
                 <InputContainer
                   name="rut"
                   placeholder="Ingrese rut sin puntos ni guión.."
@@ -208,7 +195,7 @@ export const RegistrarUsuarios = () => {
                 {getFormErrorMessage("rut")}
               </Campos>
               <Campos>
-                <label for="nombre">Nombre</label>
+                <label htmlFor="nombre">Nombre</label>
                 <InputContainer
                   name="nombre"
                   placeholder="Ingrese su nombre.."
@@ -223,7 +210,7 @@ export const RegistrarUsuarios = () => {
             </InputRow>
             <InputRow>
               <Campos>
-                <label for="apellido">Apellido</label>
+                <label htmlFor="apellido">Apellido</label>
                 <InputContainer
                   name="apellido"
                   placeholder="Ingrese su apellido.."
@@ -236,7 +223,7 @@ export const RegistrarUsuarios = () => {
                 {getFormErrorMessage("apellido")}
               </Campos>
               <Campos>
-                <label for="correo">Correo</label>
+                <label htmlFor="correo">Correo</label>
                 <InputContainer
                   name="correo"
                   placeholder="El correo debe llevar @.."
@@ -251,7 +238,7 @@ export const RegistrarUsuarios = () => {
             </InputRow>
             <InputRow>
               <Campos>
-                <label for="contrasena">Contraseña</label>
+                <label htmlFor="contrasena">Contraseña</label>
                 <InputContainer
                   name="contrasena"
                   placeholder="Ingrese su contraseña.."
@@ -265,7 +252,7 @@ export const RegistrarUsuarios = () => {
                 {getFormErrorMessage("contrasena")}
               </Campos>
               <Campos>
-                <label for="correo">Repetir contraseña</label>
+                <label htmlFor="correo">Repetir contraseña</label>
                 <InputContainer
                   name="repetir"
                   placeholder="Repita su contraseña.."

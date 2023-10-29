@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputContainer } from "./InputContainer";
 import { Formulario, Opciones, Campos, ContenedorCampos, Contenedor, Inputs } from "./StyledComponents";
 import { api } from "../../../api/api";
@@ -15,15 +15,20 @@ export const RegistrarComercio = () => {
     telefono: "",
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
+  const [nombreCliente, setNombreCliente] = useState([]);
 
   const limpiarFormulario = () => {
-    formik.resetForm();
+    formik.resetForm(
+      setFormulario({
+        ...estructuraFormulario,
+      })
+    );
   };
 
   const crearComercio = async () => {
     try {
       const response = await api.post("comercio", {
-        ...formulario,
+        ...formik.values,
       });
       const { data } = response;
       limpiarFormulario();
@@ -31,6 +36,19 @@ export const RegistrarComercio = () => {
     } catch (error) {
       console.log(error);
       console.log("Error al crear comercio");
+    }
+  };
+
+  const traerUsuarios = async () => {
+    try {
+      const response = await api.get("rol/cliente");
+      const { data } = response;
+      const nombreCliente = data.data.map((usuario) => usuario.nombre);
+      console.log(nombreCliente);
+      setNombreCliente(nombreCliente);
+    } catch (error) {
+      console.log(error);
+      console.log("Error al traer los usuarios");
     }
   };
 
@@ -67,6 +85,10 @@ export const RegistrarComercio = () => {
       limpiarFormulario();
     },
   });
+
+  useEffect(() => {
+    traerUsuarios();
+  }, []);
 
   const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
 
@@ -110,9 +132,9 @@ export const RegistrarComercio = () => {
               <Dropdown
                 id="propietario"
                 value={formik.values.propietario}
-                options={["Jorge", "Juan", "Pedro"]}
+                options={nombreCliente}
                 onChange={(e) => {
-                  formik.setFieldValue("propietario", e.target.value);
+                  formik.setFieldValue("propietario", e.value);
                 }}
                 placeholder="Seleccione un propietario.."
                 name="propietario"
