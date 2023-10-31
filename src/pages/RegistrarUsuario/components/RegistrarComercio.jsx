@@ -43,7 +43,8 @@ export const RegistrarComercio = () => {
     try {
       const response = await api.get("rol/cliente");
       const { data } = response;
-      const nombreCliente = data.data.map((usuario) => usuario.nombre);
+      console.log(data);
+      const nombreCliente = data.data.map((usuario) => usuario);
       console.log(nombreCliente);
       setNombreCliente(nombreCliente);
     } catch (error) {
@@ -66,7 +67,7 @@ export const RegistrarComercio = () => {
       }
       if (!data.direccion) {
         errors.direccion = "Dirección requerida";
-      } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.direccion)) {
+      } else if (!/^[a-zA-ZÀ-ÿ\s]/.test(data.direccion)) {
         errors.direccion = "Dirección invalida";
       }
       if (!data.propietario) {
@@ -102,6 +103,22 @@ export const RegistrarComercio = () => {
         <div>
           <Inputs>
             <Campos>
+              <label htmlFor="propietario">Propietario</label>
+              <Dropdown
+                id="propietario"
+                value={formik.values.propietario}
+                options={nombreCliente}
+                optionLabel="nombre"
+                onChange={(e) => {
+                  formik.setFieldValue("propietario", e.value);
+                }}
+                placeholder="Seleccione un propietario.."
+                name="propietario"
+                className={classNames({ "p-invalid": isFormFieldInvalid("propietario") })}
+              />
+              {getFormErrorMessage("propietario")}
+            </Campos>
+            <Campos>
               <label htmlFor="nombre">Nombre</label>
               <InputContainer
                 name="nombre"
@@ -126,21 +143,6 @@ export const RegistrarComercio = () => {
                 className={classNames({ "p-invalid": isFormFieldInvalid("direccion") })}
               />
               {getFormErrorMessage("direccion")}
-            </Campos>
-            <Campos>
-              <label htmlFor="propietario">Propietario</label>
-              <Dropdown
-                id="propietario"
-                value={formik.values.propietario}
-                options={nombreCliente}
-                onChange={(e) => {
-                  formik.setFieldValue("propietario", e.value);
-                }}
-                placeholder="Seleccione un propietario.."
-                name="propietario"
-                className={classNames({ "p-invalid": isFormFieldInvalid("propietario") })}
-              />
-              {getFormErrorMessage("propietario")}
             </Campos>
             <Campos>
               <label htmlFor="telefono">Teléfono</label>
