@@ -19,6 +19,7 @@ import {
 } from "./StyledComponents";
 import { api } from "../../../api/api";
 import { classNames } from "primereact/utils";
+import * as Yup from "yup";
 
 export const RegistrarUsuarios = () => {
   const [imagen, setImagen] = useState(null);
@@ -74,57 +75,95 @@ export const RegistrarUsuarios = () => {
     }
   };
 
+  const RegistrarSchema = Yup.object().shape({
+    rut: Yup.string()
+      .required("Rut requerido")
+      .min(9, "Rut invalido")
+      .max(9, "Rut invalido")
+      .matches(/^[0-9]{7,8}[0-9kK]$/, "Rut invalido"),
+    nombre: Yup.string()
+      .required("Nombre requerido")
+      .min(1, "Nombre invalido")
+      .max(40, "Nombre invalido")
+      .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Nombre invalido"),
+    apellido: Yup.string()
+      .required("Apellido requerido")
+      .min(1, "Apellido invalido")
+      .max(40, "Apellido invalido")
+      .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Apellido invalido"),
+    correo: Yup.string()
+      .required("Correo requerido")
+      .email("Correo invalido")
+      .min(1, "Correo invalido")
+      .max(40, "Correo invalido")
+      .matches(/\S+@\S+\.\S+/, "Correo invalido"),
+    contrasena: Yup.string()
+      .required("Contraseña requerida")
+      .min(4, "Contraseña invalida")
+      .max(40, "Contraseña invalida")
+      .matches(/^[a-zA-Z0-9À-ÿ\s]{4,40}$/, "Contraseña invalida"),
+    repetir: Yup.string()
+      .required("Debe repetir la contraseña")
+      .min(4, "Repetir contraseña invalida")
+      .max(40, "Repetir contraseña invalida")
+      .oneOf([Yup.ref("contrasena"), null], "Las contraseñas no coinciden"),
+    imagen: Yup.string().required("Imagen requerida"),
+    rol: Yup.string().required("Rol requerido"),
+  });
+
   const formik = useFormik({
     initialValues: {
       ...formulario,
     },
+    validationSchema: RegistrarSchema,
 
-    validate: (data) => {
-      let errors = {};
-      if (!data.rut) {
-        errors.rut = "Rut requerido";
-      } else {
-        const rutSinFormato = data.rut.replace(/[.-]/g, "");
-        if (!/^[0-9]{7,8}[0-9kK]$/.test(rutSinFormato)) {
-          errors.rut = "Rut invalido";
-        }
-      }
-      if (!data.nombre) {
-        errors.nombre = "Nombre requerido";
-      } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.nombre)) {
-        errors.nombre = "Nombre invalido";
-      }
-      if (!data.apellido) {
-        errors.apellido = "Apellido requerido";
-      } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.apellido)) {
-        errors.apellido = "Apellido invalido";
-      }
-      if (!data.correo) {
-        errors.correo = "Correo requerido";
-      } else if (!/\S+@\S+\.\S+/.test(data.correo)) {
-        errors.correo = "Correo invalido";
-      }
-      if (!data.contrasena) {
-        errors.contrasena = "Contraseña requerida";
-      } else if (!/^[a-zA-Z0-9À-ÿ\s]{4,40}$/.test(data.contrasena)) {
-        errors.contrasena = "Contraseña invalida";
-      }
-      if (!data.repetir) {
-        errors.repetir = "Debe repetir la contraseña";
-      } else if (!/^[a-zA-Z0-9À-ÿ\s]{4,40}$/.test(data.repetir)) {
-        errors.repetir = "Repetir contraseña invalida";
-      }
-      if (data.contrasena !== data.repetir) {
-        errors.repetir = "Las contraseñas no coinciden";
-      }
-      if (!data.imagen) {
-        errors.imagen = "Imagen requerida";
-      }
-      if (!data.rol) {
-        errors.rol = "Rol requerido";
-      }
-      return errors;
-    },
+    // validate: (data) => {
+    //   let errors = {};
+    //   if (!data.rut) {
+    //     errors.rut = "Rut requerido";
+    //   } else {
+    //     const rutSinFormato = data.rut.replace(/[.-]/g, "");
+    //     if (!/^[0-9]{7,8}[0-9kK]$/.test(rutSinFormato)) {
+    //       errors.rut = "Rut invalido";
+    //     }
+    //   }
+    //   if (!data.nombre) {
+    //     errors.nombre = "Nombre requerido";
+    //   } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.nombre)) {
+    //     errors.nombre = "Nombre invalido";
+    //   }
+    //   if (!data.apellido) {
+    //     errors.apellido = "Apellido requerido";
+    //   } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.apellido)) {
+    //     errors.apellido = "Apellido invalido";
+    //   }
+    //   if (!data.correo) {
+    //     errors.correo = "Correo requerido";
+    //   } else if (!/\S+@\S+\.\S+/.test(data.correo)) {
+    //     errors.correo = "Correo invalido";
+    //   }
+    //   if (!data.contrasena) {
+    //     errors.contrasena = "Contraseña requerida";
+    //   } else if (!/^[a-zA-Z0-9À-ÿ\s]{4,40}$/.test(data.contrasena)) {
+    //     errors.contrasena = "Contraseña invalida";
+    //   }
+    //   if (!data.repetir) {
+    //     errors.repetir = "Debe repetir la contraseña";
+    //   } else if (!/^[a-zA-Z0-9À-ÿ\s]{4,40}$/.test(data.repetir)) {
+    //     errors.repetir = "Repetir contraseña invalida";
+    //   }
+    //   if (data.contrasena !== data.repetir) {
+    //     errors.repetir = "Las contraseñas no coinciden";
+    //   }
+    //   if (!data.imagen) {
+    //     errors.imagen = "Imagen requerida";
+    //   }
+    //   if (!data.rol) {
+    //     errors.rol = "Rol requerido";
+    //   }
+    //   return errors;
+    // },
+
     onSubmit: (data) => {
       console.log(data);
       crearUsuario();
@@ -181,14 +220,7 @@ export const RegistrarUsuarios = () => {
                   placeholder="Ingrese rut sin puntos ni guión.."
                   value={formik.values.rut}
                   handleChange={(e) => {
-                    const inputValue = e.target.value;
-                    const rutSinFormato = inputValue.replace(/[.-]/g, "");
-                    const rutFormateado =
-                      rutSinFormato.slice(0, 2) + "." + rutSinFormato.slice(2, 5) + "." + rutSinFormato.slice(5, 8) + "-" + rutSinFormato.slice(8, 9);
-
-                    e.target.value = rutFormateado;
-                    formik.setFieldValue("rut", rutFormateado);
-                    formik.handleChange(e);
+                    formik.setFieldValue("rut", e.target.value);
                   }}
                   className={classNames({ "p-invalid": isFormFieldInvalid("rut") })}
                 />
@@ -226,6 +258,7 @@ export const RegistrarUsuarios = () => {
                 <label htmlFor="correo">Correo</label>
                 <InputContainer
                   name="correo"
+                  type={"email"}
                   placeholder="El correo debe llevar @.."
                   value={formik.values.correo}
                   handleChange={(e) => {
@@ -252,7 +285,7 @@ export const RegistrarUsuarios = () => {
                 {getFormErrorMessage("contrasena")}
               </Campos>
               <Campos>
-                <label htmlFor="correo">Repetir contraseña</label>
+                <label htmlFor="repetir">Repetir contraseña</label>
                 <InputContainer
                   name="repetir"
                   placeholder="Repita su contraseña.."
