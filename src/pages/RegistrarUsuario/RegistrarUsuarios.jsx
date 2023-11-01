@@ -3,22 +3,11 @@ import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { InputContainer } from "./components/InputContainer";
-import {
-  Formulario,
-  InputRow,
-  Inputs,
-  Campos,
-  ContenedorImg,
-  ImagenPreview,
-  ImagenImagen,
-  SpanImagen,
-  ContenedorCampos,
-  Opciones,
-  Titulo,
-  Contenedor,
-} from "./components/StyledComponents";
-import { api } from "../../api/api";
-
+import { Formulario, InputRow, Inputs } from "./components/StyledComponents";
+import { TabView, TabPanel } from "primereact/tabview";
+import { Prueba1 } from "./components/Prueba1";
+import { Prueba2 } from "./components/Prueba2";
+import { Prueba3 } from "./components/Prueba3";
 export const RegistrarUsuarios = () => {
   const [imagen, setImagen] = useState(null);
   const estructuraFormulario = {
@@ -80,74 +69,18 @@ export const RegistrarUsuarios = () => {
   };
 
   return (
-    <Contenedor>
-      <Titulo>
-        <h2>Registrar cuenta</h2>
-      </Titulo>
-      <Formulario>
-        <Inputs>
-          <div style={{ width: "100%" }}>
-            <Dropdown
-              style={{ width: "100%" }}
-              id="rol"
-              options={rolOptions}
-              onChange={handleChange}
-              placeholder="Seleccionar Rol"
-              name="rol"
-              value={formulario.rol}
-            />
-          </div>
-        </Inputs>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <ContenedorImg>
-            <ImagenPreview>
-              {formulario.imagen == "" ? <SpanImagen className="pi pi-camera" /> : <ImagenImagen src={formulario.imagen} />}
-            </ImagenPreview>
-            {imagen && (
-              <div style={{ marginTop: "10px" }}>
-                <img src={URL.createObjectURL(imagen)} alt="Vista previa de la foto de perfil" />
-              </div>
-            )}
-            <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} auto chooseLabel="Seleccionar" onSelect={handleFileChange} />
-          </ContenedorImg>
-          <ContenedorCampos>
-            <InputRow>
-              <Campos>
-                <label htmlFor="rut">Rut</label>
-                <InputContainer name="rut" value={formulario.rut} handleChange={handleChange} />
-              </Campos>
-              <Campos>
-                <label htmlFor="nombre">Nombre</label>
-                <InputContainer name="nombre" value={formulario.nombre} handleChange={handleChange} />
-              </Campos>
-            </InputRow>
-            <InputRow>
-              <Campos>
-                <label htmlFor="apellido">Apellido</label>
-                <InputContainer name="apellido" value={formulario.apellido} handleChange={handleChange} />
-              </Campos>
-              <Campos>
-                <label htmlFor="correo">Correo</label>
-                <InputContainer name="correo" value={formulario.correo} handleChange={handleChange} />
-              </Campos>
-            </InputRow>
-            <InputRow>
-              <Campos>
-                <label htmlFor="contrasena">Contraseña</label>
-                <InputContainer name="contrasena" value={formulario.contrasena} type={"password"} handleChange={handleChange} />
-              </Campos>
-              <Campos>
-                <label htmlFor="correo">Repetir contraseña</label>
-                <InputContainer name="repetir" value={formulario.repetir} type={"password"} handleChange={handleChange} />
-              </Campos>
-            </InputRow>
-            <Opciones>
-              <Button label="Registrar" severity="success" rounded onClick={crearUsuario} />
-              <Button label="Limpiar" severity="danger" rounded onClick={limpiarFormulario} />
-            </Opciones>
-          </ContenedorCampos>
-        </div>
-      </Formulario>
-    </Contenedor>
+    <>
+      <TabView>
+        <TabPanel header="panel1">
+          <Prueba1 />
+        </TabPanel>
+        <TabPanel header="panel2">
+          <Prueba2 />
+        </TabPanel>
+        <TabPanel header="panel3">
+          <Prueba3 />
+        </TabPanel>
+      </TabView>
+    </>
   );
 };
