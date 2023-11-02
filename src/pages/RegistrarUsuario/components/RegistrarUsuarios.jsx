@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { InputContainer } from "./InputContainer";
+import { Toast } from "primereact/toast";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { useFormik } from "formik";
 import {
   Formulario,
@@ -40,6 +42,8 @@ export const RegistrarUsuarios = () => {
     { label: "Cliente", value: "cliente" },
     { label: "Proveedor", value: "proveedor" },
   ];
+
+  const toast = useRef(null);
 
   const limpiarFormulario = () => {
     formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
@@ -117,57 +121,8 @@ export const RegistrarUsuarios = () => {
     },
     validationSchema: RegistrarSchema,
 
-    // validate: (data) => {
-    //   let errors = {};
-    //   if (!data.rut) {
-    //     errors.rut = "Rut requerido";
-    //   } else {
-    //     const rutSinFormato = data.rut.replace(/[.-]/g, "");
-    //     if (!/^[0-9]{7,8}[0-9kK]$/.test(rutSinFormato)) {
-    //       errors.rut = "Rut invalido";
-    //     }
-    //   }
-    //   if (!data.nombre) {
-    //     errors.nombre = "Nombre requerido";
-    //   } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.nombre)) {
-    //     errors.nombre = "Nombre invalido";
-    //   }
-    //   if (!data.apellido) {
-    //     errors.apellido = "Apellido requerido";
-    //   } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.apellido)) {
-    //     errors.apellido = "Apellido invalido";
-    //   }
-    //   if (!data.correo) {
-    //     errors.correo = "Correo requerido";
-    //   } else if (!/\S+@\S+\.\S+/.test(data.correo)) {
-    //     errors.correo = "Correo invalido";
-    //   }
-    //   if (!data.contrasena) {
-    //     errors.contrasena = "Contraseña requerida";
-    //   } else if (!/^[a-zA-Z0-9À-ÿ\s]{4,40}$/.test(data.contrasena)) {
-    //     errors.contrasena = "Contraseña invalida";
-    //   }
-    //   if (!data.repetir) {
-    //     errors.repetir = "Debe repetir la contraseña";
-    //   } else if (!/^[a-zA-Z0-9À-ÿ\s]{4,40}$/.test(data.repetir)) {
-    //     errors.repetir = "Repetir contraseña invalida";
-    //   }
-    //   if (data.contrasena !== data.repetir) {
-    //     errors.repetir = "Las contraseñas no coinciden";
-    //   }
-    //   if (!data.imagen) {
-    //     errors.imagen = "Imagen requerida";
-    //   }
-    //   if (!data.rol) {
-    //     errors.rol = "Rol requerido";
-    //   }
-    //   return errors;
-    // },
-
     onSubmit: (data) => {
       console.log(data);
-      crearUsuario();
-      limpiarFormulario();
     },
   });
 
@@ -177,8 +132,102 @@ export const RegistrarUsuarios = () => {
     return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
   };
 
+  const formatoRut = (value) => {
+    const rut = value.replace(/[^\d]/g, "");
+
+    if (rut.length > 1) {
+      const verificador = rut.slice(-1);
+      const rutPrincipal = rut.slice(0, -1);
+
+      const formattedRUT = rutPrincipal.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + verificador;
+      return formattedRUT;
+    }
+    return rut;
+  };
+
+  const confirmarCrear = () => {
+    confirmDialog({
+      message: "¿Está seguro que desea crear este usuario?",
+      header: "Confirmar",
+      icon: "pi pi-question-circle",
+      acceptClassName: "p-button-success",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-danger",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        if (
+          formik.values.rol != "" &&
+          formik.values.imagen != "" &&
+          formik.values.rut != "" &&
+          formik.values.nombre != "" &&
+          formik.values.apellido != "" &&
+          formik.values.correo != "" &&
+          formik.values.contrasena != "" &&
+          formik.values.repetir != ""
+        ) {
+          toast.current.show({
+            severity: "success",
+            summary: "Éxito",
+            detail: "¡¡Registro exitoso!!",
+            life: 3000,
+          });
+          crearUsuario();
+        } else {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Ops! Algo salió mal, revise los campos",
+            life: 3000,
+          });
+        }
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "warn",
+          summary: "Cancelado",
+          detail: "Registro cancelado",
+          life: 3000,
+        });
+      },
+    });
+  };
+
+  const confirmarLimpiar = () => {
+    confirmDialog({
+      message: "¿Está seguro que desea limpiar el formulario?",
+      header: "Confirmar",
+      icon: "pi pi-question-circle",
+      acceptClassName: "p-button-success",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-danger",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        toast.current.show({
+          severity: "info",
+          summary: "Éxito",
+          detail: "Formulario Limpiado",
+          life: 3000,
+        });
+        limpiarFormulario();
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "warn",
+          summary: "Cancelado",
+          detail: "Limpieza cancelada",
+          life: 3000,
+        });
+      },
+    });
+  };
+
   return (
     <Contenedor>
+      <Toast ref={toast} />
       <Formulario onSubmit={formik.handleSubmit}>
         <Inputs>
           <Campos>
@@ -218,9 +267,9 @@ export const RegistrarUsuarios = () => {
                 <InputContainer
                   name="rut"
                   placeholder="Ingrese rut sin puntos ni guión.."
-                  value={formik.values.rut}
+                  value={formatoRut(formik.values.rut)}
                   handleChange={(e) => {
-                    formik.setFieldValue("rut", e.target.value);
+                    formik.setFieldValue("rut", e.target.value.replace(/[^\d]/g, ""));
                   }}
                   className={classNames({ "p-invalid": isFormFieldInvalid("rut") })}
                 />
@@ -299,9 +348,10 @@ export const RegistrarUsuarios = () => {
                 {getFormErrorMessage("repetir")}
               </Campos>
             </InputRow>
+            <ConfirmDialog />
             <Opciones>
-              <Button label="Registrar" severity="success" rounded type="submit" />
-              <Button label="Limpiar" severity="danger" rounded onClick={limpiarFormulario} />
+              <Button label="Registrar" severity="success" rounded onClick={confirmarCrear} />
+              <Button label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
             </Opciones>
           </ContenedorCampos>
         </div>

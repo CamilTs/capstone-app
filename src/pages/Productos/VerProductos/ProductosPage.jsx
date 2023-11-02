@@ -216,7 +216,7 @@ export const Productos = () => {
           <Column field="nombre" header="Productos" body={(rowData) => rowData.nombre} />
           <Column field="categoria" header="Categorias" body={(rowData) => rowData.categoria} />
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
-          <Column field="fecha" header="Fecha" body={(rowData) => (rowData.fecha instanceof Date ? rowData.fecha.toLocaleDateString() : "")} />
+          <Column field="fecha" header="Fecha" body={(rowData) => rowData.fecha} />
           <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
           <Column header="Acciones" body={actionBodyTemplate} exportable={false} />
         </DataTable>

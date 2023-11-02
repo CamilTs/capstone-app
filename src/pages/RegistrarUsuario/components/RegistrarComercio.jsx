@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InputContainer } from "./InputContainer";
 import { Formulario, Opciones, Campos, ContenedorCampos, Contenedor, Inputs } from "./StyledComponents";
 import { api } from "../../../api/api";
@@ -6,6 +6,9 @@ import { Button } from "primereact/button";
 import { useFormik } from "formik";
 import { classNames } from "primereact/utils";
 import { Dropdown } from "primereact/dropdown";
+import * as Yup from "yup";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
 
 export const RegistrarComercio = () => {
   const estructuraFormulario = {
@@ -16,13 +19,10 @@ export const RegistrarComercio = () => {
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
   const [nombreCliente, setNombreCliente] = useState([]);
+  const toast = useRef(null);
 
   const limpiarFormulario = () => {
-    formik.resetForm(
-      setFormulario({
-        ...estructuraFormulario,
-      })
-    );
+    formik.resetForm(setFormulario(estructuraFormulario));
   };
 
   const crearComercio = async () => {
@@ -53,37 +53,30 @@ export const RegistrarComercio = () => {
     }
   };
 
+  const ComercioSchema = Yup.object().shape({
+    nombre: Yup.string()
+      .required("Nombre requerido")
+      .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Nombre invalido"),
+    direccion: Yup.string()
+      .required("Dirección requerida")
+      .matches(/^[a-zA-ZÀ-ÿ\s]/, "Dirección invalida"),
+    // propietario: Yup.string().required("Propietario requerido"),
+    telefono: Yup.string()
+      .required("Teléfono requerido")
+      .matches(/^[a-zA-Z0-9À-ÿ\s]{4,40}$/, "Teléfono invalido")
+      .min(9, "El teléfono debe tener 9 dígitos")
+      .max(9, "El teléfono debe tener 9 dígitos")
+      .matches(/^[9]/, "El teléfono debe comenzar con 9"),
+  });
+
   const formik = useFormik({
     initialValues: {
       ...formulario,
     },
+    validationSchema: ComercioSchema,
 
-    validate: (data) => {
-      let errors = {};
-      if (!data.nombre) {
-        errors.nombre = "Nombre requerido";
-      } else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(data.nombre)) {
-        errors.nombre = "Nombre invalido";
-      }
-      if (!data.direccion) {
-        errors.direccion = "Dirección requerida";
-      } else if (!/^[a-zA-ZÀ-ÿ\s]/.test(data.direccion)) {
-        errors.direccion = "Dirección invalida";
-      }
-      if (!data.propietario) {
-        errors.propietario = "Propietario requerido";
-      }
-      if (!data.telefono) {
-        errors.telefono = "Teléfono requerido";
-      } else if (!/^[a-zA-Z0-9À-ÿ\s]{4,40}$/.test(data.telefono)) {
-        errors.telefono = "Teléfono invalido";
-      }
-      return errors;
-    },
     onSubmit: (data) => {
       console.log(data);
-      crearComercio();
-      limpiarFormulario();
     },
   });
 
@@ -97,8 +90,80 @@ export const RegistrarComercio = () => {
     return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
   };
 
+  const confirmarComercio = () => {
+    confirmDialog({
+      message: "¿Estás seguro que quieres registrar este comercio?",
+      header: "Confirmar",
+      icon: "pi pi-exclamation-triangle",
+      acceptClassName: "p-button-success",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-danger",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        if (formik.isValid) {
+          toast.current.show({
+            severity: "success",
+            summary: "Éxito",
+            detail: "¡¡Registro exitoso!!",
+            life: 3000,
+          });
+          crearComercio();
+        } else {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Ops! Algo ha salido mal, revisa los campos",
+            life: 3000,
+          });
+        }
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "warn",
+          summary: "Cancelado",
+          detail: "Registro cancelado",
+          life: 3000,
+        });
+      },
+    });
+  };
+
+  const confirmarLimpiar = () => {
+    confirmDialog({
+      message: "¿Está seguro que desea limpiar el formulario?",
+      header: "Confirmar",
+      icon: "pi pi-question-circle",
+      acceptClassName: "p-button-success",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-danger",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        toast.current.show({
+          severity: "info",
+          summary: "Éxito",
+          detail: "Formulario Limpiado",
+          life: 3000,
+        });
+        limpiarFormulario();
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "warn",
+          summary: "Cancelado",
+          detail: "Limpieza cancelada",
+          life: 3000,
+        });
+      },
+    });
+  };
+
   return (
     <Contenedor>
+      <Toast ref={toast} />
       <Formulario onSubmit={formik.handleSubmit}>
         <div>
           <Inputs>
@@ -110,7 +175,7 @@ export const RegistrarComercio = () => {
                 options={nombreCliente}
                 optionLabel="nombre"
                 onChange={(e) => {
-                  formik.setFieldValue("propietario", e.value);
+                  formik.setFieldValue("propietario", e.target.value);
                 }}
                 placeholder="Seleccione un propietario.."
                 name="propietario"
@@ -157,12 +222,13 @@ export const RegistrarComercio = () => {
               />
               {getFormErrorMessage("telefono")}
             </Campos>
-            <Opciones>
-              <Button label="Registrar" severity="success" rounded type="submit" />
-              <Button label="Limpiar" severity="danger" rounded onClick={limpiarFormulario} />
-            </Opciones>
+            <ConfirmDialog />
           </Inputs>
         </div>
+        <Opciones>
+          <Button label="Registrar" severity="success" rounded typeof="submit" onClick={confirmarComercio} />
+          <Button label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
+        </Opciones>
       </Formulario>
     </Contenedor>
   );
