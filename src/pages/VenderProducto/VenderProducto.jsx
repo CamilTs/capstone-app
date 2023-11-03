@@ -199,6 +199,7 @@ export const VenderProducto = () => {
     <>
       <ContenedorPrincipal>
         <ContenedorInfoVenta>
+          <ConfirmDialog />
           <Toast ref={toast} />
           <OpcionesBotones>{botonesHeader}</OpcionesBotones>
           <ContenedorDatos>

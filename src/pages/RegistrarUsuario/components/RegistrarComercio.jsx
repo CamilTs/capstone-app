@@ -63,7 +63,7 @@ export const RegistrarComercio = () => {
     // propietario: Yup.string().required("Propietario requerido"),
     telefono: Yup.string()
       .required("Teléfono requerido")
-      .matches(/^[a-zA-Z0-9À-ÿ\s]{4,40}$/, "Teléfono invalido")
+      .matches(/^[0-9]+$/, "El teléfono debe ser numérico")
       .min(9, "El teléfono debe tener 9 dígitos")
       .max(9, "El teléfono debe tener 9 dígitos")
       .matches(/^[9]/, "El teléfono debe comenzar con 9"),
@@ -213,6 +213,7 @@ export const RegistrarComercio = () => {
               <label htmlFor="telefono">Teléfono</label>
               <InputContainer
                 name="telefono"
+                type={"number"}
                 placeholder="El telefono debe llevar '9' al inicio.."
                 value={formik.values.telefono}
                 handleChange={(e) => {

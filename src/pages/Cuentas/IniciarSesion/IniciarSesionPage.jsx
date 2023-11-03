@@ -13,7 +13,8 @@ import styled from "styled-components";
 import { api, useApi } from "../../../api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { autenticando, revisandoAutentication } from "../../../store/auth";
-import { useMountEffect } from "primereact/hooks";
+import { Toast } from "primereact/toast";
+
 const Contenedor = styled.div`
   width: 100%;
   display: flex;
@@ -79,37 +80,31 @@ export const IniciarSesionPage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const toast = useRef(null);
+
   const submit = async (e) => {
     e.preventDefault();
     dispatch(autenticando(formData));
+    if (formData.rut === "" || formData.contrasena === "") {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Debe completar todos los campos",
+        life: 3000,
+      });
+    } else {
+      toast.current.show({
+        severity: "success",
+        summary: "Éxito",
+        detail: "Iniciando sesión...",
+        life: 3000,
+      });
+    }
   };
 
-  // Intento de login con redux
-
-  // const onSubmit = async (event) => {
-  //   event.preventDefault();
-
-  //   dispatch(revisandoAutentication());
-
-  //   await dispatch(autenticado(formData.rut, formData.contrasena));
-
-  //   const esAuntenticado = useSelector((state) => state.auth.status === "autenticado");
-
-  //   if (esAuntenticado) {
-  //     navigate("/");
-  //   } else {
-  //     console.log("Autenticacion fallida");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (msgs.current) {
-  //     msgs.current.clear();
-  //     msgs.current.show({ id: "1", sticky: true, severity: "error", summary: "Error", detail: errorMessage, closable: false });
-  //   }
-  // }, [errorMessage]);
   return (
     <Contenedor>
+      <Toast ref={toast} />
       <Form onSubmit={submit}>
         <Titulo>Iniciar Sesión</Titulo>
         <ContenedorCampos>

@@ -197,6 +197,7 @@ const AgregarProveedores = () => {
 
   return (
     <ContenedorProveedores>
+      <ConfirmDialog />
       <Toast ref={toast} />
       <ContenedorHeader>
         <Button label="Agregar Proveedor" severity="success" icon="pi pi-plus" onClick={verFormulario} />

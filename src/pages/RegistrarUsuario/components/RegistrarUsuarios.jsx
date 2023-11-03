@@ -126,12 +126,6 @@ export const RegistrarUsuarios = () => {
     },
   });
 
-  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
-
-  const getFormErrorMessage = (name) => {
-    return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
-  };
-
   const formatoRut = (value) => {
     const rut = value.replace(/[^\d]/g, "");
 
@@ -223,6 +217,12 @@ export const RegistrarUsuarios = () => {
         });
       },
     });
+  };
+
+  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
+
+  const getFormErrorMessage = (name) => {
+    return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
   };
 
   return (

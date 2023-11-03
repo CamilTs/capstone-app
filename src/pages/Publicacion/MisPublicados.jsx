@@ -2,16 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../../api/api";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { OverlayPanel } from "primereact/overlaypanel";
 import { ContenedorMP, ContenedorTabla, Titulo } from "./components/StyledComponents";
+import { ConfirmDialog } from "primereact/confirmdialog";
 
 export const MisPublicados = () => {
   const [publicacion, setPublicacion] = useState([]);
 
   const toast = useRef(null);
-  const mostrar = () => {
-    toast.current.show({ severity: "info", summary: "Eliminado", detail: "Producto Eliminado", life: 2000 });
-  };
 
   const traerPublicacion = async () => {
     try {
@@ -24,8 +21,6 @@ export const MisPublicados = () => {
       console.log("Se intento traer publicación");
     }
   };
-
-  // const op = useRef(null);
 
   // const overlay = (
   //   <div className="card flex justify-content-center">
@@ -42,14 +37,14 @@ export const MisPublicados = () => {
 
   return (
     <ContenedorMP>
+      <ConfirmDialog />
       <Titulo>Mis Publicados</Titulo>
       <ContenedorTabla>
         <DataTable value={publicacion} paginator rows={5} rowsPerPageOptions={[5, 10, 15]} scrollable scrollHeight="500px">
-          <Column field="codigo_barra" header="Codigo Barra" />
+          <Column field="codigo_barra" header="Código Barra" />
           <Column field="nombre" header="Nombre" />
-          <Column field="categoria" header="Categoria" />
+          <Column field="categoria" header="Categoría" />
           <Column field="precio" header="Precio" />
-          {/* <Column flied="imagen" header="Imagen" body={overlay} /> */}
         </DataTable>
       </ContenedorTabla>
     </ContenedorMP>

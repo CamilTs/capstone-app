@@ -21,6 +21,8 @@ import {
   Titulo,
 } from "./components/StyledComponents";
 import { classNames } from "primereact/utils";
+import * as Yup from "yup";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 const categorias = [
   { label: "Alimento", value: "Alimento" },
@@ -67,7 +69,6 @@ export const AgregarPublicacion = () => {
         ...formik.values,
       });
       const { data } = response;
-      toast.current.show({ severity: "success", summary: "Listo", detail: "Publicación Agregada", life: 2000 });
       limpiarFormulario();
       console.log(data);
     } catch (error) {
@@ -80,39 +81,28 @@ export const AgregarPublicacion = () => {
     formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
   };
 
+  const publicacionSchema = Yup.object().shape({
+    nombre: Yup.string()
+      .required("Nombre requerido")
+      .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Nombre invalido")
+      .min(3, "El nombre debe tener al menos 3 caracteres"),
+    precio: Yup.number().required("Precio requerido").min(1, "El precio debe ser mayor a 0"),
+    codigo_barra: Yup.string()
+      .required("Código de barra requerido")
+      .matches(/^[a-zA-Z0-9]{1,40}$/, "Código de barra invalido"),
+    categoria: Yup.string().required("Categoría requerida"),
+    imagen: Yup.string().required("Imagen requerida"),
+  });
+
   const formik = useFormik({
     initialValues: {
       ...formulario,
     },
+    validationSchema: publicacionSchema,
 
-    validate: (data) => {
-      let errors = {};
-      if (!data.nombre) {
-        errors.nombre = "El nombre es requerido";
-      } else if (data.nombre.length < 3) {
-        errors.nombre = "El nombre debe tener al menos 3 caracteres";
-      }
-      if (!data.precio) {
-        errors.precio = "El precio es requerido";
-      } else if (data.precio < 0) {
-        errors.precio = "El precio debe ser mayor a 0";
-      }
-      if (!data.codigo_barra) {
-        errors.codigo_barra = "El código de barra es requerido";
-      } else if (data.codigo_barra.length < 3) {
-        errors.codigo_barra = "El código de barra debe tener al menos 3 caracteres";
-      }
-      if (!data.categoria) {
-        errors.categoria = "La categoría es requerida";
-      }
-      if (!data.imagen) {
-        errors.imagen = "La imagen es requerida";
-      }
-      return errors;
-    },
     onSubmit: (data) => {
       console.log(data);
-      agregarPublicacion();
+      limpiarFormulario();
     },
   });
 
@@ -120,6 +110,71 @@ export const AgregarPublicacion = () => {
 
   const getFormErrorMessage = (name) => {
     return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
+  };
+
+  const confirmarAgregarPublicacion = () => {
+    confirmDialog({
+      message: "¿Está seguro que desea agregar esta publicación?",
+      header: "Confirmación",
+      icon: "pi pi-question-circle",
+      acceptClassName: "p-button-success",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-danger",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        if (
+          formik.values.categoria != "" &&
+          formik.values.imagen != "" &&
+          formik.values.nombre != "" &&
+          formik.values.precio != "" &&
+          formik.values.codigo_barra != "0"
+        ) {
+          toast.current.show({ severity: "success", summary: "Éxito", detail: "¡¡Publicación agregada!!", life: 3000 });
+          agregarPublicacion();
+        } else {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Ops! Algo ha salido mal, revisa los campos",
+            life: 3000,
+          });
+        }
+      },
+      reject: () => toast.current.show({ severity: "warn", summary: "Cancelado", detail: "Se cancelo el agregar", life: 3000 }),
+    });
+  };
+
+  const confirmarLimpiar = () => {
+    confirmDialog({
+      message: "¿Está seguro que desea limpiar el formulario?",
+      header: "Confirmar",
+      icon: "pi pi-question-circle",
+      acceptClassName: "p-button-success",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-danger",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        toast.current.show({
+          severity: "info",
+          summary: "Éxito",
+          detail: "Formulario Limpiado",
+          life: 3000,
+        });
+        limpiarFormulario();
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "warn",
+          summary: "Cancelado",
+          detail: "Limpieza cancelada",
+          life: 3000,
+        });
+      },
+    });
   };
 
   return (
@@ -156,7 +211,7 @@ export const AgregarPublicacion = () => {
               {getFormErrorMessage("nombre")}
             </Campos>
             <Campos>
-              <label htmlFor="codigo_barra">Codigo de barra</label>
+              <label htmlFor="codigo_barra">Código de barra</label>
               <InputText
                 id="codigo_barra"
                 placeholder="Ingrese el código de barra..."
@@ -192,38 +247,14 @@ export const AgregarPublicacion = () => {
               />
               {getFormErrorMessage("precio")}
             </Campos>
+            <ConfirmDialog />
             <ContenedorBotones>
-              <Button label="Agregar" className="p-button-success" type="submit" />
-              <Button label="Limpiar" className="p-button-danger" onClick={() => limpiarFormulario()} />
+              <Button label="Agregar" className="p-button-success" onClick={confirmarAgregarPublicacion} />
+              <Button label="Limpiar" className="p-button-danger" onClick={confirmarLimpiar} />
             </ContenedorBotones>
           </ContenedorCampos>
         </Contenedor2>
       </Formulario>
-      {/* <div className="p-field">
-        <Button
-          label="Agregar"
-          className="p-button-success"
-          onClick={() => {
-            setConfirmDialogVisible(true);
-          }}
-        />
-      </div>
-      <ConfirmDialog
-        visible={confirmDialogVisible}
-        onHide={() => setConfirmDialogVisible(false)}
-        message="¿Listo para agregar la publicación?"
-        header="Confirmar Publicación"
-        icon="pi pi-question-circle"
-        acceptClassName="p-button-success"
-        acceptLabel="Sí"
-        rejectLabel="No"
-        footer={
-          <div>
-            <Button label="Añadir" icon="pi pi-plus" className="p-button-success" type="submit" />
-            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={() => setConfirmDialogVisible(false)} />
-          </div>
-        }
-      /> */}
     </Contenedor>
   );
 };
