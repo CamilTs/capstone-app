@@ -36,17 +36,17 @@ export const rutas = [
     tipo: "productos",
   },
   {
-    ruta: "/proveedor/agregarProductos",
+    ruta: "/",
     rol: "proveedor",
-    icono: "",
-    label: "Agregar productos",
+    icono: "pi pi-plus",
+    label: "Nueva Publicación",
     tipo: "proveedor",
   },
   {
-    ruta: "/proveedor/verProductos",
+    ruta: "/ver-Publicados",
     rol: "proveedor",
-    icono: "",
-    label: "Mis productos",
+    icono: "pi pi-eye",
+    label: "Mis Publicados",
     tipo: "proveedor",
   },
   {

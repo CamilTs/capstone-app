@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { PrincipalPage, VenderProducto } from "../pages";
 import { Productos } from "../pages/Productos/VerProductos/ProductosPage";
 import { Content } from "../App";
-import AgregarProveedores from "../components/AgregarProveedores";
+import AgregarProveedores from "../pages/MisProveedores/AgregarProveedores";
 import AgregarProductos from "../pages/Productos/AgregarProductos/AgregarProductosPage";
 import { ProductosProvider } from "../context/ProductosContext";
 

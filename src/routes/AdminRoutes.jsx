@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { RegistrarUsuarios } from "../pages";
+import { GestionarCuentas } from "../pages";
 import { Content } from "../App";
 import AgregarProductos from "../pages/Productos/AgregarProductos/AgregarProductosPage";
 import { ProductosProvider } from "../context/ProductosContext";
@@ -14,7 +14,7 @@ export const AdminRoutes = () => {
     <ProductosProvider>
       <Content width="100%">
         <Routes>
-          <Route path="" element={<RegistrarUsuarios />} />
+          <Route path="" element={<GestionarCuentas />} />
           <Route path="agregarProductos" element={<AgregarProductos />} />
           <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>

@@ -1,8 +1,7 @@
 import React, { useState, useRef } from "react";
-import { useProductos } from "../../../context/ProductosContext";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
-import { ConfirmDialog } from "primereact/confirmdialog";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
@@ -23,6 +22,8 @@ import {
   Titulo,
 } from "./components/StyledAgregarProductos";
 import { useSelector } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const categorias = [
   { label: "Alimentos y bebidas", value: "Alimentos y bebidas" },
@@ -32,9 +33,7 @@ const categorias = [
 
 export const AgregarProductos = () => {
   const { id, comercio } = useSelector((state) => state.auth);
-  const [imagen, setimagen] = useState(null);
-  const [confirmDialogAgregar, setConfirmDialogAgregar] = useState(false);
-  const [confirmDialogLimpiar, setConfirmDialogLimpiar] = useState(false);
+  const [imagen, setImagen] = useState(null);
   const toast = useRef(null);
 
   const estructuraFormulario = {
@@ -48,7 +47,7 @@ export const AgregarProductos = () => {
     clienteId: id,
     precio: Number(0),
   };
-  const [producto, setProducto] = useState(estructuraFormulario);
+  const [formulario, setFormulario] = useState(estructuraFormulario);
 
   const handleFileChange = (e) => {
     const file = e.files[0];
@@ -58,28 +57,22 @@ export const AgregarProductos = () => {
       reader.onloadend = () => {
         // Cuando se completa la lectura del archivo, el resultado estará en reader.result
         const base64String = reader.result;
-        setProducto({ ...producto, imagen: base64String });
+        formik.setFieldValue("imagen", base64String);
       };
       // Lee el archivo como una URL de datos (base64)
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
   const agregarProductoDB = async () => {
     try {
       const response = await api.post("producto/agregarProducto", {
-        ...producto,
+        ...formulario,
         comercio,
-        imagenes: [producto.imagen],
+        imagenes: [formulario.imagen],
       });
       const { data } = response;
-      setConfirmDialogAgregar(false);
-      toast.current.show({ severity: "success", summary: "Listo", detail: "Producto Agregado", life: 2000 });
-      handleLimpiarFormulario();
+      limpiarFormulario();
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -87,37 +80,126 @@ export const AgregarProductos = () => {
     }
   };
 
-  const handleLimpiarFormulario = () => {
-    setProducto(estructuraFormulario);
-    setimagen(null);
-    setConfirmDialogLimpiar(false);
-    toast.current.show({ severity: "info", summary: "Realizado", detail: "Formulario limpiado", life: 2000 });
+  const limpiarFormulario = () => {
+    formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
   };
 
-  const agregarProductoDialog = (
-    <React.Fragment>
-      <Button label="Agregar" icon="pi pi-check" severity="success" onClick={agregarProductoDB} />
-      <Button label="Cancelar" icon="pi pi-times" severity="danger" onClick={() => setConfirmDialogAgregar(false)} />
-    </React.Fragment>
-  );
+  const ProductoSchema = Yup.object().shape({
+    nombre: Yup.string()
+      .required("Nombre requerido")
+      .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Nombre invalido"),
+    codigo_barra: Yup.string().required("Código de barra requerido"),
+    categoria: Yup.string().required("Categoría requerida"),
+    imagen: Yup.string().required("Imagen requerida"),
+    cantidad: Yup.number().required("Cantidad requerida").min(1, "La cantidad mínima es 1"),
+    precio: Yup.number().required("Precio requerido").min(1, "El precio debe ser mayor a 0"),
+  });
 
-  const limpiarFormularioDialog = (
-    <React.Fragment>
-      <Button label="Limpiar" icon="pi pi-trash" severity="danger" onClick={handleLimpiarFormulario} />
-      <Button label="Cancelar" icon="pi pi-times" severity="info" onClick={() => setConfirmDialogLimpiar(false)} />
-    </React.Fragment>
-  );
+  const formik = useFormik({
+    initialValues: {
+      ...formulario,
+    },
+    validationSchema: ProductoSchema,
+
+    onSubmit: (data) => {
+      console.log(data);
+    },
+  });
+
+  const confirmarAgregar = () => {
+    confirmDialog({
+      message: "¿Estás seguro de agregar este producto?",
+      header: "Confirmar",
+      icon: "pi pi-exclamation-triangle",
+      acceptClassName: "p-button-success",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-danger",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        if (
+          formik.values.nombre != "" &&
+          formik.values.codigo_barra != "" &&
+          formik.values.categoria != null &&
+          formik.values.cantidad != 0 &&
+          formik.values.precio != 0 &&
+          formik.values.imagen != ""
+        ) {
+          toast.current.show({
+            severity: "success",
+            summary: "Listo",
+            detail: "Producto Agregado",
+            life: 2000,
+          });
+          agregarProductoDB();
+        } else {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Ops! Algo salió mal, revise los campos",
+            life: 3000,
+          });
+        }
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "info",
+          summary: "Cancelado",
+          detail: "Registro cancelado",
+          life: 3000,
+        });
+      },
+    });
+  };
+
+  const confirmarLimpiar = () => {
+    confirmDialog({
+      message: "¿Está seguro que desea limpiar el formulario?",
+      header: "Confirmar",
+      icon: "pi pi-question-circle",
+      acceptClassName: "p-button-success",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-danger",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        toast.current.show({
+          severity: "success",
+          summary: "Éxito",
+          detail: "Formulario Limpiado",
+          life: 3000,
+        });
+        limpiarFormulario();
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "info",
+          summary: "Cancelado",
+          detail: "Limpieza cancelada",
+          life: 3000,
+        });
+      },
+    });
+  };
+
+  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
+
+  const getFormErrorMessage = (name) => {
+    return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
+  };
 
   return (
     <ContenedorAncho>
-      <Titulo>
-        <h2>Agregar Productos</h2>
-      </Titulo>
-      <form onSubmit={handleSubmit}>
-        <Toast ref={toast} />
+      <Titulo>Agregar Productos</Titulo>
+      <Toast ref={toast} />
+      <form onSubmit={formik.handleSubmit}>
         <ContenedorPrimario>
           <ContenedorImg>
-            <ImagenPreview>{producto.imagen == "" ? <SpanImagen className="pi pi-camera" /> : <ImagenImagen src={producto.imagen} />}</ImagenPreview>
+            <ImagenPreview>
+              {formik.values.imagen == "" ? <SpanImagen className="pi pi-camera" /> : <ImagenImagen src={formik.values.imagen} />}
+            </ImagenPreview>
             {imagen && (
               <div style={{ marginTop: "10px" }}>
                 <img src={URL.createObjectURL(imagen)} alt="Vista previa de la foto de perfil" style={{ maxWidth: "100px" }} />
@@ -127,80 +209,77 @@ export const AgregarProductos = () => {
               <label htmlFor="imagen">Imagen</label>
               <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} auto chooseLabel="Subir" onSelect={handleFileChange} />
             </LabelImagen>
+            {getFormErrorMessage("imagen")}
           </ContenedorImg>
           <ContenedorCampos>
             <Campos>
-              <label htmlFor="producto">Nombre</label>
-              <InputText id="producto" value={producto.nombre} onChange={(e) => setProducto({ ...producto, nombre: e.target.value })} />
-              <label htmlFor="codigo_barra">Codigo de barra</label>
+              <label htmlFor="nombre">Nombre</label>
+              <InputText
+                id="nombre"
+                value={formik.values.nombre}
+                placeholder="Ingrese nombre del producto.."
+                onChange={(e) => {
+                  formik.setFieldValue("nombre", e.target.value);
+                }}
+              />
+              {getFormErrorMessage("nombre")}
+              <label htmlFor="codigo_barra">Código de barra</label>
               <InputText
                 id="codigo_barra"
-                value={producto.codigo_barra}
-                onChange={(e) => setProducto({ ...producto, codigo_barra: e.target.value })}
+                value={formik.values.codigo_barra}
+                placeholder="Ingrese código de barra.."
+                onChange={(e) => {
+                  formik.setFieldValue("codigo_barra", e.target.value);
+                }}
               />
+              {getFormErrorMessage("codigo_barra")}
               <label htmlFor="categoria">Categoría</label>
               <Dropdown
                 id="categoria"
                 options={categorias}
-                value={producto.categoria}
-                onChange={(e) => setProducto({ ...producto, categoria: e.value })}
+                value={formik.values.categoria}
+                onChange={(e) => {
+                  formik.setFieldValue("categoria", e.value);
+                }}
                 placeholder="Seleccione una categoría"
               />
+              {getFormErrorMessage("categoria")}
             </Campos>
             <ContenedorNumber>
               <Campos>
-                <label htmlFor="cantidad" className="font-bold block mb-2">
-                  Cantidad
-                </label>
+                <label htmlFor="cantidad">Cantidad</label>
                 <InputNumber
                   inputId="minmax-buttons"
-                  value={producto.cantidad}
-                  onValueChange={(e) => setProducto({ ...producto, cantidad: e.target.value })}
+                  value={formik.values.cantidad}
+                  onValueChange={(e) => {
+                    formik.setFieldValue("cantidad", e.value);
+                  }}
                   mode="decimal"
                   showButtons
                   min={0}
                   max={100}
                 />
+                {getFormErrorMessage("cantidad")}
               </Campos>
               <Campos>
-                <label htmlFor="precio" className="font-bold block mb-2">
-                  Precio
-                </label>
-                <InputNumber id="precio" value={producto.precio} onValueChange={(e) => setProducto({ ...producto, precio: e.target.value })} />
+                <label htmlFor="precio">Precio</label>
+                <InputNumber
+                  id="precio"
+                  value={formik.values.precio}
+                  onValueChange={(e) => {
+                    formik.setFieldValue("precio", e.value);
+                  }}
+                />
+                {getFormErrorMessage("precio")}
               </Campos>
             </ContenedorNumber>
+            <ConfirmDialog />
             <Opciones>
-              <Button
-                label="Agregar"
-                icon="pi pi-plus"
-                className="p-button-success"
-                rounded
-                onClick={() => {
-                  setConfirmDialogAgregar(true);
-                }}
-              />
-              <Button label="Limpiar" icon="pi pi-trash" className="p-button-danger" rounded onClick={() => setConfirmDialogLimpiar(true)} />
+              <Button label="Agregar" icon="pi pi-plus" className="p-button-success" rounded onClick={confirmarAgregar} />
+              <Button label="Limpiar" icon="pi pi-trash" className="p-button-danger" rounded onClick={confirmarLimpiar} />
             </Opciones>
           </ContenedorCampos>
         </ContenedorPrimario>
-        <ConfirmDialog
-          visible={confirmDialogAgregar}
-          onHide={() => setConfirmDialogAgregar(false)}
-          message="¿Seguro que deseas agregar el producto?"
-          header="Confirmar Agregado"
-          icon="pi pi-question-circle"
-          acceptClassName="p-button-success"
-          footer={agregarProductoDialog}
-        />
-        <ConfirmDialog
-          visible={confirmDialogLimpiar}
-          onHide={() => setConfirmDialogLimpiar(false)}
-          message="¿Seguro de limpiar el formulario?"
-          header="Formulario limpiado"
-          icon="pi pi-question-circle"
-          acceptClassName="p-button-success"
-          footer={limpiarFormularioDialog}
-        />
       </form>
     </ContenedorAncho>
   );

@@ -1,34 +1,31 @@
 import styled from "styled-components";
 
+export const Titulo = styled.h2`
+  font-size: 25px;
+  display: flex;
+  justify-content: center;
+`;
+
 export const Contenedor = styled.div`
-  height: 100%;
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const Formulario = styled.form`
   display: flex;
   padding: 1rem 2rem 1rem 2rem;
   gap: 1rem;
-  width: 100%;
-  flex-direction: column;
-`;
 
-export const Inputs = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-`;
-
-export const InputRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  gap: 1rem;
+  @media (max-width: 920px) {
+    flex-wrap: wrap;
+    overflow: scroll;
+    justify-content: center;
+  }
 `;
 
 export const Campos = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -62,8 +59,12 @@ export const ImagenPreview = styled.div`
     height: 302px;
   }
   @media (max-width: 1024px) {
-    width: 252px;
-    height: 252px;
+    width: 282px;
+    height: 282px;
+  }
+  @media (max-width: 920px) {
+    width: 302px;
+    height: 302px;
   }
 `;
 
@@ -85,8 +86,12 @@ export const ImagenImagen = styled.img`
     height: 300px;
   }
   @media (max-width: 1024px) {
-    width: 250px;
-    height: 250px;
+    width: 280px;
+    height: 280px;
+  }
+  @media (max-width: 920px) {
+    width: 300px;
+    height: 300px;
   }
 `;
 
@@ -97,33 +102,36 @@ export const SpanImagen = styled.span`
 
 export const ContenedorCampos = styled.div`
   width: 100%;
+  gap: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-
-  @media (max-width: 1920px) {
-    width: 100%;
-  }
-  @media (max-width: 1600px) {
-    width: 90%;
-  }
-  @media (max-width: 1360px) {
-    width: 80%;
-  }
-  @media (max-width: 1024px) {
-    width: 70%;
-  }
 `;
 
-export const Opciones = styled.div`
+export const Contenedor2 = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+`;
+
+export const ContenedorBotones = styled.div`
+  width: 100%;
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
-  width: 100%;
+  gap: 1rem;
 `;
 
-export const Titulo = styled.h2`
-  font-size: 20px;
+// Mis Publicados estilos //
+
+export const ContenedorMP = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+`;
+
+export const ContenedorTabla = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: 1rem 2rem 1rem 2rem;
 `;

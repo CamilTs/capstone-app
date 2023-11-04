@@ -20,6 +20,7 @@ import {
   ContenedorOpciones,
 } from "./components/StyledVerProductos";
 import { api } from "../../../api/api";
+import { ConfirmDialog } from "primereact/confirmdialog";
 
 export const Productos = () => {
   const { eliminarProducto, modificarProducto } = useProductos();
@@ -60,21 +61,6 @@ export const Productos = () => {
   const ocultarEliminarDialog = () => {
     setConfirmDialogVisible(false);
   };
-
-  // const op = useRef(null);
-
-  // Muestra la imagen del producto en un overlaypanel actualizar cuando este el backend //
-
-  // const productoImagen = (rowData) => {
-  //   return (
-  //     <div>
-  //       <Button type="button" icon="pi pi-image" label="Imagen" onClick={(e) => op.current.toggle(e)} />
-  //       <OverlayPanel ref={op}>
-  //         <img src={rowData.imagen} alt={rowData.producto} />
-  //       </OverlayPanel>
-  //     </div>
-  //   );
-  // };
 
   // Diferentes colores para la cantidad de productos //
 
@@ -198,6 +184,7 @@ export const Productos = () => {
   return (
     <Contenedor>
       <Toast ref={toast} />
+      <ConfirmDialog />
       <Titulo>Control Inventario</Titulo>
       <ContenedorTabla>
         <DataTable
@@ -216,7 +203,7 @@ export const Productos = () => {
           <Column field="nombre" header="Productos" body={(rowData) => rowData.nombre} />
           <Column field="categoria" header="Categorias" body={(rowData) => rowData.categoria} />
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
-          <Column field="fecha" header="Fecha" body={(rowData) => (rowData.fecha instanceof Date ? rowData.fecha.toLocaleDateString() : "")} />
+          <Column field="fecha" header="Fecha" body={(rowData) => rowData.fecha} />
           <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
           <Column header="Acciones" body={actionBodyTemplate} exportable={false} />
         </DataTable>
