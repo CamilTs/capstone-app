@@ -144,7 +144,7 @@ export const AgregarProductos = () => {
       },
       reject: () => {
         toast.current.show({
-          severity: "warn",
+          severity: "info",
           summary: "Cancelado",
           detail: "Registro cancelado",
           life: 3000,
@@ -166,7 +166,7 @@ export const AgregarProductos = () => {
       rejectIcon: "pi pi-times",
       accept: () => {
         toast.current.show({
-          severity: "info",
+          severity: "success",
           summary: "Éxito",
           detail: "Formulario Limpiado",
           life: 3000,
@@ -175,7 +175,7 @@ export const AgregarProductos = () => {
       },
       reject: () => {
         toast.current.show({
-          severity: "warn",
+          severity: "info",
           summary: "Cancelado",
           detail: "Limpieza cancelada",
           life: 3000,

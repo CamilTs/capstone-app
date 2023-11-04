@@ -5,63 +5,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Messages } from "primereact/messages";
-import { Password } from "primereact/password";
-import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
-import { Content } from "../../../App";
-import styled from "styled-components";
-import { api, useApi } from "../../../api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { autenticando, revisandoAutentication } from "../../../store/auth";
 import { Toast } from "primereact/toast";
-
-const Contenedor = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 60px);
-`;
-
-const Titulo = styled.h2`
-  text-transform: uppercase;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-shadow: 0 1px 0 #538a90, 0 2px 0 #538a70, 0 3px 0 #538a75, 0 4px 0 #538a80, 0 5px 0 #538a90, 0 6px 1px rgba(0, 0, 0, 0.1),
-    0 0 5px rgba(0, 0, 0, 0.5), 0 1px 10px rgba(0, 0, 0, 0.1), 0 3px 5px rgba(0, 0, 0, 0.7), 0 5px 10px rgba(0, 0, 0, 0.5),
-    0 10px 10px rgba(0, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.15);
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  gap: 1rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.65);
-`;
-
-const ContenedorCampos = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-`;
-
-const ContenedorSpan = styled.span`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  border-radius: 0.5rem;
-`;
+import { Contenedor, Titulo, Form, ContenedorCampos, ContenedorSpan, Boton } from "../components/StyledIniciarSesion";
 
 export const IniciarSesionPage = () => {
   const msgs = useRef(null);
@@ -85,7 +33,7 @@ export const IniciarSesionPage = () => {
   const submit = async (e) => {
     e.preventDefault();
     dispatch(autenticando(formData));
-    if (formData.rut === "" || formData.contrasena === "") {
+    if (formData.rut == "" || formData.contrasena == "") {
       toast.current.show({
         severity: "error",
         summary: "Error",
@@ -105,6 +53,11 @@ export const IniciarSesionPage = () => {
   return (
     <Contenedor>
       <Toast ref={toast} />
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width-device-width, initial-scale-1.0" />
+        <title>Bienvenido</title>
+      </head>
       <Form onSubmit={submit}>
         <Titulo>Iniciar Sesión</Titulo>
         <ContenedorCampos>
@@ -124,9 +77,7 @@ export const IniciarSesionPage = () => {
             <Messages ref={msgs} />
           </div>
         )}
-        <div>
-          <Button label="Iniciar Sesión" disabled={loading} severity="success" rounded type="submit" />
-        </div>
+        <Boton label="Iniciar Sesión" disabled={loading} severity="success" type="submit" />
       </Form>
     </Contenedor>
   );

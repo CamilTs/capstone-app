@@ -179,7 +179,7 @@ export const RegistrarUsuarios = () => {
       },
       reject: () => {
         toast.current.show({
-          severity: "warn",
+          severity: "info",
           summary: "Cancelado",
           detail: "Registro cancelado",
           life: 3000,
@@ -192,7 +192,7 @@ export const RegistrarUsuarios = () => {
     confirmDialog({
       message: "¿Está seguro que desea limpiar el formulario?",
       header: "Confirmar",
-      icon: "pi pi-question-circle",
+      icon: "pi pi-exclamation-triangle",
       acceptClassName: "p-button-success",
       acceptLabel: "Si",
       acceptIcon: "pi pi-check",
@@ -201,7 +201,7 @@ export const RegistrarUsuarios = () => {
       rejectIcon: "pi pi-times",
       accept: () => {
         toast.current.show({
-          severity: "info",
+          severity: "success",
           summary: "Éxito",
           detail: "Formulario Limpiado",
           life: 3000,
@@ -210,7 +210,7 @@ export const RegistrarUsuarios = () => {
       },
       reject: () => {
         toast.current.show({
-          severity: "warn",
+          severity: "info",
           summary: "Cancelado",
           detail: "Limpieza cancelada",
           life: 3000,

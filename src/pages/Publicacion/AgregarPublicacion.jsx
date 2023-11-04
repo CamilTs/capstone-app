@@ -142,7 +142,7 @@ export const AgregarPublicacion = () => {
           });
         }
       },
-      reject: () => toast.current.show({ severity: "warn", summary: "Cancelado", detail: "Se cancelo el agregar", life: 3000 }),
+      reject: () => toast.current.show({ severity: "info", summary: "Cancelado", detail: "Se cancelo el agregar", life: 3000 }),
     });
   };
 
@@ -159,7 +159,7 @@ export const AgregarPublicacion = () => {
       rejectIcon: "pi pi-times",
       accept: () => {
         toast.current.show({
-          severity: "info",
+          severity: "success",
           summary: "Éxito",
           detail: "Formulario Limpiado",
           life: 3000,
@@ -168,7 +168,7 @@ export const AgregarPublicacion = () => {
       },
       reject: () => {
         toast.current.show({
-          severity: "warn",
+          severity: "info",
           summary: "Cancelado",
           detail: "Limpieza cancelada",
           life: 3000,
