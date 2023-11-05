@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
@@ -90,7 +90,7 @@ export const RegistrarUsuarios = () => {
   });
 
   const formatoRut = (value) => {
-    const rut = value.replace(/[^\d]/g, "");
+    const rut = value.replace(/[^0-9kK]/g, "");
 
     if (rut.length > 1) {
       const verificador = rut.slice(-1);
@@ -125,10 +125,10 @@ export const RegistrarUsuarios = () => {
       message: "¿Está seguro que desea crear este usuario?",
       header: "Confirmar",
       icon: "pi pi-question-circle",
-      acceptClassName: "p-button-success",
+      acceptClassName: "p-button-success ",
       acceptLabel: "Si",
       acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
+      rejectClassName: "p-button-danger ",
       rejectLabel: "No",
       rejectIcon: "pi pi-times",
       accept: () => {
@@ -200,6 +200,7 @@ export const RegistrarUsuarios = () => {
   return (
     <Contenedor>
       <Toast ref={toast} />
+      <ConfirmDialog />
       <Formulario onSubmit={formik.handleSubmit}>
         <Campos>
           <label htmlFor="rol">Rol</label>
@@ -243,6 +244,7 @@ export const RegistrarUsuarios = () => {
                 <InputContainer
                   name="rut"
                   id="rut"
+                  maxlength="12"
                   placeholder="Ingrese rut sin puntos ni guión.."
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -281,7 +283,7 @@ export const RegistrarUsuarios = () => {
                   name="correo"
                   id="correo"
                   type={"email"}
-                  placeholder="El correo debe llevar @.."
+                  placeholder="Ingrese su correo.."
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.correo}
@@ -300,6 +302,7 @@ export const RegistrarUsuarios = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.contrasena}
+                  icon="pi pi-eye"
                 />
                 {getFormErrorMessage("contrasena")}
               </Campos>
@@ -317,7 +320,6 @@ export const RegistrarUsuarios = () => {
                 {getFormErrorMessage("repetir")}
               </Campos>
             </InputRow>
-            <ConfirmDialog />
           </ContenedorCampos>
         </Inputs>
       </Formulario>

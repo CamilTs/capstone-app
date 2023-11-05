@@ -20,7 +20,7 @@ export const Formulario = styled.form`
 
   @media (max-width: 920px) {
     flex-wrap: wrap;
-    overflow: scroll;
+    overflow-y: scroll;
     justify-content: center;
   }
 `;

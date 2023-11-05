@@ -1,14 +1,21 @@
+import { Button } from "primereact/button";
+import { confirmDialog } from "primereact/confirmdialog";
 import styled from "styled-components";
 
-export const Contenedor = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+export const ContenedorMasivo = styled.div`
+  height: 100%;
 
   @media (max-width: 950px) {
     overflow-y: scroll;
   }
+`;
+
+export const Contenedor = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  padding: 1rem;
 `;
 
 export const Formulario = styled.form`
@@ -37,9 +44,9 @@ export const InputRow = styled.div`
 `;
 
 export const ContenedorCampos = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
   gap: 1rem;
 `;
 
@@ -116,10 +123,4 @@ export const Opciones = styled.div`
   justify-content: flex-end;
   gap: 0.5rem;
   width: 100%;
-`;
-
-export const Titulo = styled.h2`
-  font-size: 20px;
-  display: flex;
-  justify-content: center;
 `;

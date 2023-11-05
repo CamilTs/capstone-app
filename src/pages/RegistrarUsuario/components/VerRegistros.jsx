@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { api } from "../../../api/api";
-import { Contenedor, InputRow } from "./StyledComponents";
+import { Contenedor } from "./StyledComponents";
 import { ConfirmDialog } from "primereact/confirmdialog";
 
 export const VerRegistros = () => {

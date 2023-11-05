@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { InputContainer } from "./InputContainer";
-import { Formulario, Opciones, Campos, ContenedorCampos, Contenedor, Inputs } from "./StyledComponents";
+import { Formulario, Opciones, Campos, ContenedorCampos, Contenedor } from "./StyledComponents";
 import { api } from "../../../api/api";
 import { Button } from "primereact/button";
 import { useFormik } from "formik";
-import { classNames } from "primereact/utils";
 import { Dropdown } from "primereact/dropdown";
-import * as Yup from "yup";
+import { ComercioSchema } from "../../../components/Validaciones";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 
@@ -53,22 +52,6 @@ export const RegistrarComercio = () => {
     }
   };
 
-  const ComercioSchema = Yup.object().shape({
-    nombre: Yup.string()
-      .required("Nombre requerido")
-      .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Nombre invalido"),
-    direccion: Yup.string()
-      .required("Dirección requerida")
-      .matches(/^[a-zA-ZÀ-ÿ\s]/, "Dirección invalida"),
-    propietario: Yup.string().required("Propietario requerido"),
-    telefono: Yup.string()
-      .required("Teléfono requerido")
-      .matches(/^[0-9]+$/, "El teléfono debe ser numérico")
-      .min(9, "El teléfono debe tener 9 dígitos")
-      .max(9, "El teléfono debe tener 9 dígitos")
-      .matches(/^[9]/, "El teléfono debe comenzar con 9"),
-  });
-
   const formik = useFormik({
     initialValues: {
       ...formulario,
@@ -80,14 +63,12 @@ export const RegistrarComercio = () => {
     },
   });
 
-  useEffect(() => {
-    traerUsuarios();
-  }, []);
+  const camposVacios = () => {
+    return !formik.values.propietario || !formik.values.nombre || !formik.values.direccion || !formik.values.telefono;
+  };
 
-  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
-
-  const getFormErrorMessage = (name) => {
-    return isFormFieldInvalid(name) ? <small className="p-error">{formik.errors[name]}</small> : null;
+  const camposLimpiar = () => {
+    return formik.isValid != "";
   };
 
   const confirmarComercio = () => {
@@ -102,7 +83,14 @@ export const RegistrarComercio = () => {
       rejectLabel: "No",
       rejectIcon: "pi pi-times",
       accept: () => {
-        if (formik.isValid) {
+        if (camposVacios()) {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Ops! Algo ha salido mal, revisa los campos",
+            life: 3000,
+          });
+        } else {
           toast.current.show({
             severity: "success",
             summary: "Éxito",
@@ -110,13 +98,6 @@ export const RegistrarComercio = () => {
             life: 3000,
           });
           crearComercio();
-        } else {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Ops! Algo ha salido mal, revisa los campos",
-            life: 3000,
-          });
         }
       },
       reject: () => {
@@ -160,6 +141,16 @@ export const RegistrarComercio = () => {
       },
     });
   };
+
+  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
+
+  const getFormErrorMessage = (name) => {
+    return isFormFieldInvalid(name) ? <small className="p-error">{formik.errors[name]}</small> : null;
+  };
+
+  useEffect(() => {
+    traerUsuarios();
+  }, []);
 
   return (
     <Contenedor>
@@ -206,21 +197,25 @@ export const RegistrarComercio = () => {
             <label htmlFor="telefono">Teléfono</label>
             <InputContainer
               name="telefono"
-              type={"number"}
+              type="number"
               placeholder="El telefono debe llevar '9' al inicio.."
               value={formik.values.telefono}
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                if (e.target.value.length <= 9) {
+                  formik.handleChange(e);
+                }
+              }}
               onBlur={formik.handleBlur}
             />
             {getFormErrorMessage("telefono")}
           </Campos>
           <ConfirmDialog />
         </ContenedorCampos>
-        <Opciones>
-          <Button label="Registrar" severity="success" rounded typeof="submit" onClick={confirmarComercio} />
-          <Button label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
-        </Opciones>
       </Formulario>
+      <Opciones>
+        <Button raised label="Registrar" severity="success" rounded onClick={confirmarComercio} disabled={camposVacios()} />
+        <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} disabled={camposLimpiar()} />
+      </Opciones>
     </Contenedor>
   );
 };
