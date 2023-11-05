@@ -1,18 +1,16 @@
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import styled from "styled-components";
-import { useProductos } from "../../context/ProductosContext";
-import { productos } from "../../productosCliente";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
-import { InputNumber } from "primereact/inputnumber";
 import { useContextSocket } from "../../context/SocketContext";
-import { useApi } from "../../api/api";
+import { api } from "../../api/api";
 import { useSelector } from "react-redux";
+import { InputText } from "primereact/inputtext";
 
 const ContenedorPrincipal = styled.div`
   display: flex;
@@ -68,59 +66,63 @@ const AgregarVenta = styled.div`
 `;
 
 export const VenderProducto = () => {
-  const { descontarCantidad } = useProductos();
   const { socket } = useContextSocket();
-  const { get } = useApi();
-  const { id } = useSelector((state) => state.auth);
-  const productosCliente = productos.filter((el) => el.clienteId == id);
-  const [venta, setVenta] = useState({
-    total: 0,
-    ultima: 0,
-  });
+  const { comercio } = useSelector((state) => state.auth);
+
   const [confirmDialogVenta, setConfirmDialogVenta] = useState(false);
   const [confirmDialogLimpiar, setConfirmDialogLimpiar] = useState(false);
 
-  const [products, setProducts] = useState([]);
+  const [registro, setRegistro] = useState({
+    productos: [],
+    total: 0,
+    tipo: true,
+  });
   const [value, setValue] = useState("");
   const [visible, setVisible] = useState(false);
   const toast = useRef(null);
   const navigateProductos = useNavigate();
 
   const agregarProducto = async (codigoBarra = "") => {
-    buscarProducto(codigoBarra);
     try {
-      console.log(codigoBarra);
-      const response = await get(`producto/${codigoBarra}`);
-      console.log(response);
+      const { data: response } = await api.get(`producto/${codigoBarra}`);
       const producto = response.data;
-      console.log("====================================");
-      console.log(producto);
 
       if (producto) {
-        const productoExistenteIndex = products.findIndex((el) => el.codigoBarra === producto.codigo_barra);
+        const productoExistenteIndex = registro.productos.findIndex((el) => el.codigoBarra === producto.codigo_barra);
 
         if (productoExistenteIndex >= 0) {
-          setProducts((prevProducts) => {
-            const clonProducts = [...prevProducts];
+          setRegistro((prevRegistro) => {
+            const clonProducts = [...prevRegistro.productos];
             const productoExiste = clonProducts[productoExistenteIndex];
             productoExiste.cantidad++;
             productoExiste.total = productoExiste.cantidad * productoExiste.valor;
             clonProducts[productoExistenteIndex] = productoExiste;
-            return clonProducts;
+
+            // Calcular el nuevo total después de actualizar el producto existente
+            const nuevoTotal = clonProducts.reduce((acc, el) => acc + el.total, 0);
+
+            return { ...prevRegistro, productos: clonProducts, total: nuevoTotal };
           });
         } else {
           // Si no existe en la lista, agrégalo
-          setProducts((prevProducts) => [
-            ...prevProducts,
-            { nombre: producto.nombre, cantidad: 1, valor: producto.precio, total: producto.precio, codigoBarra: producto.codigo_barra },
-          ]);
+          setRegistro((e) => {
+            return {
+              ...e,
+              total: e.total + producto.precio,
+              productos: [
+                ...e.productos,
+                {
+                  nombre: producto.nombre,
+                  cantidad: 1,
+                  valor: producto.precio,
+                  total: producto.precio,
+                  codigoBarra: producto.codigo_barra,
+                  id: producto._id,
+                },
+              ],
+            };
+          });
         }
-
-        const total = products.reduce((acc, el) => {
-          return acc + el.total;
-        }, 0);
-
-        setVenta({ total: total === 0 ? producto.precio : total, ultima: producto.precio });
       } else {
         console.log("Producto no encontrado");
         // Manejar el caso en que el producto no existe
@@ -131,56 +133,45 @@ export const VenderProducto = () => {
     }
   };
 
-  const buscarProducto = async (codigoBarra) => {
-    const response = await get(`producto/${codigoBarra}`);
-    console.log(response);
-  };
-
-  const venderProductos = () => {
-    products.map((el) => {
-      descontarCantidad(el.codigoBarra, el.cantidad);
-    });
-    setProducts([]);
-    console.log(productosCliente);
-
+  const venderProductos = async () => {
+    const { data } = await api.post("registro", { ...registro, comercio });
+    console.log(data);
     setConfirmDialogVenta(false);
     toast.current.show({ severity: "success", summary: "Listo", detail: "¡Venta realizada con exito!", life: 2000 });
   };
 
   const hadleLimpiarTabla = () => {
-    setProducts([]);
-    setVenta({ total: 0, ultima: 0 });
     setConfirmDialogLimpiar(false);
     toast.current.show({ severity: "info", summary: "Listo", detail: "¡Tabla limpiada con exito!", life: 2000 });
   };
 
   const botonesHeader = (
-    <React.Fragment>
+    <>
       <Button label="Agregar" severity="success" icon="pi pi-plus" onClick={() => setVisible(true)} />
       <Button label="Ver Productos" severity="info" icon="pi pi-search" onClick={() => navigateProductos("/productos")} />
       <Button label="Prueba" severity="danger" icon="pi pi-trash" onClick={() => escucharWSCodigoBarra()} />
-    </React.Fragment>
+    </>
   );
 
   const botonesVenta = (
-    <React.Fragment>
+    <>
       <Button label="Vender" severity="info" icon="pi pi-check" onClick={() => setConfirmDialogVenta(true)} />
       <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={() => setConfirmDialogLimpiar(true)} />
-    </React.Fragment>
+    </>
   );
 
   const venderProductosDialog = (
-    <React.Fragment>
+    <>
       <Button label="Si" icon="pi pi-check" className="p-button-success" onClick={venderProductos} />
       <Button label="No" icon="pi pi-times" className="p-button-info" onClick={() => setConfirmDialogVenta(false)} />
-    </React.Fragment>
+    </>
   );
 
   const limpiarTablaDialog = (
-    <React.Fragment>
+    <>
       <Button label="Si" icon="pi pi-trash" severity="danger" className="p-button-success" onClick={hadleLimpiarTabla} />
       <Button label="No" icon="pi pi-times" className="p-button-info" onClick={() => setConfirmDialogLimpiar(false)} />
-    </React.Fragment>
+    </>
   );
 
   const escucharWSCodigoBarra = () => {
@@ -206,15 +197,15 @@ export const VenderProducto = () => {
             <DatosVenta>
               <TotalContenedor>
                 <b>Total: </b>
-                <span>{venta.total}</span>
+                <span>{registro.total}</span>
               </TotalContenedor>
               <UltimaContenedor>
                 <b>Ultimo: </b>
-                <span>{venta.ultima}</span>
+                <span>{0}</span>
               </UltimaContenedor>
             </DatosVenta>
           </ContenedorDatos>
-          <DataTable value={products} showGridlines>
+          <DataTable value={registro.productos} showGridlines>
             <Column field="nombre" header="Nombre" />
             <Column field="cantidad" header="Cantidad" />
             <Column field="valor" header="Valor U." />
@@ -247,9 +238,9 @@ export const VenderProducto = () => {
       />
       <Dialog header="Ingresar producto" visible={visible} onHide={() => setVisible(false)}>
         <AgregarVenta className="p-float-label">
-          <InputNumber id="codigoBarra" value={value} onValueChange={(e) => setValue(e.target.value)} />
+          <InputText id="codigoBarra" value={value} onChange={(e) => setValue(e.target.value)} />
           <label htmlFor="codigoBarra">Codigo de barra</label>
-          <Button severity="success" label="Agregar" onClick={agregarProducto} />
+          <Button severity="success" label="Agregar" onClick={() => agregarProducto(value)} />
         </AgregarVenta>
       </Dialog>
     </>
