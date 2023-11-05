@@ -1,13 +1,25 @@
+import { Button } from "primereact/button";
+import { confirmDialog } from "primereact/confirmdialog";
 import styled from "styled-components";
 
-export const Contenedor = styled.div`
+export const ContenedorMasivo = styled.div`
   height: 100%;
-  width: 100%;
+
+  @media (max-width: 950px) {
+    overflow-y: scroll;
+  }
+`;
+
+export const Contenedor = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  padding: 1rem;
 `;
 
 export const Formulario = styled.form`
   display: flex;
-  padding: 1rem 2rem 1rem 2rem;
   gap: 1rem;
   width: 100%;
   flex-direction: column;
@@ -15,14 +27,25 @@ export const Formulario = styled.form`
 
 export const Inputs = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
   gap: 1rem;
+
+  @media (max-width: 950px) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 `;
 
 export const InputRow = styled.div`
   display: flex;
   flex-direction: row;
+  width: 100%;
+  gap: 1rem;
+`;
+
+export const ContenedorCampos = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
   gap: 1rem;
 `;
@@ -95,35 +118,9 @@ export const SpanImagen = styled.span`
   color: black;
 `;
 
-export const ContenedorCampos = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  @media (max-width: 1920px) {
-    width: 100%;
-  }
-  @media (max-width: 1600px) {
-    width: 90%;
-  }
-  @media (max-width: 1360px) {
-    width: 80%;
-  }
-  @media (max-width: 1024px) {
-    width: 70%;
-  }
-`;
-
 export const Opciones = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
   width: 100%;
-`;
-
-export const Titulo = styled.h2`
-  font-size: 20px;
-  display: flex;
-  justify-content: center;
 `;

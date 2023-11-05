@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { InputContainer } from "./InputContainer";
-import { Formulario, Opciones, Campos, ContenedorCampos, Contenedor, Inputs } from "./StyledComponents";
+import { Formulario, Opciones, Campos, ContenedorCampos, Contenedor } from "./StyledComponents";
 import { api } from "../../../api/api";
 import { Button } from "primereact/button";
 import { useFormik } from "formik";
-import { classNames } from "primereact/utils";
 import { Dropdown } from "primereact/dropdown";
-import * as Yup from "yup";
+import { ComercioSchema } from "../../../components/Validaciones";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 
@@ -53,22 +52,6 @@ export const RegistrarComercio = () => {
     }
   };
 
-  const ComercioSchema = Yup.object().shape({
-    nombre: Yup.string()
-      .required("Nombre requerido")
-      .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Nombre invalido"),
-    direccion: Yup.string()
-      .required("Dirección requerida")
-      .matches(/^[a-zA-ZÀ-ÿ\s]/, "Dirección invalida"),
-    // propietario: Yup.string().required("Propietario requerido"),
-    telefono: Yup.string()
-      .required("Teléfono requerido")
-      .matches(/^[0-9]+$/, "El teléfono debe ser numérico")
-      .min(9, "El teléfono debe tener 9 dígitos")
-      .max(9, "El teléfono debe tener 9 dígitos")
-      .matches(/^[9]/, "El teléfono debe comenzar con 9"),
-  });
-
   const formik = useFormik({
     initialValues: {
       ...formulario,
@@ -80,14 +63,12 @@ export const RegistrarComercio = () => {
     },
   });
 
-  useEffect(() => {
-    traerUsuarios();
-  }, []);
+  const camposVacios = () => {
+    return !formik.values.propietario || !formik.values.nombre || !formik.values.direccion || !formik.values.telefono;
+  };
 
-  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
-
-  const getFormErrorMessage = (name) => {
-    return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
+  const camposLimpiar = () => {
+    return formik.isValid != "";
   };
 
   const confirmarComercio = () => {
@@ -102,7 +83,14 @@ export const RegistrarComercio = () => {
       rejectLabel: "No",
       rejectIcon: "pi pi-times",
       accept: () => {
-        if (formik.isValid) {
+        if (camposVacios()) {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Ops! Algo ha salido mal, revisa los campos",
+            life: 3000,
+          });
+        } else {
           toast.current.show({
             severity: "success",
             summary: "Éxito",
@@ -110,13 +98,6 @@ export const RegistrarComercio = () => {
             life: 3000,
           });
           crearComercio();
-        } else {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Ops! Algo ha salido mal, revisa los campos",
-            life: 3000,
-          });
         }
       },
       reject: () => {
@@ -161,76 +142,80 @@ export const RegistrarComercio = () => {
     });
   };
 
+  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
+
+  const getFormErrorMessage = (name) => {
+    return isFormFieldInvalid(name) ? <small className="p-error">{formik.errors[name]}</small> : null;
+  };
+
+  useEffect(() => {
+    traerUsuarios();
+  }, []);
+
   return (
     <Contenedor>
       <Toast ref={toast} />
       <Formulario onSubmit={formik.handleSubmit}>
-        <div>
-          <Inputs>
-            <Campos>
-              <label htmlFor="propietario">Propietario</label>
-              <Dropdown
-                id="propietario"
-                value={formik.values.propietario}
-                options={nombreCliente}
-                optionLabel="nombre"
-                onChange={(e) => {
-                  formik.setFieldValue("propietario", e.target.value);
-                }}
-                placeholder="Seleccione un propietario.."
-                name="propietario"
-                className={classNames({ "p-invalid": isFormFieldInvalid("propietario") })}
-              />
-              {getFormErrorMessage("propietario")}
-            </Campos>
-            <Campos>
-              <label htmlFor="nombre">Nombre</label>
-              <InputContainer
-                name="nombre"
-                placeholder="Ingrese el nombre del comercio.."
-                value={formik.values.nombre}
-                handleChange={(e) => {
-                  formik.setFieldValue("nombre", e.target.value);
-                }}
-                className={classNames({ "p-invalid": isFormFieldInvalid("nombre") })}
-              />
-              {getFormErrorMessage("nombre")}
-            </Campos>
-            <Campos>
-              <label htmlFor="direccion">Dirrección</label>
-              <InputContainer
-                name="direccion"
-                placeholder="Ingrese la dirección del comercio.."
-                value={formik.values.direccion}
-                handleChange={(e) => {
-                  formik.setFieldValue("direccion", e.target.value);
-                }}
-                className={classNames({ "p-invalid": isFormFieldInvalid("direccion") })}
-              />
-              {getFormErrorMessage("direccion")}
-            </Campos>
-            <Campos>
-              <label htmlFor="telefono">Teléfono</label>
-              <InputContainer
-                name="telefono"
-                type={"number"}
-                placeholder="El telefono debe llevar '9' al inicio.."
-                value={formik.values.telefono}
-                handleChange={(e) => {
-                  formik.setFieldValue("telefono", e.target.value);
-                }}
-                className={classNames({ "p-invalid": isFormFieldInvalid("telefono") })}
-              />
-              {getFormErrorMessage("telefono")}
-            </Campos>
-            <ConfirmDialog />
-          </Inputs>
-        </div>
-        <Opciones>
-          <Button label="Registrar" severity="success" rounded typeof="submit" onClick={confirmarComercio} />
-          <Button label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
-        </Opciones>
+        <ContenedorCampos>
+          <Campos>
+            <label htmlFor="propietario">Propietario</label>
+            <Dropdown
+              name="propietario"
+              id="propietario"
+              options={nombreCliente}
+              optionLabel="nombre"
+              placeholder="Seleccione un propietario.."
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.propietario}
+            />
+            {getFormErrorMessage("propietario")}
+          </Campos>
+          <Campos>
+            <label htmlFor="nombre">Nombre</label>
+            <InputContainer
+              name="nombre"
+              placeholder="Ingrese el nombre del comercio.."
+              value={formik.values.nombre}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {getFormErrorMessage("nombre")}
+          </Campos>
+          <Campos>
+            <label htmlFor="direccion">Dirrección</label>
+            <InputContainer
+              name="direccion"
+              placeholder="Ingrese la dirección del comercio.."
+              value={formik.values.direccion}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {getFormErrorMessage("direccion")}
+          </Campos>
+          <Campos>
+            <label htmlFor="telefono">Teléfono</label>
+            <InputContainer
+              name="telefono"
+              type="number"
+              placeholder="El telefono debe llevar '9' al inicio.."
+              value={formik.values.telefono}
+              onChange={(e) => {
+                if (e.target.value.length <= 9) {
+                  formik.handleChange(e);
+                }
+              }}
+              onBlur={formik.handleBlur}
+            />
+            {getFormErrorMessage("telefono")}
+          </Campos>
+          <ConfirmDialog />
+        </ContenedorCampos>
       </Formulario>
+      <Opciones>
+        <Button raised label="Registrar" severity="success" rounded onClick={confirmarComercio} disabled={camposVacios()} />
+        <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} disabled={camposLimpiar()} />
+      </Opciones>
     </Contenedor>
   );
 };
