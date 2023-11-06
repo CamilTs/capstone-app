@@ -231,7 +231,6 @@ export const AgregarPublicacion = () => {
             />
             {getFormErrorMessage("precio")}
           </Campos>
-          <ConfirmDialog />
         </ContenedorCampos>
       </Formulario>
       <ContenedorBotones>

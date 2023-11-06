@@ -37,7 +37,6 @@ export const MisPublicados = () => {
 
   return (
     <ContenedorMP>
-      <ConfirmDialog />
       <Titulo>Mis Publicados</Titulo>
       <ContenedorTabla>
         <DataTable value={publicacion} paginator rows={5} rowsPerPageOptions={[5, 10, 15]} scrollable scrollHeight="500px">

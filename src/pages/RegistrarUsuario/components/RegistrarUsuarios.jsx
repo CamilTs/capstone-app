@@ -4,7 +4,7 @@ import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { InputContainer } from "../../../components/InputContainer";
 import { Toast } from "primereact/toast";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { confirmDialog } from "primereact/confirmdialog";
 import { useFormik } from "formik";
 import {
   Formulario,
@@ -116,10 +116,6 @@ export const RegistrarUsuarios = () => {
     );
   };
 
-  const camposLimpiar = () => {
-    return formik.isValid != "";
-  };
-
   const confirmarCrear = () => {
     confirmDialog({
       message: "¿Está seguro que desea crear este usuario?",
@@ -200,7 +196,6 @@ export const RegistrarUsuarios = () => {
   return (
     <Contenedor>
       <Toast ref={toast} />
-      <ConfirmDialog />
       <Formulario onSubmit={formik.handleSubmit}>
         <Campos>
           <label htmlFor="rol">Rol</label>
@@ -325,7 +320,7 @@ export const RegistrarUsuarios = () => {
       </Formulario>
       <Opciones>
         <Button raised label="Registrar" severity="success" rounded onClick={confirmarCrear} disabled={camposVacios()} />
-        <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} disabled={camposLimpiar()} />
+        <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
       </Opciones>
     </Contenedor>
   );

@@ -68,7 +68,7 @@ function App() {
       },
       reject: () => {
         toast.current.show({
-          severity: "warn",
+          severity: "info",
           summary: "Cancelado",
           detail: "Cierre de sesión cancelado",
           life: 2000,

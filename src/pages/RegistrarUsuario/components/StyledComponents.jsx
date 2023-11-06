@@ -1,11 +1,9 @@
-import { Button } from "primereact/button";
-import { confirmDialog } from "primereact/confirmdialog";
 import styled from "styled-components";
 
 export const ContenedorMasivo = styled.div`
   height: 100%;
 
-  @media (max-width: 950px) {
+  @media (max-width: 978px) {
     overflow-y: scroll;
   }
 `;
@@ -16,6 +14,9 @@ export const Contenedor = styled.div`
   gap: 1rem;
   height: 100%;
   padding: 1rem;
+
+  @media (max-width: 978px) {
+  }
 `;
 
 export const Formulario = styled.form`
@@ -30,7 +31,7 @@ export const Inputs = styled.div`
   flex-direction: row;
   gap: 1rem;
 
-  @media (max-width: 950px) {
+  @media (max-width: 978px) {
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -84,7 +85,7 @@ export const ImagenPreview = styled.div`
     width: 302px;
     height: 302px;
   }
-  @media (max-width: 1024px) {
+  @media (max-width: 1026px) {
     width: 252px;
     height: 252px;
   }
@@ -107,7 +108,7 @@ export const ImagenImagen = styled.img`
     width: 300px;
     height: 300px;
   }
-  @media (max-width: 1024px) {
+  @media (max-width: 1026px) {
     width: 250px;
     height: 250px;
   }
