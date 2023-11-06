@@ -1,3 +1,5 @@
+import "/node_modules/primeflex/primeflex.css";
+
 import { Navigate, Route, Routes } from "react-router-dom";
 import MenuLateral from "./components/MenuLateral";
 import "./App.css";
@@ -7,11 +9,13 @@ import "primeicons/primeicons.css";
 import styled from "styled-components";
 import { ProtectedRoutes } from "./routes/ProtectedRoutes";
 import { Button } from "primereact/button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SocketProvider } from "./context/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
-import { checkAuthToken } from "./store/auth";
+import { cerrarSesion, checkAuthToken } from "./store/auth";
 import { PublicRoutes } from "./routes/PublicRoutes";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
 
 const Container = styled.div`
   background-color: #538a95;
@@ -45,6 +49,33 @@ export const Content = styled.div`
 function App() {
   const { status, token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const toast = useRef(null);
+
+  const confirmarCerrarCuenta = () => {
+    confirmDialog({
+      message: "¿Deseas cerrar sesión?",
+      header: "Confirmar",
+      icon: "pi pi-exclamation-triangle",
+      acceptClassName: "p-button-danger",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-secondary",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        toast.current.show({ severity: "success", summary: "Éxito", detail: "Cerrando sesión", life: 2000 });
+        dispatch(cerrarSesion());
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "warn",
+          summary: "Cancelado",
+          detail: "Cierre de sesión cancelado",
+          life: 2000,
+        });
+      },
+    });
+  };
 
   useEffect(() => {
     dispatch(checkAuthToken());
@@ -52,7 +83,7 @@ function App() {
   return (
     <ContenedorMenuPagina>
       <SocketProvider>
-        {status == "autenticado" ? <MenuLateral /> : null}
+        {status == "autenticado" ? <MenuLateral cerrarCuenta={confirmarCerrarCuenta} /> : null}
         <Container>
           <Routes>
             {status == "autenticado" ? (
@@ -64,6 +95,8 @@ function App() {
           </Routes>
         </Container>
       </SocketProvider>
+      <ConfirmDialog />
+      <Toast ref={toast} />
     </ContenedorMenuPagina>
   );
 }

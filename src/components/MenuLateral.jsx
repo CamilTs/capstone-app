@@ -30,7 +30,7 @@ const OpcionesMenu = styled.div`
   gap: 10px;
 `;
 
-const MenuLateral = ({ style }) => {
+const MenuLateral = ({ style, cerrarCuenta }) => {
   const [itemsRuta, setItemsRuta] = useState([]);
   let itemsPrueba = [];
   const { rol } = useSelector((state) => state.auth);
@@ -77,8 +77,8 @@ const MenuLateral = ({ style }) => {
       <TituloMenu>Ai Zi</TituloMenu>
       {itemsRuta.length > 0 && (
         <OpcionesMenu>
-          <Menu model={itemsRuta} className="w-full md:w-25rem" />
-          <PerfilCard />
+          <Menu model={itemsRuta} className="" />
+          <PerfilCard cerrarCuenta={cerrarCuenta} />
         </OpcionesMenu>
       )}
     </Fondo>

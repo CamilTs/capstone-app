@@ -75,11 +75,10 @@ const useGraficos = (formato = {}, tipo = "") => {
   const cargarInformacion = () => {
     console.log(tipo);
     switch (tipo) {
-      case "bar":
+      case "registro":
         getGrafico();
         break;
       case "mes":
-        console.log("first");
         registroMes();
         break;
       case "productoPorAnio":

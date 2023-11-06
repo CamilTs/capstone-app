@@ -21,7 +21,7 @@ const TextoUsuario = styled.span`
   font-size: 16px;
 `;
 
-export const PerfilCard = () => {
+export const PerfilCard = ({ cerrarCuenta: cerrarCuentaDialog }) => {
   const [usuario, setUsuario] = useState(null);
   const toast = useRef(null);
   const dispatch = useDispatch();
@@ -29,39 +29,6 @@ export const PerfilCard = () => {
   const traerUsuario = async () => {
     const res = await api.get(`usuario/${id}`);
     setUsuario(res.data.data);
-  };
-  const cerrarCuenta = () => {
-    dispatch(cerrarSesion());
-  };
-
-  const confirmarCerrarCuenta = () => {
-    confirmDialog({
-      message: "¿Deseas cerrar sesión?",
-      header: "Confirmar",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-danger",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-secondary",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        setTimeout(() => {
-          toast.current.show({ severity: "success", summary: "Éxito", detail: "Cerrando sesión", life: 2000 });
-          setTimeout(() => {
-            cerrarCuenta();
-          }, 2000);
-        }, 1000);
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "warn",
-          summary: "Cancelado",
-          detail: "Cierre de sesión cancelado",
-          life: 2000,
-        });
-      },
-    });
   };
 
   useEffect(() => {
@@ -84,7 +51,7 @@ export const PerfilCard = () => {
           <div>
             <TextoUsuario>{usuario.correo}</TextoUsuario>
           </div>
-          <Button severity="danger" label="Cerrar Sesión" onClick={confirmarCerrarCuenta} />
+          <Button severity="danger" label="Cerrar Sesión" onClick={cerrarCuentaDialog} />
         </div>
       )}
     </Content>
