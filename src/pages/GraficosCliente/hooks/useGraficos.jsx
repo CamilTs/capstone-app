@@ -78,37 +78,21 @@ const useGraficos = (formato = {}, tipo = "") => {
       setLoading(true);
       const response = await api.get("/registro/compararRegistroAnio");
       const { data } = response;
+      let nuevoDataset = [];
+      for (const anioData in data.data) {
+        if (Object.hasOwnProperty.call(data.data, anioData)) {
+          const element = data.data[anioData];
+          const datos = [...valores];
 
-      // Crear un objeto para almacenar los datos agrupados por año
-      const datosAgrupados = {};
-      for (let i = 0; i < data.data.length; i++) {
-        const element = data.data[i];
-        const anio = element.anio;
-        const mes = element.mes - 1;
-        const total = element.total;
-
-        if (!datosAgrupados[anio]) {
-          datosAgrupados[anio] = { data: [...valores] };
+          for (let i = 0; i < element.length; i++) {
+            const e = element[i];
+            const mes = e.mes - 1;
+            datos[mes] = e.total;
+          }
+          nuevoDataset.push({ label: anioData, data: datos });
         }
-        datosAgrupados[anio].data[mes] = total;
+        setInfoGrafico({ ...infoGrafico, data: { labels, datasets: nuevoDataset } });
       }
-
-      // console.log(...datosAgrupados);
-
-      for (const key in datosAgrupados) {
-        const element = datosAgrupados[key];
-        console.log(element);
-        const nuevoDataset = [...infoGrafico.data.datasets, [element]];
-        console.log(nuevoDataset);
-        setInfoGrafico({
-          ...infoGrafico,
-          data: {
-            labels,
-            datasets: nuevoDataset,
-          },
-        });
-      }
-      // Ahora puedes utilizar los datos agrupados para crear gráficos o realizar otras operaciones
     } catch (error) {
       console.log(error);
     } finally {

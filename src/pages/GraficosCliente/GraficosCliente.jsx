@@ -11,21 +11,19 @@ export const GraficosCliente = () => {
   useEffect(() => {}, []);
   return (
     <div className="grid">
-      <div className="col-6">
+      <div className="col-4">
         <div className="p-card">
           <Chart type="bar" data={infoGrafico.data} options={infoGrafico.options} />
         </div>
       </div>
-      <div className="col-6">
-        <button
-          onClick={() => {
-            console.log(registroAnioData);
-          }}
-        >
-          hola
-        </button>
+      <div className="col-4">
         <div className="p-card">
           <Chart type="bar" data={registroData.data} options={registroData.options} />
+        </div>
+      </div>
+      <div className="col-4">
+        <div className="p-card">
+          <Chart type="line" data={registroAnioData.data} options={registroAnioData.options} />
         </div>
       </div>
     </div>
