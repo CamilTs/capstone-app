@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
-import { InputContainer } from "./InputContainer";
+import { InputContainer } from "../../../components/InputContainer";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { useFormik } from "formik";

@@ -1,5 +1,6 @@
 import * as Yup from "yup";
 
+// Registrar Usuario Validaciones //
 export const RegistrarSchema = Yup.object().shape({
   rut: Yup.string().required("Rut requerido").min(12, "Rut invalido").max(12, "Rut invalido"),
   nombre: Yup.string()
@@ -32,6 +33,7 @@ export const RegistrarSchema = Yup.object().shape({
   rol: Yup.string().required("Rol requerido"),
 });
 
+// Registrar Comercio Validaciones //
 export const ComercioSchema = Yup.object().shape({
   propietario: Yup.object().required("Propietario requerido").nullable(),
   nombre: Yup.string()
@@ -46,4 +48,30 @@ export const ComercioSchema = Yup.object().shape({
     .matches(/^[0-9]{9}$/, "Teléfono invalido")
     .min(9, "Teléfono invalido")
     .max(9, "Teléfono invalido"),
+});
+
+// Registrar Producto Validaciones //
+export const ProductoSchema = Yup.object().shape({
+  nombre: Yup.string()
+    .required("Nombre requerido")
+    .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Nombre invalido"),
+  codigo_barra: Yup.string().required("Código de barra requerido"),
+  categoria: Yup.string().required("Categoría requerida"),
+  imagen: Yup.string().required("Imagen requerida"),
+  cantidad: Yup.number().required("Cantidad requerida").min(1, "La cantidad mínima es 1"),
+  precio: Yup.number().required("Precio requerido").min(1, "El precio debe ser mayor a 0"),
+});
+
+// Registrar Publicación Validaciones //
+export const publicacionSchema = Yup.object().shape({
+  nombre: Yup.string()
+    .required("Nombre requerido")
+    .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Nombre invalido")
+    .min(3, "El nombre debe tener al menos 3 caracteres"),
+  precio: Yup.number().required("Precio requerido").min(1, "El precio debe ser mayor a 0"),
+  codigo_barra: Yup.string()
+    .required("Código de barra requerido")
+    .matches(/^[a-zA-Z0-9]{1,40}$/, "Código de barra invalido"),
+  categoria: Yup.string().required("Categoría requerida"),
+  imagen: Yup.string().required("Imagen requerida"),
 });

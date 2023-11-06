@@ -1,4 +1,3 @@
-import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
@@ -10,7 +9,6 @@ import { useFormik } from "formik";
 import {
   Campos,
   Contenedor,
-  Contenedor2,
   ContenedorBotones,
   ContenedorCampos,
   ContenedorImg,
@@ -20,9 +18,9 @@ import {
   SpanImagen,
   Titulo,
 } from "./components/StyledComponents";
-import { classNames } from "primereact/utils";
-import * as Yup from "yup";
+import { InputContainer } from "../../components/InputContainer";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { publicacionSchema } from "../../components/Validaciones";
 
 const categorias = [
   { label: "Alimento", value: "Alimento" },
@@ -36,7 +34,7 @@ export const AgregarPublicacion = () => {
   const estructuraFormulario = {
     id: Date.now(),
     nombre: "",
-    precio: Number(0),
+    precio: Number(""),
     codigo_barra: "",
     categoria: null,
     imagen: "",
@@ -81,19 +79,6 @@ export const AgregarPublicacion = () => {
     formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
   };
 
-  const publicacionSchema = Yup.object().shape({
-    nombre: Yup.string()
-      .required("Nombre requerido")
-      .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Nombre invalido")
-      .min(3, "El nombre debe tener al menos 3 caracteres"),
-    precio: Yup.number().required("Precio requerido").min(1, "El precio debe ser mayor a 0"),
-    codigo_barra: Yup.string()
-      .required("Código de barra requerido")
-      .matches(/^[a-zA-Z0-9]{1,40}$/, "Código de barra invalido"),
-    categoria: Yup.string().required("Categoría requerida"),
-    imagen: Yup.string().required("Imagen requerida"),
-  });
-
   const formik = useFormik({
     initialValues: {
       ...formulario,
@@ -106,10 +91,10 @@ export const AgregarPublicacion = () => {
     },
   });
 
-  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
+  const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
-    return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
+    return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
   };
 
   const confirmarAgregarPublicacion = () => {
@@ -196,65 +181,63 @@ export const AgregarPublicacion = () => {
             {getFormErrorMessage("imagen")}
           </ContenedorImg>
         </Campos>
-        <Contenedor2>
-          <ContenedorCampos>
-            <Campos>
-              <label htmlFor="nombre">Nombre</label>
-              <InputText
-                id="nombre"
-                placeholder="Ingrese su nombre de la publicación..."
-                value={formik.values.nombre}
-                onChange={(e) => {
-                  formik.setFieldValue("nombre", e.target.value);
-                }}
-              />
-              {getFormErrorMessage("nombre")}
-            </Campos>
-            <Campos>
-              <label htmlFor="codigo_barra">Código de barra</label>
-              <InputText
-                id="codigo_barra"
-                placeholder="Ingrese el código de barra..."
-                value={formik.values.codigo_barra}
-                onChange={(e) => {
-                  formik.setFieldValue("codigo_barra", e.target.value);
-                }}
-              />
-              {getFormErrorMessage("codigo_barra")}
-            </Campos>
-            <Campos>
-              <label htmlFor="categoria">Categoría</label>
-              <Dropdown
-                id="categoria"
-                options={categorias}
-                value={formik.values.categoria}
-                onChange={(e) => {
-                  formik.setFieldValue("categoria", e.target.value);
-                }}
-                className={classNames({ "p-invalid": isFormFieldInvalid("categoria") })}
-                placeholder="Seleccione una categoría"
-              />
-              {getFormErrorMessage("categoria")}
-            </Campos>
-            <Campos>
-              <label htmlFor="precio">Precio</label>
-              <InputText
-                id="precio"
-                value={formik.values.precio}
-                onChange={(e) => {
-                  formik.setFieldValue("precio", e.target.value);
-                }}
-              />
-              {getFormErrorMessage("precio")}
-            </Campos>
-            <ConfirmDialog />
-            <ContenedorBotones>
-              <Button label="Agregar" className="p-button-success" onClick={confirmarAgregarPublicacion} />
-              <Button label="Limpiar" className="p-button-danger" onClick={confirmarLimpiar} />
-            </ContenedorBotones>
-          </ContenedorCampos>
-        </Contenedor2>
+        <ContenedorCampos>
+          <Campos>
+            <label htmlFor="nombre">Nombre</label>
+            <InputContainer
+              id="nombre"
+              name="nombre"
+              placeholder="Ingrese su nombre de la publicación..."
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.nombre}
+            />
+            {getFormErrorMessage("nombre")}
+          </Campos>
+          <Campos>
+            <label htmlFor="codigo_barra">Código de barra</label>
+            <InputContainer
+              id="codigo_barra"
+              name="codigo_barra"
+              placeholder="Ingrese el código de barra..."
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.codigo_barra}
+            />
+            {getFormErrorMessage("codigo_barra")}
+          </Campos>
+          <Campos>
+            <label htmlFor="categoria">Categoría</label>
+            <Dropdown
+              id="categoria"
+              name="categoria"
+              options={categorias}
+              placeholder="Seleccione una categoría"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.categoria}
+            />
+            {getFormErrorMessage("categoria")}
+          </Campos>
+          <Campos>
+            <label htmlFor="precio">Precio</label>
+            <InputContainer
+              id="precio"
+              name="precio"
+              type="number"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.precio}
+            />
+            {getFormErrorMessage("precio")}
+          </Campos>
+          <ConfirmDialog />
+        </ContenedorCampos>
       </Formulario>
+      <ContenedorBotones>
+        <Button label="Agregar" className="p-button-success" onClick={confirmarAgregarPublicacion} />
+        <Button label="Limpiar" className="p-button-danger" onClick={confirmarLimpiar} />
+      </ContenedorBotones>
     </Contenedor>
   );
 };
