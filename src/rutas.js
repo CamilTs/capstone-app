@@ -36,6 +36,13 @@ export const rutas = [
     tipo: "productos",
   },
   {
+    ruta: "/graficos",
+    rol: "cliente",
+    icono: "pi pi-eye",
+    label: "Graficos",
+    tipo: "productos",
+  },
+  {
     ruta: "/",
     rol: "proveedor",
     icono: "pi pi-plus",
