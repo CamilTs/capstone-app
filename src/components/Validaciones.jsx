@@ -62,6 +62,25 @@ export const ProductoSchema = Yup.object().shape({
   precio: Yup.number().required("Precio requerido").min(1, "El precio debe ser mayor a 0"),
 });
 
+// Registrar Mis Proveedores Validaciones //
+export const ProveedorSchema = Yup.object().shape({
+  nombre: Yup.string()
+    .required("El nombre es requerido")
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .matches(/^[a-zA-Z ]+$/, "El nombre solo debe contener letras"),
+  descripcion: Yup.string()
+    .required("La descripcion es requerida")
+    .min(10, "La descripcion debe tener al menos 10 caracteres")
+    .max(200, "La descripcion debe tener maximo 200 caracteres")
+    .matches(/^[a-zA-Z0-9 ]+$/, "La descripcion solo debe contener letras y numeros"),
+  telefono: Yup.string()
+    .required("El numero es requerido")
+    .min(9, "El numero debe tener al menos 9 caracteres")
+    .max(9, "El numero debe tener maximo 9 caracteres")
+    .matches(/^[0-9]+$/, "El numero solo debe contener numeros"),
+  correo: Yup.string().required("El correo es requerido").email("Ingrese un correo valido"),
+});
+
 // Registrar Publicación Validaciones //
 export const publicacionSchema = Yup.object().shape({
   nombre: Yup.string()

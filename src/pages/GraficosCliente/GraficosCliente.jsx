@@ -6,6 +6,8 @@ export const GraficosCliente = () => {
   const { infoGrafico, loading } = useGraficos(null, "productoPorAnio");
   const { infoGrafico: registroData, loading: registroLoading } = useGraficos(null, "registro");
   const { infoGrafico: registroAnioData, loading: registroAnioLoading } = useGraficos(null, "registroAnio");
+  const { infoGrafico: registroMesData, loading: registroMesLoading } = useGraficos(null, "mes");
+  const { infoGrafico: pruebaData, loading: pruebaLoading } = useGraficos(null, "prueba");
   // const { infoGrafico: infoGrafico2, loading: loading2 } = useGraficos({ data: { nombre: "hola" } });
 
   useEffect(() => {}, []);
@@ -14,6 +16,10 @@ export const GraficosCliente = () => {
       <div className="col-4">
         <div className="p-card">
           <Chart type="bar" data={infoGrafico.data} options={infoGrafico.options} />
+        </div>
+        <div className="p-card">
+          <Chart type="line" data={pruebaData.data} options={pruebaData.options} />
+          <button onClick={() => console.log(pruebaData)} />
         </div>
       </div>
       <div className="col-4">

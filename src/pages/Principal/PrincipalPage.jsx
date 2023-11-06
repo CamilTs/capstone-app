@@ -2,7 +2,6 @@
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useProductos } from "../../context/ProductosContext";
 import {
   Contenedor,
   ContenedorCard,
@@ -16,7 +15,6 @@ import {
   ContenedorTabla,
 } from "./components/StyledPaginaPrincipal";
 import { useState } from "react";
-import { ConfirmDialog } from "primereact/confirmdialog";
 
 // COMPONENTES
 
@@ -41,7 +39,6 @@ export const PrincipalPage = () => {
 
   return (
     <Contenedor>
-      <ConfirmDialog />
       <TituloPrincipal>Movimientos recientes</TituloPrincipal>
       <ContenedorCard>
         {productos.map((producto) => (

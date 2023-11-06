@@ -1,39 +1,38 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
 import { Dialog } from "primereact/dialog";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 import {
   ContenedorProveedores,
   ContenedorHeader,
   MiniPerfil,
   DatosMiniPerfil,
-  NombreProveedor,
-  DescripcionProveedor,
-  TelefonoProveedor,
-  CorreoProveedor,
   ContenedorBoton,
   Formulario,
   ContenedorInput,
   Campos,
+  ContenedorFormulario,
+  DatosProveedor,
 } from "./components/StyledAgregarProveedor";
 import { api } from "../../api/api";
-import * as Yup from "yup";
 import { useFormik } from "formik";
-import { classNames } from "primereact/utils";
+import { ProveedorSchema } from "../../components/Validaciones";
+import { useSelector } from "react-redux";
+import { InputContainer } from "../../components/InputContainer";
 
 const AgregarProveedores = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const { id } = useSelector((state) => state.auth);
   const [formulario, setFormulario] = useState({
     nombre: "",
     descripcion: "",
     telefono: "",
     correo: "",
+    clienteId: id,
   });
-  // const [proveedoresGuardados, setProveedoresGuardados] = useState([]);
   const toast = useRef(null);
+  const [proveedor, setProveedor] = useState([]);
 
   const verFormulario = () => {
     limpiarFormulario();
@@ -66,24 +65,17 @@ const AgregarProveedores = () => {
     }
   };
 
-  const ProveedorSchema = Yup.object().shape({
-    nombre: Yup.string()
-      .required("El nombre es requerido")
-      .min(3, "El nombre debe tener al menos 3 caracteres")
-      .matches(/^[a-zA-Z ]+$/, "El nombre solo debe contener letras"),
-    descripcion: Yup.string()
-      .required("La descripcion es requerida")
-      .min(10, "La descripcion debe tener al menos 10 caracteres")
-      .max(200, "La descripcion debe tener maximo 200 caracteres")
-      .matches(/^[a-zA-Z0-9 ]+$/, "La descripcion solo debe contener letras y numeros"),
-    telefono: Yup.string()
-      .required("El numero es requerido")
-      .min(9, "El numero debe tener al menos 9 caracteres")
-      .max(9, "El numero debe tener maximo 9 caracteres")
-      .matches(/^[0-9]+$/, "El numero solo debe contener numeros")
-      .matches(/^[9]+$/, "El numero debe empezar con 9"),
-    correo: Yup.string().required("El correo es requerido").email("Ingrese un correo valido"),
-  });
+  const traerProveedores = async () => {
+    try {
+      const response = await api.get(`proveedor/${id}`);
+      const { data } = response;
+      console.log(data);
+      setProveedor(data.data);
+    } catch (error) {
+      console.log(error);
+      console.log("Error al traer los proveedores");
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -96,12 +88,6 @@ const AgregarProveedores = () => {
       console.log(data);
     },
   });
-
-  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
-
-  const getFormErrorMessage = (name) => {
-    return isFormFieldInvalid(name) && <small className="p-error">{formik.errors[name]}</small>;
-  };
 
   const confirmarGuardado = () => {
     confirmDialog({
@@ -144,37 +130,6 @@ const AgregarProveedores = () => {
     });
   };
 
-  const confirmarCancelar = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea cancelar el formulario?",
-      header: "Confirmar",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Éxito",
-          detail: "Formulario Cancelado",
-          life: 3000,
-        });
-        ocultarFormulario();
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Acción cancelada",
-          life: 3000,
-        });
-      },
-    });
-  };
-
   const confirmarLimpiar = () => {
     confirmDialog({
       message: "¿Está seguro que desea limpiar el formulario?",
@@ -206,85 +161,115 @@ const AgregarProveedores = () => {
     });
   };
 
+  const validacionValores = (name) => formik.touched[name] && formik.errors[name];
+
+  const getFormErrorMessage = (name) => {
+    return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
+  };
+
+  const [refrescar, setRefrescar] = useState(0);
+
+  const refrescarPagina = () => {
+    console.log("refrescando");
+    setRefrescar(refrescar + 1);
+    console.log("valor de refrescar: " + refrescar);
+  };
+
+  useEffect(() => {
+    traerProveedores();
+  }, []);
+
   return (
     <ContenedorProveedores>
-      <ConfirmDialog />
       <ContenedorHeader>
-        <Button label="Agregar Proveedor" severity="success" icon="pi pi-plus" onClick={verFormulario} />
+        <Button raised label="Agregar Proveedor" severity="success" icon="pi pi-plus" onClick={verFormulario} />
+        <Button raised severity="info" icon="pi pi-refresh" onClick={traerProveedores} />
       </ContenedorHeader>
       <Dialog visible={mostrarFormulario} onHide={ocultarFormulario} header="Agregar Proveedor">
-        <Formulario onSubmit={formik.handleSubmit}>
-          <Toast ref={toast} />
-          <ContenedorInput>
-            <Campos>
-              <label htmlFor="nombre">Nombre</label>
-              <InputText
-                placeholder="Ingrese su nombre"
-                name="nombre"
-                value={formik.values.nombre}
-                onChange={(e) => formik.setFieldValue("nombre", e.target.value)}
-              />
-              <div>{getFormErrorMessage("nombre")}</div>
-            </Campos>
-            <Campos>
-              <label htmlFor="descripcion">Descripción</label>
-              <InputTextarea
-                id="descripcion"
-                value={formik.values.descripcion}
-                onChange={(e) => {
-                  formik.setFieldValue("descripcion", e.target.value);
-                }}
-                rows={5}
-                autoResize
-              />
-              {getFormErrorMessage("descripcion")}
-            </Campos>
-            <Campos>
-              <label htmlFor="telefono">Número de teléfono</label>
-              <InputText
-                name="telefono"
-                placeholder="El telefono debe llevar '9' al inicio.."
-                value={formik.values.telefono}
-                onChange={(e) => {
-                  formik.setFieldValue("telefono", e.target.value);
-                }}
-                className={classNames({ "p-invalid": isFormFieldInvalid("telefono") })}
-              />
-              {getFormErrorMessage("telefono")}
-            </Campos>
-            <Campos>
-              <label htmlFor="correo">Correo</label>
-              <InputText
-                name="correo"
-                type={"email"}
-                placeholder="El correo debe llevar @.."
-                value={formik.values.correo}
-                onChange={(e) => {
-                  formik.setFieldValue("correo", e.target.value);
-                }}
-                className={classNames({ "p-invalid": isFormFieldInvalid("correo") })}
-              />
-              {getFormErrorMessage("correo")}
-            </Campos>
-          </ContenedorInput>
+        <ContenedorFormulario>
+          <Formulario onSubmit={formik.handleSubmit}>
+            <Toast ref={toast} />
+            <ContenedorInput>
+              <Campos>
+                <label htmlFor="nombre">Nombre</label>
+                <InputContainer
+                  type="text"
+                  name="nombre"
+                  placeholder="Ingrese su nombre"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.nombre}
+                />
+                <div>{getFormErrorMessage("nombre")}</div>
+              </Campos>
+              <Campos>
+                <label htmlFor="descripcion">Descripción</label>
+                <textarea
+                  style={{
+                    resize: "none",
+                    padding: "10px",
+                    borderRadius: "5px",
+                    border: "1px solid #ccc",
+                    fontSize: "15px",
+                    outline: "none",
+                    color: "#333",
+                  }}
+                  name="descripcion"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.descripcion}
+                  rows={5}
+                  autoResize
+                />
+                {getFormErrorMessage("descripcion")}
+              </Campos>
+              <Campos>
+                <label htmlFor="telefono">Número de teléfono</label>
+                <InputContainer
+                  name="telefono"
+                  type={"number"}
+                  placeholder="El telefono debe llevar '9' al inicio.."
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.telefono}
+                />
+                {getFormErrorMessage("telefono")}
+              </Campos>
+              <Campos>
+                <label htmlFor="correo">Correo</label>
+                <InputContainer
+                  name="correo"
+                  type={"email"}
+                  placeholder="El correo debe llevar @.."
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.correo}
+                />
+                {getFormErrorMessage("correo")}
+              </Campos>
+            </ContenedorInput>
+          </Formulario>
           <ContenedorBoton>
             <Button label="Guardar" severity="success" icon="pi pi-check" onClick={confirmarGuardado} />
-            <Button label="Cancelar" severity="danger" icon="pi pi-times" onClick={confirmarCancelar} />
-            <Button label="Limpiar" severity="info" icon="pi pi-trash" onClick={confirmarLimpiar} />
+            <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={confirmarLimpiar} />
           </ContenedorBoton>
-        </Formulario>
+        </ContenedorFormulario>
       </Dialog>
 
-      {/* {proveedoresGuardados.map((formulario, index) => (
+      {proveedor.map((proveedor, index) => (
         <MiniPerfil key={index}>
           <DatosMiniPerfil>
-            <NombreProveedor>Nombre: {formulario.nombre}</NombreProveedor>
-            <DescripcionProveedor>Descripción: {formulario.descripcion}</DescripcionProveedor>
-            <TelefonoProveedor>Teléfono: {formulario.numero}</TelefonoProveedor>
-            <CorreoProveedor>Correo: {formulario.correo}</CorreoProveedor>
+            <DatosProveedor>Nombre: {proveedor.nombre}</DatosProveedor>
+            <DatosProveedor>Descripción: {proveedor.descripcion}</DatosProveedor>
+            <DatosProveedor>Telefono: {proveedor.telefono}</DatosProveedor>
+            <DatosProveedor>Correo: {proveedor.correo}</DatosProveedor>
           </DatosMiniPerfil>
+          <ContenedorBoton>
+            <Button raised label="Editar" severity="info" icon="pi pi-pencil" rounded />
+            <Button raised label="Eliminar" severity="danger" icon="pi pi-trash" rounded />
+          </ContenedorBoton>
         </MiniPerfil>
-      ))} */}
+      ))}
     </ContenedorProveedores>
   );
 };

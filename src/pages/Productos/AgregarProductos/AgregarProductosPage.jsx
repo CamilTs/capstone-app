@@ -68,9 +68,9 @@ export const AgregarProductos = () => {
   const agregarProductoDB = async () => {
     try {
       const response = await api.post("producto/agregarProducto", {
-        ...formulario,
+        ...formik.values,
         comercio,
-        imagenes: [formulario.imagen],
+        imagenes: [formik.values.imagen],
       });
       const { data } = response;
       limpiarFormulario();
@@ -269,7 +269,6 @@ export const AgregarProductos = () => {
                 {getFormErrorMessage("precio")}
               </Campos>
             </ContenedorNumber>
-            <ConfirmDialog />
           </ContenedorCampos>
         </ContenedorPrimario>
       </Formulario>

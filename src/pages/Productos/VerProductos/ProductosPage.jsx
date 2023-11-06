@@ -184,7 +184,6 @@ export const Productos = () => {
   return (
     <Contenedor>
       <Toast ref={toast} />
-      <ConfirmDialog />
       <Titulo>Control Inventario</Titulo>
       <ContenedorTabla>
         <DataTable

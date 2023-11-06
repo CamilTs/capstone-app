@@ -3,7 +3,6 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { api } from "../../../api/api";
 import { Contenedor } from "./StyledComponents";
-import { ConfirmDialog } from "primereact/confirmdialog";
 
 export const VerRegistros = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -26,7 +25,6 @@ export const VerRegistros = () => {
 
   return (
     <Contenedor>
-      <ConfirmDialog />
       <div>
         <DataTable value={usuarios} size="small" paginator rows={5} rowsPerPageOptions={[5, 10, 15]} scrollable scrollHeight="500px">
           <Column field="nombre" header="Nombre" />

@@ -6,7 +6,7 @@ import { Button } from "primereact/button";
 import { useFormik } from "formik";
 import { Dropdown } from "primereact/dropdown";
 import { ComercioSchema } from "../../../components/Validaciones";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 
 export const RegistrarComercio = () => {
@@ -65,10 +65,6 @@ export const RegistrarComercio = () => {
 
   const camposVacios = () => {
     return !formik.values.propietario || !formik.values.nombre || !formik.values.direccion || !formik.values.telefono;
-  };
-
-  const camposLimpiar = () => {
-    return formik.isValid != "";
   };
 
   const confirmarComercio = () => {
@@ -209,12 +205,11 @@ export const RegistrarComercio = () => {
             />
             {getFormErrorMessage("telefono")}
           </Campos>
-          <ConfirmDialog />
         </ContenedorCampos>
       </Formulario>
       <Opciones>
         <Button raised label="Registrar" severity="success" rounded onClick={confirmarComercio} disabled={camposVacios()} />
-        <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} disabled={camposLimpiar()} />
+        <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
       </Opciones>
     </Contenedor>
   );
