@@ -3,7 +3,7 @@ import { api } from "../../../api/api";
 
 const useGraficos = (formato = {}, tipo = "") => {
   const formatoDefault = {
-    data: {},
+    data: { datasets: [] },
     options: {
       scales: {
         y: {
@@ -16,14 +16,12 @@ const useGraficos = (formato = {}, tipo = "") => {
 
   const [loading, setLoading] = useState(false);
   const [infoGrafico, setInfoGrafico] = useState(formato);
-  const data = {};
 
   const getGrafico = async () => {
     try {
       setLoading(true);
       const response = await api.get("/registro");
       const { data } = response;
-      console.log(data);
       setInfoGrafico(data);
     } catch (error) {
       console.log(error);
@@ -72,11 +70,60 @@ const useGraficos = (formato = {}, tipo = "") => {
     }
   };
 
+  const registroPorAnio = async () => {
+    const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    const valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    console.log(infoGrafico);
+    try {
+      setLoading(true);
+      const response = await api.get("/registro/compararRegistroAnio");
+      const { data } = response;
+
+      // Crear un objeto para almacenar los datos agrupados por año
+      const datosAgrupados = {};
+      for (let i = 0; i < data.data.length; i++) {
+        const element = data.data[i];
+        const anio = element.anio;
+        const mes = element.mes - 1;
+        const total = element.total;
+
+        if (!datosAgrupados[anio]) {
+          datosAgrupados[anio] = { data: [...valores] };
+        }
+        datosAgrupados[anio].data[mes] = total;
+      }
+
+      // console.log(...datosAgrupados);
+
+      for (const key in datosAgrupados) {
+        const element = datosAgrupados[key];
+        console.log(element);
+        const nuevoDataset = [...infoGrafico.data.datasets, [element]];
+        console.log(nuevoDataset);
+        setInfoGrafico({
+          ...infoGrafico,
+          data: {
+            labels,
+            datasets: nuevoDataset,
+          },
+        });
+      }
+      // Ahora puedes utilizar los datos agrupados para crear gráficos o realizar otras operaciones
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const cargarInformacion = () => {
     console.log(tipo);
     switch (tipo) {
       case "registro":
-        getGrafico();
+        registroMes();
+        break;
+      case "registroAnio":
+        registroPorAnio();
         break;
       case "mes":
         registroMes();
