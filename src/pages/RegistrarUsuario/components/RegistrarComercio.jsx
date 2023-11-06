@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { InputContainer } from "./InputContainer";
+import { InputContainer } from "../../../components/InputContainer";
 import { Formulario, Opciones, Campos, ContenedorCampos, Contenedor } from "./StyledComponents";
 import { api } from "../../../api/api";
 import { Button } from "primereact/button";

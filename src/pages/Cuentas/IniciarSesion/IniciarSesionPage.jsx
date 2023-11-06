@@ -27,44 +27,44 @@ export const IniciarSesionPage = () => {
 
   const submit = async (e) => {
     e.preventDefault();
-    dispatch(autenticando(formik.values));
 
-    if (status == "autenticado") {
+    const { rut, contrasena } = formik.values;
+
+    if (!rut && !contrasena) {
+      msgs.current.show([
+        {
+          severity: "error",
+          summary: "Error",
+          detail: "Ingresa tus datos",
+          sticky: true,
+        },
+      ]);
+    } else if (!rut) {
+      msgs.current.show([
+        {
+          severity: "error",
+          summary: "Error",
+          detail: "Falta ingresar el rut",
+          sticky: true,
+        },
+      ]);
+    } else if (!contrasena) {
+      msgs.current.show([
+        {
+          severity: "error",
+          summary: "Error",
+          detail: "Falta ingresar la contraseña",
+          sticky: true,
+        },
+      ]);
+    } else {
+      dispatch(autenticando(formik.values));
       toast.current.show({
         severity: "success",
-        summary: "Iniciando sesión...",
-        detail: "Espere un momento por favor",
+        summary: "Bienvenido",
+        detail: "Iniciando sesión...",
         life: 2000,
       });
-    } else if (errorMessage) {
-      try {
-        throw new Error("Ingresa tus datos");
-      } catch (error) {
-        msgs.current.show([
-          {
-            severity: "error",
-            summary: "Error",
-            detail: error.message,
-            sticky: true,
-          },
-        ]);
-      }
-    }
-    if (formik.values.rut != "") {
-      dispatch(revisandoAutentication(formik.values));
-    } else {
-      try {
-        throw new Error("Ingresa tu rut");
-      } catch (error) {
-        msgs.current.show([
-          {
-            severity: "error",
-            summary: "Error",
-            detail: error.message,
-            sticky: true,
-          },
-        ]);
-      }
     }
   };
 
@@ -73,8 +73,8 @@ export const IniciarSesionPage = () => {
       ...formData,
     },
     validationSchema: Yup.object({
-      rut: Yup.string().required("Ingrese el rut"),
-      contrasena: Yup.string().required("Ingrese la contraseña"),
+      rut: Yup.string().required("El rut es obligatorio"),
+      contrasena: Yup.string().required("La contraseña es obligatoria"),
     }),
     onSubmit: (data) => {
       console.log(data);
@@ -90,11 +90,6 @@ export const IniciarSesionPage = () => {
   return (
     <Contenedor>
       <Toast ref={toast} />
-      <head>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width-device-width, initial-scale-1.0" />
-        <title>Bienvenido</title>
-      </head>
       <Form onSubmit={formik.handleSubmit}>
         <Titulo>Iniciar Sesión</Titulo>
         <ContenedorCampos>
@@ -111,7 +106,7 @@ export const IniciarSesionPage = () => {
           </ContenedorSpan>
           {getFormErrorMessage("contrasena")}
         </ContenedorCampos>
-        {errorMessage && <Messages ref={msgs} />}
+        <Messages ref={msgs} />
         <Boton label="Iniciar Sesión" disabled={loading} severity="success" onClick={submit} />
       </Form>
     </Contenedor>

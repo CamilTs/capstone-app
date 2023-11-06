@@ -4,15 +4,24 @@ export const Contenedor = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+  height: 100%;
   flex-direction: column;
-  justify-content: center;
+
+  @media (max-width: 675px) {
+    gap: 1rem;
+    overflow-x: scroll;
+  }
 `;
 
 export const ContenedorHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+
+  @media (max-width: 675px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
 `;
 
 export const ContenedorOpciones = styled.div`
@@ -22,17 +31,16 @@ export const ContenedorOpciones = styled.div`
 
 export const ContenedorExportar = styled.div`
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
   gap: 1rem;
 `;
 
 export const ContenedorTabla = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const Titulo = styled.h2`

@@ -3,12 +3,30 @@ import styled from "styled-components";
 export const ContenedorAncho = styled.div`
   background-color: #fff;
   padding: 1rem 2rem 1rem 2rem;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 950px) {
+    overflow-y: scroll;
+  }
+`;
+
+export const Formulario = styled.form`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const ContenedorPrimario = styled.div`
   width: 100%;
   display: flex;
   gap: 1rem;
+
+  @media (max-width: 950px) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 `;
 
 export const ContenedorImg = styled.div`
@@ -86,19 +104,6 @@ export const ContenedorCampos = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-
-  @media (max-width: 1920px) {
-    width: 100%;
-  }
-  @media (max-width: 1600px) {
-    width: 90%;
-  }
-  @media (max-width: 1360px) {
-    width: 80%;
-  }
-  @media (max-width: 1024px) {
-    width: 70%;
-  }
 `;
 
 export const Campos = styled.div`

@@ -7,20 +7,23 @@ export const Titulo = styled.h2`
 `;
 
 export const Contenedor = styled.div`
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  padding: 1rem 2rem 1rem 2rem;
+
+  @media (max-width: 920px) {
+    overflow-y: scroll;
+  }
 `;
 
 export const Formulario = styled.form`
   display: flex;
-  padding: 1rem 2rem 1rem 2rem;
   gap: 1rem;
 
   @media (max-width: 920px) {
     flex-wrap: wrap;
-    overflow-y: scroll;
     justify-content: center;
   }
 `;
@@ -107,18 +110,11 @@ export const ContenedorCampos = styled.div`
   flex-direction: column;
 `;
 
-export const Contenedor2 = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  justify-content: center;
-`;
-
 export const ContenedorBotones = styled.div`
-  width: 100%;
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 0.5rem;
+  width: 100%;
 `;
 
 // Mis Publicados estilos //
