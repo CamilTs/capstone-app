@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 
 const useGraficos = (formato = {}, tipo = "") => {
+  // console.log(formato);
   const formatoDefault = {
     data: { datasets: [] },
     options: {
@@ -13,7 +14,7 @@ const useGraficos = (formato = {}, tipo = "") => {
     },
   };
   formato = { ...formatoDefault, ...formato };
-
+  console.log(formato);
   const [loading, setLoading] = useState(false);
   const [infoGrafico, setInfoGrafico] = useState(formato);
 
@@ -50,6 +51,39 @@ const useGraficos = (formato = {}, tipo = "") => {
     }
   };
 
+  // const productoPorAnio = async () => {
+  //   const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+  //   const valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  //   try {
+  //     setLoading(true);
+  //     const response = await api.get("/registro/productosVendidosAnio");
+  //     const { data } = response;
+  //     const nuevoDataset = [];
+  //     for (let i = 0; i < data.data.length; i++) {
+  //       const nuevosValores = [...valores];
+  //       const element = data.data[i];
+  //       const nombre = element.nombre;
+  //       console.log(element);
+  //       const mes = element.mes - 1;
+  //       nuevosValores[mes] = element.cantidadVendida;
+  //       nuevoDataset.push({ label: nombre, data: nuevosValores });
+  //     }
+  //     setInfoGrafico({
+  //       ...infoGrafico,
+  //       data: {
+  //         labels,
+  //         datasets: nuevoDataset,
+  //         parsing: {
+  //           yAxisKey: "gm",
+  //         },
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const productoPorAnio = async () => {
     const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     const valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -57,12 +91,17 @@ const useGraficos = (formato = {}, tipo = "") => {
       setLoading(true);
       const response = await api.get("/registro/productosVendidosAnio");
       const { data } = response;
+      let nuevoDataset = [];
       for (let i = 0; i < data.data.length; i++) {
+        const nuevosValores = [...valores];
         const element = data.data[i];
+        const nombre = element.nombre;
+        console.log(element);
         const mes = element.mes - 1;
         valores[mes] = element.cantidadVendida;
       }
-      setInfoGrafico({ ...infoGrafico, data: { labels, datasets: [{ label: "Producto mas vendido en el año", data: valores }] } });
+      nuevoDataset = [{ label: "Prueba", data: valores }];
+      setInfoGrafico({ ...infoGrafico, data: { labels, datasets: nuevoDataset } });
     } catch (error) {
       console.log(error);
     } finally {
@@ -70,11 +109,9 @@ const useGraficos = (formato = {}, tipo = "") => {
     }
   };
 
-<<<<<<< HEAD
   const registroPorAnio = async () => {
     const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     const valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    console.log(infoGrafico);
     try {
       setLoading(true);
       const response = await api.get("/registro/compararRegistroAnio");
@@ -94,7 +131,11 @@ const useGraficos = (formato = {}, tipo = "") => {
         }
         setInfoGrafico({ ...infoGrafico, data: { labels, datasets: nuevoDataset } });
       }
-=======
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const pruebaProductosPorAnio = async () => {
     const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     const valoresMasVendidos = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -110,39 +151,31 @@ const useGraficos = (formato = {}, tipo = "") => {
       setLoading(true);
       const response = await api.get("/registro/productosVendidosAnioPrueba");
       const { data } = response;
-      console.log("====================================");
-      console.log("SOY EL DE PRUEBA", data);
+      console.log(data);
       for (let i = 0; i < data.data.length; i++) {
         const element = data.data[i];
         console.log(element);
-        const mes = element.mes - 1;
-        const nombre = element.nombre;
-        console.log(nombre);
-
-        if (element.cantidadVendida > cantidadMasVendida) {
-          cantidadMasVendida = element.cantidadVendida;
-          productoMasVendido = nombre;
-          mesMas = mes;
-        }
-
-        if (element.cantidadVendida < cantidadMenosVendida) {
-          cantidadMenosVendida = element.cantidadVendida;
-          productoMenosVendido = nombre;
-          mesMenos = mes;
-        }
-
-        valoresMasVendidos[mes] = element.cantidadVendida;
-        valoresMenosVendidos[mes] = element.cantidadVendida;
-        console.log("====================================");
-        console.log(valoresMasVendidos);
-        console.log(valoresMenosVendidos);
-        console.log("====================================");
       }
+      // for (let i = 0; i < data.data.length; i++) {
+      //   const element = data.data[i];
+      //   const mes = element.mes - 1;
+      //   const nombre = element.nombre;
 
-      console.log("====================================");
-      console.log(`SOY EL MAS VENDIDO DE ¡¡${mesMas}!!`, productoMasVendido, cantidadMasVendida);
-      console.log(`SOY EL MAS VENDIDO DE ¡¡${mesMenos}!!`, productoMenosVendido, cantidadMenosVendida);
-      console.log("====================================");
+      //   if (element.cantidadVendida > cantidadMasVendida) {
+      //     cantidadMasVendida = element.cantidadVendida;
+      //     productoMasVendido = nombre;
+      //     mesMas = mes;
+      //   }
+
+      //   if (element.cantidadVendida < cantidadMenosVendida) {
+      //     cantidadMenosVendida = element.cantidadVendida;
+      //     productoMenosVendido = nombre;
+      //     mesMenos = mes;
+      //   }
+
+      //   valoresMasVendidos[mes] = element.cantidadVendida;
+      //   valoresMenosVendidos[mes] = element.cantidadVendida;
+      // }
 
       setInfoGrafico({
         ...infoGrafico,
@@ -154,7 +187,6 @@ const useGraficos = (formato = {}, tipo = "") => {
           ],
         },
       });
->>>>>>> cliente
     } catch (error) {
       console.log(error);
     } finally {
@@ -163,7 +195,6 @@ const useGraficos = (formato = {}, tipo = "") => {
   };
 
   const cargarInformacion = () => {
-    console.log(tipo);
     switch (tipo) {
       case "registro":
         registroMes();
