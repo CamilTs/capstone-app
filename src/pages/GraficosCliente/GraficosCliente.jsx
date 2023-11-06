@@ -8,9 +8,6 @@ export const GraficosCliente = () => {
   const { infoGrafico, loading } = useGraficos(null, "productoPorAnio");
   const { infoGrafico: registroData, loading: registroLoading } = useGraficos(null, "registro");
   const { infoGrafico: registroAnioData, loading: registroAnioLoading } = useGraficos(null, "registroAnio");
-  const { infoGrafico: registroMesData, loading: registroMesLoading } = useGraficos(null, "mes");
-  const { infoGrafico: pruebaData, loading: pruebaLoading } = useGraficos(null, "prueba");
-  // const { infoGrafico: infoGrafico2, loading: loading2 } = useGraficos({ data: { nombre: "hola" } });
 
   useEffect(() => {}, []);
   return (

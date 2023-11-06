@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 
 const useGraficos = (formato = {}, tipo = "") => {
-  // console.log(formato);
   const formatoDefault = {
     data: { datasets: [] },
     options: {
@@ -51,39 +50,6 @@ const useGraficos = (formato = {}, tipo = "") => {
     }
   };
 
-  // const productoPorAnio = async () => {
-  //   const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-  //   const valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  //   try {
-  //     setLoading(true);
-  //     const response = await api.get("/registro/productosVendidosAnio");
-  //     const { data } = response;
-  //     const nuevoDataset = [];
-  //     for (let i = 0; i < data.data.length; i++) {
-  //       const nuevosValores = [...valores];
-  //       const element = data.data[i];
-  //       const nombre = element.nombre;
-  //       console.log(element);
-  //       const mes = element.mes - 1;
-  //       nuevosValores[mes] = element.cantidadVendida;
-  //       nuevoDataset.push({ label: nombre, data: nuevosValores });
-  //     }
-  //     setInfoGrafico({
-  //       ...infoGrafico,
-  //       data: {
-  //         labels,
-  //         datasets: nuevoDataset,
-  //         parsing: {
-  //           yAxisKey: "gm",
-  //         },
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const productoPorAnio = async () => {
     const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     const valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -136,64 +102,6 @@ const useGraficos = (formato = {}, tipo = "") => {
     }
   };
 
-  const pruebaProductosPorAnio = async () => {
-    const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-    const valoresMasVendidos = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    const valoresMenosVendidos = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    let cantidadMasVendida = 0;
-    let productoMasVendido = "";
-    let cantidadMenosVendida = Infinity;
-    let productoMenosVendido = "";
-    let mesMas = "";
-    let mesMenos = "";
-
-    try {
-      setLoading(true);
-      const response = await api.get("/registro/productosVendidosAnioPrueba");
-      const { data } = response;
-      console.log(data);
-      for (let i = 0; i < data.data.length; i++) {
-        const element = data.data[i];
-        console.log(element);
-      }
-      // for (let i = 0; i < data.data.length; i++) {
-      //   const element = data.data[i];
-      //   const mes = element.mes - 1;
-      //   const nombre = element.nombre;
-
-      //   if (element.cantidadVendida > cantidadMasVendida) {
-      //     cantidadMasVendida = element.cantidadVendida;
-      //     productoMasVendido = nombre;
-      //     mesMas = mes;
-      //   }
-
-      //   if (element.cantidadVendida < cantidadMenosVendida) {
-      //     cantidadMenosVendida = element.cantidadVendida;
-      //     productoMenosVendido = nombre;
-      //     mesMenos = mes;
-      //   }
-
-      //   valoresMasVendidos[mes] = element.cantidadVendida;
-      //   valoresMenosVendidos[mes] = element.cantidadVendida;
-      // }
-
-      setInfoGrafico({
-        ...infoGrafico,
-        data: {
-          labels,
-          datasets: [
-            { label: `Producto noviembre: ${productoMasVendido}`, data: valoresMasVendidos },
-            { label: `Producto octubre: ${productoMenosVendido}`, data: valoresMenosVendidos },
-          ],
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const cargarInformacion = () => {
     switch (tipo) {
       case "registro":
@@ -207,9 +115,6 @@ const useGraficos = (formato = {}, tipo = "") => {
         break;
       case "productoPorAnio":
         productoPorAnio();
-        break;
-      case "prueba":
-        pruebaProductosPorAnio();
         break;
 
       default:
