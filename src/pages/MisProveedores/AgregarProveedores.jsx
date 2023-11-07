@@ -6,20 +6,20 @@ import { Toast } from "primereact/toast";
 import {
   ContenedorProveedores,
   ContenedorHeader,
-  MiniPerfil,
-  DatosMiniPerfil,
   ContenedorBoton,
   Formulario,
   ContenedorInput,
   Campos,
   ContenedorFormulario,
-  DatosProveedor,
+  ContenedorBotonProveedor,
 } from "./components/StyledAgregarProveedor";
 import { api } from "../../api/api";
 import { useFormik } from "formik";
 import { ProveedorSchema } from "../../components/Validaciones";
 import { useSelector } from "react-redux";
 import { InputContainer } from "../../components/InputContainer";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 const AgregarProveedores = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -167,17 +167,16 @@ const AgregarProveedores = () => {
     return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
   };
 
-  const [refrescar, setRefrescar] = useState(0);
-
-  const refrescarPagina = () => {
-    console.log("refrescando");
-    setRefrescar(refrescar + 1);
-    console.log("valor de refrescar: " + refrescar);
-  };
-
   useEffect(() => {
     traerProveedores();
   }, []);
+
+  const botonesOpciones = (
+    <ContenedorBotonProveedor>
+      <Button raised outlined severity="info" icon="pi pi-pencil" rounded />
+      <Button raised outlined severity="danger" icon="pi pi-trash" rounded />
+    </ContenedorBotonProveedor>
+  );
 
   return (
     <ContenedorProveedores>
@@ -185,6 +184,15 @@ const AgregarProveedores = () => {
         <Button raised label="Agregar Proveedor" severity="success" icon="pi pi-plus" onClick={verFormulario} />
         <Button raised severity="info" icon="pi pi-refresh" onClick={traerProveedores} />
       </ContenedorHeader>
+
+      <DataTable value={proveedor} paginator rows={5} rowsPerPageOptions={[5, 10, 15]}>
+        <Column field="nombre" header="Nombre" />
+        <Column field="descripcion" header="Descripción" />
+        <Column field="telefono" header="Telefono" />
+        <Column field="correo" header="Correo" />
+        <Column header="Opciones" body={botonesOpciones} />
+      </DataTable>
+
       <Dialog visible={mostrarFormulario} onHide={ocultarFormulario} header="Agregar Proveedor">
         <ContenedorFormulario>
           <Formulario onSubmit={formik.handleSubmit}>
@@ -215,6 +223,7 @@ const AgregarProveedores = () => {
                     color: "#333",
                   }}
                   name="descripcion"
+                  placeholder="Ingrese la descripción del proveedor"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.descripcion}
@@ -228,7 +237,7 @@ const AgregarProveedores = () => {
                 <InputContainer
                   name="telefono"
                   type={"number"}
-                  placeholder="El telefono debe llevar '9' al inicio.."
+                  placeholder="El telefono debe llevar '9' al inicio"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.telefono}
@@ -240,7 +249,7 @@ const AgregarProveedores = () => {
                 <InputContainer
                   name="correo"
                   type={"email"}
-                  placeholder="El correo debe llevar @.."
+                  placeholder="Ingrese el correo del proveedor"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.correo}
@@ -255,21 +264,6 @@ const AgregarProveedores = () => {
           </ContenedorBoton>
         </ContenedorFormulario>
       </Dialog>
-
-      {proveedor.map((proveedor, index) => (
-        <MiniPerfil key={index}>
-          <DatosMiniPerfil>
-            <DatosProveedor>Nombre: {proveedor.nombre}</DatosProveedor>
-            <DatosProveedor>Descripción: {proveedor.descripcion}</DatosProveedor>
-            <DatosProveedor>Telefono: {proveedor.telefono}</DatosProveedor>
-            <DatosProveedor>Correo: {proveedor.correo}</DatosProveedor>
-          </DatosMiniPerfil>
-          <ContenedorBoton>
-            <Button raised label="Editar" severity="info" icon="pi pi-pencil" rounded />
-            <Button raised label="Eliminar" severity="danger" icon="pi pi-trash" rounded />
-          </ContenedorBoton>
-        </MiniPerfil>
-      ))}
     </ContenedorProveedores>
   );
 };

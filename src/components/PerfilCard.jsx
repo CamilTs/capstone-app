@@ -4,8 +4,6 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
-import { cerrarSesion } from "../store/auth";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { useRef } from "react";
 import { Toast } from "primereact/toast";
 
