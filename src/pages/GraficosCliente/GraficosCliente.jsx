@@ -6,7 +6,7 @@ import { ScrollPanel } from "primereact/scrollpanel";
 
 export const GraficosCliente = () => {
   const { infoGrafico, loading, title: TitleProductoPorAnio } = useGraficos(null, "productoPorAnio", "Productos mas vendidos");
-  const { infoGrafico: registroData, loading: registroLoading, title: registroTitulo } = useGraficos(null, "registro", "Registros por Mes");
+  const { infoGrafico: registroData, loading: registroLoading, title: registroTitulo } = useGraficos(null, "registro", "Total de ventas por mes");
   const { infoGrafico: registroAnioData, loading: registroAnioLoading, title } = useGraficos(null, "registroAnio", "Registros por Año");
 
   useEffect(() => {}, []);
@@ -16,7 +16,7 @@ export const GraficosCliente = () => {
         <div className="col-4 col-offset-2">
           <div className="p-card">
             <h5 className="text-3xl m-0">{TitleProductoPorAnio}</h5>
-            <Chart type="bar" data={infoGrafico.data} options={infoGrafico.options} />
+            <Chart type="bar" data={infoGrafico.data} options={{ legend: { display: true } }} />
           </div>
         </div>
 

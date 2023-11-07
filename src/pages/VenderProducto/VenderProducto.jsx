@@ -64,7 +64,11 @@ const AgregarVenta = styled.div`
   display: flex;
   gap: 0.5rem;
 `;
-
+const formatoVenta = {
+  productos: [],
+  total: 0,
+  tipo: true,
+};
 export const VenderProducto = () => {
   const { socket } = useContextSocket();
   const { comercio } = useSelector((state) => state.auth);
@@ -72,14 +76,12 @@ export const VenderProducto = () => {
   const [confirmDialogVenta, setConfirmDialogVenta] = useState(false);
   const [confirmDialogLimpiar, setConfirmDialogLimpiar] = useState(false);
 
-  const [registro, setRegistro] = useState({
-    productos: [],
-    total: 0,
-    tipo: true,
-  });
+  const [registro, setRegistro] = useState(formatoVenta);
   const [value, setValue] = useState("");
+  const [ultimoAgregado, setUltimoAgregado] = useState(0);
   const [visible, setVisible] = useState(false);
   const toast = useRef(null);
+
   const navigateProductos = useNavigate();
 
   const agregarProducto = async (codigoBarra = "") => {
@@ -88,6 +90,7 @@ export const VenderProducto = () => {
       const producto = response.data;
 
       if (producto) {
+        setUltimoAgregado(producto.precio);
         const productoExistenteIndex = registro.productos.findIndex((el) => el.codigoBarra === producto.codigo_barra);
 
         if (productoExistenteIndex >= 0) {
@@ -136,12 +139,20 @@ export const VenderProducto = () => {
   const venderProductos = async () => {
     const { data } = await api.post("registro", { ...registro, comercio });
     console.log(data);
+    if (!data.success) return;
+    setRegistro(formatoVenta);
+    setValue("");
+    setUltimoAgregado(0);
     setConfirmDialogVenta(false);
     toast.current.show({ severity: "success", summary: "Listo", detail: "¡Venta realizada con exito!", life: 2000 });
   };
 
   const hadleLimpiarTabla = () => {
     setConfirmDialogLimpiar(false);
+    setRegistro(formatoVenta);
+    setUltimoAgregado(0);
+
+    setValue("");
     toast.current.show({ severity: "info", summary: "Listo", detail: "¡Tabla limpiada con exito!", life: 2000 });
   };
 
@@ -155,7 +166,13 @@ export const VenderProducto = () => {
 
   const botonesVenta = (
     <>
-      <Button label="Vender" severity="info" icon="pi pi-check" onClick={() => setConfirmDialogVenta(true)} />
+      <Button
+        label="Vender"
+        severity="info"
+        icon="pi pi-check"
+        disabled={registro.productos.length == 0}
+        onClick={() => setConfirmDialogVenta(true)}
+      />
       <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={() => setConfirmDialogLimpiar(true)} />
     </>
   );
@@ -200,7 +217,7 @@ export const VenderProducto = () => {
               </TotalContenedor>
               <UltimaContenedor>
                 <b>Ultimo: </b>
-                <span>{0}</span>
+                <span>{ultimoAgregado}</span>
               </UltimaContenedor>
             </DatosVenta>
           </ContenedorDatos>

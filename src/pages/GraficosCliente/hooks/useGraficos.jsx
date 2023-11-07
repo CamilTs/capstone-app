@@ -65,17 +65,15 @@ const useGraficos = (formato = {}, tipo = "", title = "") => {
         const nombre = element.nombre;
         console.log(element);
         const mes = element.mes - 1;
-        nuevosValores[mes] = element.cantidadVendida;
-        nuevoDataset.push({ label: nombre, data: nuevosValores });
+        valores[mes] = element.cantidadVendida;
+        labels[mes] = `${nombre} - ${labels[mes]}`;
       }
+      nuevoDataset.push({ label: "Producto mas vendido", data: valores });
       setInfoGrafico({
         ...infoGrafico,
         data: {
           labels,
           datasets: nuevoDataset,
-          parsing: {
-            yAxisKey: "gm",
-          },
         },
       });
     } catch (error) {

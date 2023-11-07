@@ -24,6 +24,7 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 
 export const Productos = () => {
   const { eliminarProducto, modificarProducto } = useProductos();
+  const [loading, setLoading] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [productoAEliminarId, setProductoAEliminarId] = useState(null);
   const [productoAEliminarNombre, setProductoAEliminarNombre] = useState(null);
@@ -167,6 +168,7 @@ export const Productos = () => {
   );
 
   const traerProductos = async () => {
+    setLoading(true);
     try {
       const response = await api.get("producto/comercio");
       const { data } = response;
@@ -174,6 +176,8 @@ export const Productos = () => {
       setProductos(data.data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -197,6 +201,7 @@ export const Productos = () => {
           scrollable
           scrollHeight="500px"
           globalFilter={globalFiltro}
+          loading={loading}
         >
           <Column field="codigo_barra" header="Código de barra" body={(rowData) => rowData.codigo_barra} />
           <Column field="nombre" header="Productos" body={(rowData) => rowData.nombre} />
