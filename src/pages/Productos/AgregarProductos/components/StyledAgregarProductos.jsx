@@ -2,13 +2,13 @@ import styled from "styled-components";
 
 export const ContenedorAncho = styled.div`
   background-color: #fff;
-  padding: 1rem 2rem 1rem 2rem;
-  gap: 1rem;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
+  height: 100%;
 
-  @media (max-width: 950px) {
-    overflow-y: scroll;
+  @media (max-width: 1500px) {
+    overflow-y: auto;
   }
 `;
 
@@ -45,21 +45,17 @@ export const ImagenPreview = styled.div`
   justify-items: center;
   align-items: center;
 
-  @media (max-width: 1920px) {
-    width: 602px;
-    height: 602px;
-  }
   @media (max-width: 1600px) {
-    width: 552px;
-    height: 552px;
+    width: 402px;
+    height: 402px;
   }
   @media (max-width: 1360px) {
     width: 402px;
     height: 402px;
   }
   @media (max-width: 1024px) {
-    width: 352px;
-    height: 352px;
+    width: 302px;
+    height: 302px;
   }
 `;
 
@@ -68,35 +64,23 @@ export const ImagenImagen = styled.img`
   width: 600px;
   height: 600px;
 
-  @media (max-width: 1920px) {
-    width: 600px;
-    height: 600px;
-  }
   @media (max-width: 1600px) {
-    width: 550px;
-    height: 550px;
+    width: 400px;
+    height: 400px;
   }
   @media (max-width: 1360px) {
     width: 400px;
     height: 400px;
   }
   @media (max-width: 1024px) {
-    width: 350px;
-    height: 350px;
+    width: 300px;
+    height: 300px;
   }
 `;
 
 export const SpanImagen = styled.span`
-  font-size: 50px;
+  font-size: 80px;
   color: black;
-`;
-
-export const LabelImagen = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  align-items: center;
 `;
 
 export const ContenedorCampos = styled.div`
@@ -124,7 +108,7 @@ export const ContenedorNumber = styled.div`
     width: 100%;
   }
   @media (max-width: 1600px) {
-    width: 90%;
+    width: 100%;
   }
   @media (max-width: 1360px) {
     width: 80%;
@@ -139,8 +123,6 @@ export const Opciones = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  align-items: baseline;
-  width: 100%;
 `;
 
 export const Titulo = styled.h2`

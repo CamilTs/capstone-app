@@ -2,6 +2,9 @@ import styled from "styled-components";
 
 export const ContenedorProveedores = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
 `;
 
 export const ContenedorHeader = styled.div`
@@ -12,22 +15,10 @@ export const ContenedorHeader = styled.div`
   gap: 1rem;
 `;
 
-export const MiniPerfil = styled.div`
-  display: flex;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  background-color: #50838f;
-  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.8);
-  justify-content: space-around;
-`;
-
 export const DatosMiniPerfil = styled.div`
-  color: white;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-left: 1rem;
 `;
 
 export const DatosProveedor = styled.div`
@@ -47,9 +38,13 @@ export const Formulario = styled.form`
 
 export const ContenedorBoton = styled.div`
   display: flex;
-  flex-direction: column;
+  width: 100%;
   gap: 1rem;
-  justify-content: center;
+`;
+
+export const ContenedorBotonProveedor = styled.div`
+  display: flex;
+  gap: 0.5rem;
 `;
 
 export const ContenedorInput = styled.div`
@@ -67,6 +62,16 @@ export const Campos = styled.div`
 
 export const ContenedorFormulario = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 1rem;
+  flex-direction: column;
+`;
+
+export const ContenedorAccordeon = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const CardAcordeon = styled.div`
+  padding: 1rem;
+  border-radius: 0.5rem;
 `;

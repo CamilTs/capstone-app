@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import { api } from "../../../api/api";
 import { Contenedor } from "./StyledComponents";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 export const VerRegistros = () => {
   const [usuarios, setUsuarios] = useState([]);

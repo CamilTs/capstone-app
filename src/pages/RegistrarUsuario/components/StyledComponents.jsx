@@ -3,20 +3,13 @@ import styled from "styled-components";
 export const ContenedorMasivo = styled.div`
   height: 100%;
 
-  @media (max-width: 978px) {
-    overflow-y: scroll;
+  @media (max-width: 1500px) {
+    overflow-y: auto;
   }
 `;
 
 export const Contenedor = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  height: 100%;
   padding: 1rem;
-
-  @media (max-width: 978px) {
-  }
 `;
 
 export const Formulario = styled.form`
@@ -31,7 +24,7 @@ export const Inputs = styled.div`
   flex-direction: row;
   gap: 1rem;
 
-  @media (max-width: 978px) {
+  @media (max-width: 1200px) {
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -123,5 +116,4 @@ export const Opciones = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
-  width: 100%;
 `;
