@@ -14,7 +14,6 @@ import {
   ImagenPreview,
   ImagenImagen,
   SpanImagen,
-  LabelImagen,
   ContenedorCampos,
   Campos,
   ContenedorNumber,
@@ -184,98 +183,99 @@ export const AgregarProductos = () => {
     <ContenedorAncho>
       <Titulo>Agregar Productos</Titulo>
       <Toast ref={toast} />
-      <Formulario onSubmit={formik.handleSubmit}>
-        <ContenedorPrimario>
-          <ContenedorImg>
-            <ImagenPreview>
-              {formik.values.imagen == "" ? <SpanImagen className="pi pi-camera" /> : <ImagenImagen src={formik.values.imagen} />}
-            </ImagenPreview>
-            {imagen && (
-              <div style={{ marginTop: "10px" }}>
-                <img src={URL.createObjectURL(imagen)} alt="Vista previa de la foto de perfil" style={{ maxWidth: "100px" }} />
-              </div>
-            )}
-            <LabelImagen>
-              <label htmlFor="imagen">Imagen</label>
+      <div>
+        <Formulario onSubmit={formik.handleSubmit}>
+          <ContenedorPrimario>
+            <ContenedorImg>
+              <ImagenPreview>
+                {formik.values.imagen == "" ? <SpanImagen className="pi pi-camera" /> : <ImagenImagen src={formik.values.imagen} />}
+              </ImagenPreview>
+              {imagen && (
+                <div style={{ marginTop: "10px" }}>
+                  <img src={URL.createObjectURL(imagen)} alt="Vista previa de la foto de perfil" style={{ maxWidth: "100px" }} />
+                </div>
+              )}
+
+              <label htmlFor="imagen"></label>
               <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} auto chooseLabel="Subir" onSelect={handleFileChange} />
-            </LabelImagen>
-            {getFormErrorMessage("imagen")}
-          </ContenedorImg>
-          <ContenedorCampos>
-            <Campos>
-              <label htmlFor="nombre">Nombre</label>
-              <InputText
-                id="nombre"
-                name="nombre"
-                placeholder="Ingrese nombre del producto.."
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.nombre}
-              />
-              {getFormErrorMessage("nombre")}
-              <label htmlFor="codigo_barra">Código de barra</label>
-              <InputText
-                id="codigo_barra"
-                name="codigo_barra"
-                placeholder="Ingrese código de barra.."
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.codigo_barra}
-              />
-              {getFormErrorMessage("codigo_barra")}
-              <label htmlFor="categoria">Categoría</label>
-              <Dropdown
-                id="categoria"
-                name="categoria"
-                options={categorias}
-                placeholder="Seleccione una categoría"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.categoria}
-              />
-              {getFormErrorMessage("categoria")}
-            </Campos>
-            <ContenedorNumber>
+              {getFormErrorMessage("imagen")}
+            </ContenedorImg>
+            <ContenedorCampos>
               <Campos>
-                <label htmlFor="cantidad">Cantidad</label>
-                <InputContainer
-                  inputId="minmax-buttons"
-                  name="cantidad"
-                  type="number"
-                  mode="decimal"
-                  showButtons
-                  min={0}
-                  max={100}
+                <label htmlFor="nombre">Nombre</label>
+                <InputText
+                  id="nombre"
+                  name="nombre"
+                  placeholder="Ingrese nombre del producto.."
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.cantidad}
+                  value={formik.values.nombre}
                 />
-                {getFormErrorMessage("cantidad")}
-              </Campos>
-              <Campos>
-                <label htmlFor="precio">Precio</label>
-                <InputContainer
-                  id="precio"
-                  name="precio"
-                  type="number"
-                  mode="decimal"
-                  showButtons
-                  min={0}
-                  max={1000000}
+                {getFormErrorMessage("nombre")}
+                <label htmlFor="codigo_barra">Código de barra</label>
+                <InputText
+                  id="codigo_barra"
+                  name="codigo_barra"
+                  placeholder="Ingrese código de barra.."
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.precio}
+                  value={formik.values.codigo_barra}
                 />
-                {getFormErrorMessage("precio")}
+                {getFormErrorMessage("codigo_barra")}
+                <label htmlFor="categoria">Categoría</label>
+                <Dropdown
+                  id="categoria"
+                  name="categoria"
+                  options={categorias}
+                  placeholder="Seleccione una categoría"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.categoria}
+                />
+                {getFormErrorMessage("categoria")}
               </Campos>
-            </ContenedorNumber>
-          </ContenedorCampos>
-        </ContenedorPrimario>
-      </Formulario>
-      <Opciones>
-        <Button label="Agregar" icon="pi pi-plus" className="p-button-success" rounded onClick={confirmarAgregar} />
-        <Button label="Limpiar" icon="pi pi-trash" className="p-button-danger" rounded onClick={confirmarLimpiar} />
-      </Opciones>
+              <ContenedorNumber>
+                <Campos>
+                  <label htmlFor="cantidad">Cantidad</label>
+                  <InputContainer
+                    inputId="minmax-buttons"
+                    name="cantidad"
+                    type="number"
+                    mode="decimal"
+                    showButtons
+                    min={0}
+                    max={100}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.cantidad}
+                  />
+                  {getFormErrorMessage("cantidad")}
+                </Campos>
+                <Campos>
+                  <label htmlFor="precio">Precio</label>
+                  <InputContainer
+                    id="precio"
+                    name="precio"
+                    type="number"
+                    mode="decimal"
+                    showButtons
+                    min={0}
+                    max={1000000}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.precio}
+                  />
+                  {getFormErrorMessage("precio")}
+                </Campos>
+              </ContenedorNumber>
+            </ContenedorCampos>
+          </ContenedorPrimario>
+        </Formulario>
+        <Opciones>
+          <Button label="Agregar" icon="pi pi-plus" className="p-button-success" rounded onClick={confirmarAgregar} />
+          <Button label="Limpiar" icon="pi pi-trash" className="p-button-danger" rounded onClick={confirmarLimpiar} />
+        </Opciones>
+      </div>
     </ContenedorAncho>
   );
 };
