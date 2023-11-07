@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 
-const useGraficos = (formato = {}, tipo = "") => {
+const useGraficos = (formato = {}, tipo = "", title = "") => {
   // console.log(formato);
   const formatoDefault = {
     data: { datasets: [] },
@@ -40,7 +40,7 @@ const useGraficos = (formato = {}, tipo = "") => {
       const { data } = response;
       for (let i = 0; i < data.data.length; i++) {
         const element = data.data[i];
-        const mes = new Date(element.createdAt).getMonth();
+        const mes = element.mes - 1;
         valores[mes] = element.total;
       }
       setInfoGrafico({ ...infoGrafico, data: { labels, datasets: [{ label: "Ventas", data: valores }] } });
@@ -51,39 +51,6 @@ const useGraficos = (formato = {}, tipo = "") => {
     }
   };
 
-  // const productoPorAnio = async () => {
-  //   const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-  //   const valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  //   try {
-  //     setLoading(true);
-  //     const response = await api.get("/registro/productosVendidosAnio");
-  //     const { data } = response;
-  //     const nuevoDataset = [];
-  //     for (let i = 0; i < data.data.length; i++) {
-  //       const nuevosValores = [...valores];
-  //       const element = data.data[i];
-  //       const nombre = element.nombre;
-  //       console.log(element);
-  //       const mes = element.mes - 1;
-  //       nuevosValores[mes] = element.cantidadVendida;
-  //       nuevoDataset.push({ label: nombre, data: nuevosValores });
-  //     }
-  //     setInfoGrafico({
-  //       ...infoGrafico,
-  //       data: {
-  //         labels,
-  //         datasets: nuevoDataset,
-  //         parsing: {
-  //           yAxisKey: "gm",
-  //         },
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const productoPorAnio = async () => {
     const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     const valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -91,23 +58,56 @@ const useGraficos = (formato = {}, tipo = "") => {
       setLoading(true);
       const response = await api.get("/registro/productosVendidosAnio");
       const { data } = response;
-      let nuevoDataset = [];
+      const nuevoDataset = [];
       for (let i = 0; i < data.data.length; i++) {
         const nuevosValores = [...valores];
         const element = data.data[i];
         const nombre = element.nombre;
         console.log(element);
         const mes = element.mes - 1;
-        valores[mes] = element.cantidadVendida;
+        nuevosValores[mes] = element.cantidadVendida;
+        nuevoDataset.push({ label: nombre, data: nuevosValores });
       }
-      nuevoDataset = [{ label: "Prueba", data: valores }];
-      setInfoGrafico({ ...infoGrafico, data: { labels, datasets: nuevoDataset } });
+      setInfoGrafico({
+        ...infoGrafico,
+        data: {
+          labels,
+          datasets: nuevoDataset,
+          parsing: {
+            yAxisKey: "gm",
+          },
+        },
+      });
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
+  // const productoPorAnio = async () => {
+  //   const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+  //   const valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  //   try {
+  //     setLoading(true);
+  //     const response = await api.get("/registro/productosVendidosAnio");
+  //     const { data } = response;
+  //     let nuevoDataset = [];
+  //     for (let i = 0; i < data.data.length; i++) {
+  //       const nuevosValores = [...valores];
+  //       const element = data.data[i];
+  //       const nombre = element.nombre;
+  //       console.log(element);
+  //       const mes = element.mes - 1;
+  //       valores[mes] = element.cantidadVendida;
+  //     }
+  //     nuevoDataset = [{ label: "Prueba", data: valores }];
+  //     setInfoGrafico({ ...infoGrafico, data: { labels, datasets: nuevoDataset } });
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const registroPorAnio = async () => {
     const labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
@@ -224,7 +224,7 @@ const useGraficos = (formato = {}, tipo = "") => {
   }, []);
 
   //   useEffect(() => {}, [infoGrafico]);
-  return { loading, infoGrafico };
+  return { loading, infoGrafico, title };
 };
 
 export default useGraficos;

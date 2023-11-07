@@ -200,7 +200,7 @@ export const Productos = () => {
         >
           <Column field="codigo_barra" header="Código de barra" body={(rowData) => rowData.codigo_barra} />
           <Column field="nombre" header="Productos" body={(rowData) => rowData.nombre} />
-          <Column field="categoria" header="Categorias" body={(rowData) => rowData.categoria} />
+          <Column field="categoria" header="Categorias" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoria")} />
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
           <Column field="fecha" header="Fecha" body={(rowData) => rowData.fecha} />
           <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />

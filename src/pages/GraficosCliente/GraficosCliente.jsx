@@ -5,38 +5,39 @@ import useGraficos from "./hooks/useGraficos";
 import { ScrollPanel } from "primereact/scrollpanel";
 
 export const GraficosCliente = () => {
-  const { infoGrafico, loading } = useGraficos(null, "productoPorAnio");
-  const { infoGrafico: registroData, loading: registroLoading } = useGraficos(null, "registro");
-  const { infoGrafico: registroAnioData, loading: registroAnioLoading } = useGraficos(null, "registroAnio");
-  const { infoGrafico: registroMesData, loading: registroMesLoading } = useGraficos(null, "mes");
-  const { infoGrafico: pruebaData, loading: pruebaLoading } = useGraficos(null, "prueba");
-  // const { infoGrafico: infoGrafico2, loading: loading2 } = useGraficos({ data: { nombre: "hola" } });
+  const { infoGrafico, loading, title: TitleProductoPorAnio } = useGraficos(null, "productoPorAnio", "Productos mas vendidos");
+  const { infoGrafico: registroData, loading: registroLoading, title: registroTitulo } = useGraficos(null, "registro", "Registros por Mes");
+  const { infoGrafico: registroAnioData, loading: registroAnioLoading, title } = useGraficos(null, "registroAnio", "Registros por Año");
 
   useEffect(() => {}, []);
   return (
     <ScrollPanel style={{ width: "100%", height: "100%" }}>
-      <div className="grid">
-        <div className="col-5">
+      <div className="grid gap-2 justity-content-center">
+        <div className="col-4 col-offset-2">
           <div className="p-card">
+            <h5 className="text-3xl m-0">{TitleProductoPorAnio}</h5>
             <Chart type="bar" data={infoGrafico.data} options={infoGrafico.options} />
           </div>
         </div>
 
-        <div className="col-5">
+        <div className="col-4 ">
           <div className="p-card">
+            <h5 className="text-3xl m-0">{title}</h5>
+
             <Chart type="line" data={registroAnioData.data} />
           </div>
         </div>
-        <div className="col-5">
+        <div className="col-4 col-offset-2">
           <div className="p-card">
+            <h5 className="text-3xl m-0">{registroTitulo}</h5>
             <Chart
               className=""
-              type="pie"
+              type="polarArea"
               data={registroData.data}
               options={{
                 plugins: {
                   legend: {
-                    position: "right",
+                    position: "bottom",
                     labels: {
                       font: {
                         size: 14,
