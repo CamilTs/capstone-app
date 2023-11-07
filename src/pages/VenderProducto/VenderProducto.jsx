@@ -1,4 +1,3 @@
-import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
@@ -11,6 +10,7 @@ import { useContextSocket } from "../../context/SocketContext";
 import { api } from "../../api/api";
 import { useSelector } from "react-redux";
 import { InputText } from "primereact/inputtext";
+import { DataTable } from "primereact/datatable";
 
 const ContenedorPrincipal = styled.div`
   display: flex;

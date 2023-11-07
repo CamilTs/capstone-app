@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
-import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { useProductos } from "../../../context/ProductosContext";
@@ -21,6 +20,7 @@ import {
 } from "./components/StyledVerProductos";
 import { api } from "../../../api/api";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import { DataTable } from "primereact/datatable";
 
 export const Productos = () => {
   const { eliminarProducto, modificarProducto } = useProductos();

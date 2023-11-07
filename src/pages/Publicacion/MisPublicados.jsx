@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../../api/api";
-import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ContenedorMP, ContenedorTabla, Titulo } from "./components/StyledComponents";
-import { ConfirmDialog } from "primereact/confirmdialog";
+import { DataTable } from "primereact/datatable";
 
 export const MisPublicados = () => {
   const [publicacion, setPublicacion] = useState([]);

@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 
-import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import {
   Contenedor,
@@ -15,6 +14,7 @@ import {
   ContenedorTabla,
 } from "./components/StyledPaginaPrincipal";
 import { useState } from "react";
+import { DataTable } from "primereact/datatable";
 
 // COMPONENTES
 
