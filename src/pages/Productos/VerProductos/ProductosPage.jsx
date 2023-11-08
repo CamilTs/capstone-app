@@ -21,6 +21,7 @@ import {
 import { api } from "../../../api/api";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
+import { Badge } from "./components/Badge";
 
 export const Productos = () => {
   const { eliminarProducto, modificarProducto } = useProductos();
@@ -130,10 +131,13 @@ export const Productos = () => {
   // Buscar productos, ademas de mostrar los botones de agregar, exportar y pdf //
   const controlInventario = (
     <ContenedorHeader>
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText type="search" placeholder="Buscar" onInput={(e) => setGlobalFiltro(e.target.value)} />
-      </span>
+      <div className="flex gap-2 align-items-center">
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText type="search" placeholder="Buscar" onInput={(e) => setGlobalFiltro(e.target.value)} />
+        </span>
+        <Badge value={productos.length} label="Productos" />
+      </div>
 
       <ContenedorExportar>
         <Button label="Agregar" icon="pi pi-plus" severity="info" rounded onClick={() => navigateAgregar("/agregarProductos")} />
@@ -191,21 +195,21 @@ export const Productos = () => {
       <Titulo>Control Inventario</Titulo>
       <ContenedorTabla>
         <DataTable
-          stripedRows
           removableSort
           header={controlInventario}
           value={productos}
           paginator
-          rows={3}
-          rowsPerPageOptions={[1, 3, 6, 9, 12]}
+          rows={5}
+          rowsPerPageOptions={[5, 10, 15]}
           scrollable
           scrollHeight="580px"
           globalFilter={globalFiltro}
           loading={loading}
+          emptyMessage="Producto no registrado"
         >
           <Column field="codigo_barra" header="Código de barra" body={(rowData) => rowData.codigo_barra} />
-          <Column field="nombre" header="Productos" body={(rowData) => rowData.nombre} />
-          <Column field="categoria" header="Categorias" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoria")} />
+          <Column field="nombre" header="Producto" body={(rowData) => rowData.nombre} />
+          <Column field="categoria" header="Categoria" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoria")} />
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
           <Column field="fecha" header="Fecha" body={(rowData) => rowData.fecha} />
           <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
@@ -230,6 +234,7 @@ export const Productos = () => {
             onChange={(e) => setProductoAModificar({ ...productoAModificar, codigo_barra: e.target.value })}
             required
             autoFocus
+            disabled
           />
         </div>
         <div>
@@ -259,7 +264,7 @@ export const Productos = () => {
               mode="decimal"
               showButtons
               min={0}
-              max={100}
+              max={10000}
             />
           </div>
           <div>

@@ -2,7 +2,7 @@
 // En IniciarSesionPage.jsx (Componente de página)
 
 // import { useDispatch, useSelector } from "react-redux";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Messages } from "primereact/messages";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +24,17 @@ export const IniciarSesionPage = () => {
     rut: "",
     contrasena: "",
   });
+
+  useEffect(() => {
+    if (errorMessage) {
+      msgs.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: errorMessage,
+        life: 3000,
+      });
+    }
+  }, [errorMessage]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -54,6 +65,15 @@ export const IniciarSesionPage = () => {
           severity: "error",
           summary: "Error",
           detail: "Falta ingresar la contraseña",
+          sticky: true,
+        },
+      ]);
+    } else if (errorMessage) {
+      msgs.current.show([
+        {
+          severity: "error",
+          summary: "Error",
+          detail: errorMessage,
           sticky: true,
         },
       ]);

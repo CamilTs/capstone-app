@@ -11,26 +11,47 @@ export const ContendorFinal = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  background-color: #538a95;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 `;
 
 export const ContenedorGraficos = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  justify-items: center;
   border-radius: 6px;
   gap: 1rem;
+  grid-template-areas:
+    "tercero tercero contenedor"
+    "tercero tercero contenedor";
+
+  grid-template-columns: 100px 1fr 1fr;
+`;
+
+export const ContenedorDerecha = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  grid-area: contenedor;
 `;
 
 export const ContenedorDatos = styled.div`
   color: black;
   display: flex;
-  border-radius: 6px;
-  padding: 1rem;
   flex-direction: column;
+  border-radius: 6px;
+  padding: 0.5rem;
   width: 100%;
   background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+
+  &.primero {
+    grid-area: primero;
+  }
+  &.segundo {
+    grid-area: segundo;
+  }
+  &.tercero {
+    grid-area: tercero;
+  }
 `;
 
 export const Titulo = styled.h5`
@@ -39,8 +60,4 @@ export const Titulo = styled.h5`
   margin: 0;
   margin-bottom: 1rem;
   box-sizing: border-box;
-
-  &.a {
-    color: white;
-  }
 `;

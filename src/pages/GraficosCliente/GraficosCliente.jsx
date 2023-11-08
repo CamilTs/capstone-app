@@ -2,7 +2,7 @@ import { Chart } from "primereact/chart";
 import { useEffect, useState } from "react";
 import useGraficos from "./hooks/useGraficos";
 
-import { ContendorFinal, Contenedor, ContenedorDatos, ContenedorGraficos, Titulo } from "./components/StyledComponentGraficos";
+import { ContendorFinal, Contenedor, ContenedorDatos, ContenedorDerecha, ContenedorGraficos, Titulo } from "./components/StyledComponentGraficos";
 
 export const GraficosCliente = () => {
   const { infoGrafico, loading, title: TitleProductoPorAnio } = useGraficos(null, "productoPorAnio", "Productos mas vendidos");
@@ -14,19 +14,20 @@ export const GraficosCliente = () => {
     // <ScrollPanel style={{ width: "100%", height: "100%" }}>
     <Contenedor>
       <ContendorFinal>
-        <Titulo className="a">Analisis de datos</Titulo>
         <ContenedorGraficos>
-          <ContenedorDatos>
-            <Titulo>{TitleProductoPorAnio}</Titulo>
-            <Chart type="bar" data={infoGrafico.data} options={{ legend: { display: true } }} />
-          </ContenedorDatos>
+          <ContenedorDerecha>
+            <ContenedorDatos className="primero">
+              <Titulo>{TitleProductoPorAnio}</Titulo>
+              <Chart type="bar" data={infoGrafico.data} options={{ legend: { display: true } }} />
+            </ContenedorDatos>
 
-          <ContenedorDatos>
-            <Titulo>{title}</Titulo>
-            <Chart type="line" data={registroAnioData.data} />
-          </ContenedorDatos>
+            <ContenedorDatos className="segundo">
+              <Titulo>{title}</Titulo>
+              <Chart type="line" data={registroAnioData.data} />
+            </ContenedorDatos>
+          </ContenedorDerecha>
 
-          <ContenedorDatos>
+          <ContenedorDatos className="tercero">
             <Titulo className="text-3xl m-0">{registroTitulo}</Titulo>
             <Chart
               className=""
@@ -35,7 +36,7 @@ export const GraficosCliente = () => {
               options={{
                 plugins: {
                   legend: {
-                    position: "bottom",
+                    position: "right",
                     labels: {
                       font: {
                         size: 14,
