@@ -33,6 +33,7 @@ const AgregarProveedores = () => {
   });
   const toast = useRef(null);
   const [proveedor, setProveedor] = useState([]);
+  const [Loading, setLoading] = useState(false);
 
   const verFormulario = () => {
     limpiarFormulario();
@@ -66,6 +67,7 @@ const AgregarProveedores = () => {
   };
 
   const traerProveedores = async () => {
+    setLoading(true);
     try {
       const response = await api.get(`proveedor/${id}`);
       const { data } = response;
@@ -74,6 +76,8 @@ const AgregarProveedores = () => {
     } catch (error) {
       console.log(error);
       console.log("Error al traer los proveedores");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -167,16 +171,16 @@ const AgregarProveedores = () => {
     return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
   };
 
-  useEffect(() => {
-    traerProveedores();
-  }, []);
-
   const botonesOpciones = (
     <ContenedorBotonProveedor>
       <Button raised outlined severity="info" icon="pi pi-pencil" rounded />
       <Button raised outlined severity="danger" icon="pi pi-trash" rounded />
     </ContenedorBotonProveedor>
   );
+
+  useEffect(() => {
+    traerProveedores();
+  }, []);
 
   return (
     <ContenedorProveedores>
@@ -185,7 +189,7 @@ const AgregarProveedores = () => {
         <Button raised severity="info" icon="pi pi-refresh" onClick={traerProveedores} />
       </ContenedorHeader>
 
-      <DataTable value={proveedor} paginator rows={5} rowsPerPageOptions={[5, 10, 15]}>
+      <DataTable value={proveedor} paginator rows={5} rowsPerPageOptions={[5, 10, 15]} scrollable scrollHeight="500px" loading={Loading}>
         <Column field="nombre" header="Nombre" />
         <Column field="descripcion" header="Descripción" />
         <Column field="telefono" header="Telefono" />

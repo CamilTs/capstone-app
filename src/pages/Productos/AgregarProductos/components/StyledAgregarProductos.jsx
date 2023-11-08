@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ContenedorAncho = styled.div`
   background-color: #fff;
-  padding: 0.5rem;
+  padding: 1rem 2rem 1rem 2rem;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -16,6 +16,7 @@ export const Formulario = styled.form`
   width: 100%;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 `;
 
 export const ContenedorPrimario = styled.div`
@@ -30,7 +31,6 @@ export const ContenedorPrimario = styled.div`
 `;
 
 export const ContenedorImg = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1rem;

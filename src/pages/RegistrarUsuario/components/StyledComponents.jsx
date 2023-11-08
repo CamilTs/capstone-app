@@ -10,6 +10,9 @@ export const ContenedorMasivo = styled.div`
 
 export const Contenedor = styled.div`
   padding: 1rem;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const Formulario = styled.form`
@@ -42,6 +45,7 @@ export const ContenedorCampos = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 1rem;
+  height: 100%;
 `;
 
 export const Campos = styled.div`

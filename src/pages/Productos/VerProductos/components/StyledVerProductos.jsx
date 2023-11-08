@@ -7,9 +7,9 @@ export const Contenedor = styled.div`
   height: 100%;
   flex-direction: column;
 
-  @media (max-width: 675px) {
+  @media (max-width: 1500px) {
     gap: 1rem;
-    overflow-x: scroll;
+    overflow: auto;
   }
 `;
 

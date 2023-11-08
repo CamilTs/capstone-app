@@ -196,10 +196,10 @@ export const Productos = () => {
           header={controlInventario}
           value={productos}
           paginator
-          rows={5}
-          rowsPerPageOptions={[5, 10, 15]}
+          rows={3}
+          rowsPerPageOptions={[1, 3, 6, 9, 12]}
           scrollable
-          scrollHeight="500px"
+          scrollHeight="auto"
           globalFilter={globalFiltro}
           loading={loading}
         >
