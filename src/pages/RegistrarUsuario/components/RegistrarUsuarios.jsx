@@ -187,6 +187,8 @@ export const RegistrarUsuarios = () => {
     });
   };
 
+  const ButtonCrear = <Opciones></Opciones>;
+
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {

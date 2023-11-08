@@ -3,8 +3,8 @@ import styled from "styled-components";
 export const ContenedorMasivo = styled.div`
   height: 100%;
 
-  @media (max-width: 1500px) {
-    overflow-y: auto;
+  @media (max-width: 1920px) {
+    overflow: auto;
   }
 `;
 

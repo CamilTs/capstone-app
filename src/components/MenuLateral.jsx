@@ -10,17 +10,20 @@ const Fondo = styled.div`
   padding: 15px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  max-width: 225px;
+  width: 100%;
+  gap: 1rem 0;
 `;
 
 const TituloMenu = styled.div`
   display: flex;
-  justify-content: center;
   border-radius: 5px;
   background: #538a95;
   font-size: 30px;
-  margin-bottom: 20px;
-  text-align: center;
-  color: white;
+  width: 100%;
+  color: #fff;
+  justify-content: center;
 `;
 
 const OpcionesMenu = styled.div`
@@ -73,7 +76,7 @@ const MenuLateral = ({ style, cerrarCuenta }) => {
   }, []);
 
   return (
-    <Fondo style={{ display: menuVisible ? "block" : "none" }}>
+    <Fondo>
       <TituloMenu>Ai Zi</TituloMenu>
       {itemsRuta.length > 0 && (
         <OpcionesMenu>

@@ -199,7 +199,7 @@ export const Productos = () => {
           rows={3}
           rowsPerPageOptions={[1, 3, 6, 9, 12]}
           scrollable
-          scrollHeight="auto"
+          scrollHeight="580px"
           globalFilter={globalFiltro}
           loading={loading}
         >

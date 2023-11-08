@@ -5,13 +5,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
 import { useRef } from "react";
-import { Toast } from "primereact/toast";
 
-const Content = styled.div`
+const ContenedorTotal = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
+`;
+
+const ContenedorDatos = styled.div`
+  display: flex;
+  flex-direction: column;
   gap: 5px;
+  box-sizing: border-box;
 `;
 
 const TextoUsuario = styled.span`
@@ -22,7 +28,6 @@ const TextoUsuario = styled.span`
 export const PerfilCard = ({ cerrarCuenta: cerrarCuentaDialog }) => {
   const [usuario, setUsuario] = useState(null);
   const toast = useRef(null);
-  const dispatch = useDispatch();
   const { id } = useSelector((state) => state.auth);
   const traerUsuario = async () => {
     const res = await api.get(`usuario/${id}`);
@@ -33,25 +38,20 @@ export const PerfilCard = ({ cerrarCuenta: cerrarCuentaDialog }) => {
     traerUsuario();
   }, []);
   return (
-    <Content>
-      <Toast ref={toast} />
+    <ContenedorTotal>
       {usuario && (
-        <div>
+        <ContenedorTotal>
           <Image src={usuario.imagen} alt="Image" width="150" height="150" imageStyle={{ borderRadius: 100, objectFit: "cover" }} />
-          <div>
+          <ContenedorDatos>
             <TextoUsuario>
-              {usuario.nombre} {usuario.apellidos}
+              {usuario.nombre} {usuario.apellido}
             </TextoUsuario>
-          </div>
-          <div>
             <TextoUsuario>{usuario.rol.rol}</TextoUsuario>
-          </div>
-          <div>
             <TextoUsuario>{usuario.correo}</TextoUsuario>
-          </div>
-          <Button severity="danger" label="Cerrar Sesión" onClick={cerrarCuentaDialog} />
-        </div>
+            <Button raised severity="danger" label="Cerrar Sesión" onClick={cerrarCuentaDialog} style={{ width: "100%" }} />
+          </ContenedorDatos>
+        </ContenedorTotal>
       )}
-    </Content>
+    </ContenedorTotal>
   );
 };

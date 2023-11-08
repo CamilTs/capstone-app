@@ -2,7 +2,7 @@ import * as Yup from "yup";
 
 // Registrar Usuario Validaciones //
 export const RegistrarSchema = Yup.object().shape({
-  rut: Yup.string().required("Rut requerido").min(12, "Rut invalido").max(12, "Rut invalido"),
+  rut: Yup.string().required("Rut requerido").min(11, "Rut invalido").max(12, "Rut invalido"),
   nombre: Yup.string()
     .required("Nombre requerido")
     .min(1, "Nombre invalido")

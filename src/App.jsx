@@ -8,7 +8,6 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import styled from "styled-components";
 import { ProtectedRoutes } from "./routes/ProtectedRoutes";
-import { Button } from "primereact/button";
 import { useEffect, useRef, useState } from "react";
 import { SocketProvider } from "./context/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +26,8 @@ const Container = styled.div`
 const ContenedorMenuPagina = styled.div`
   width: 100%;
   display: flex;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
 `;
 
 export const Content = styled.div`

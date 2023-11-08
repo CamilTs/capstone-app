@@ -68,7 +68,40 @@ const useGraficos = (formato = {}, tipo = "", title = "") => {
         valores[mes] = element.cantidadVendida;
         labels[mes] = `${nombre} - ${labels[mes]}`;
       }
-      nuevoDataset.push({ label: "Producto mas vendido", data: valores });
+      nuevoDataset.push({
+        label: "Producto mas vendido",
+        data: valores,
+        backgroundColor: [
+          "rgba(169, 74, 59, 0.4)",
+          "rgba(188, 113, 119, 0.4)",
+          "rgba(158, 134, 158, 0.4)",
+          "rgba(134, 119, 158, 0.4)",
+          "rgba(80, 76, 158, 0.4)",
+          "rgba(134, 46, 119, 0.4)",
+          "rgba(134, 46, 119, 0.4)",
+          "rgba(134, 188, 119, 0.4)",
+          "rgba(134, 188, 178, 0.4)",
+          "rgba(134, 188, 208, 0.4)",
+          "rgba(134, 111, 208, 0.4)",
+          "rgba(134, 141, 208, 0.4)",
+        ],
+        borderColor: [
+          "rgb(169, 74, 59)",
+          "rgb(188, 113, 119)",
+          "rgb(158, 134, 158)",
+          "rgb(134, 119, 158)",
+          "rgb(80, 76, 158)",
+          "rgb(134, 46, 119)",
+          "rgb(134, 46, 119)",
+          "rgb(134, 188, 119)",
+          "rgb(134, 188, 178)",
+          "rgb(134, 188, 208)",
+          "rgb(134, 111, 208)",
+          "rgb(134, 141, 208)",
+        ],
+        borderWidth: 2,
+        barPercentage: 0.6,
+      });
       setInfoGrafico({
         ...infoGrafico,
         data: {

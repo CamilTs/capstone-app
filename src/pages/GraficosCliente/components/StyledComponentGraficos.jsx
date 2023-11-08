@@ -1,38 +1,46 @@
 import styled from "styled-components";
 
 export const Contenedor = styled.div`
-  background-color: gray;
-  padding: 1rem 2rem 1rem 2rem;
   display: flex;
-  width: 100%;
-  height: 100%;
+  gap: 1rem;
+  flex-direction: column;
+  overflow: auto;
+`;
 
-  @media (max-width 1200px) {
-    overflow-y: scroll;
-    flex-wrap: wrap;
-  }
+export const ContendorFinal = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background-color: #538a95;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 `;
 
 export const ContenedorGraficos = styled.div`
-  background-color: transparent;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  border-radius: 10px;
-  border: 1px solid black;
-
-  @media (max-width: 1500px) {
-  }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 6px;
+  gap: 1rem;
 `;
 
 export const ContenedorDatos = styled.div`
-  color: white;
+  color: black;
   display: flex;
+  border-radius: 6px;
+  padding: 1rem;
   flex-direction: column;
+  width: 100%;
+  background-color: #ffffff;
 `;
 
 export const Titulo = styled.h5`
   font-size: 25px;
   display: flex;
-  justify-content: center;
+  margin: 0;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+
+  &.a {
+    color: white;
+  }
 `;
