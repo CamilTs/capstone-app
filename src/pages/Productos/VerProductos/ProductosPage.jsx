@@ -22,9 +22,11 @@ import { api } from "../../../api/api";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
 import { Badge } from "./components/Badge";
+import { useSelector } from "react-redux";
 
 export const Productos = () => {
-  const { eliminarProducto, modificarProducto } = useProductos();
+  // const { eliminarProducto, modificarProducto } = useProductos();
+  const { comercio } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [productoAEliminarId, setProductoAEliminarId] = useState(null);
@@ -36,27 +38,51 @@ export const Productos = () => {
   const [globalFiltro, setGlobalFiltro] = useState(null);
   const toast = useRef(null);
 
-  const handleEliminarProducto = (productoId, productoNombre) => {
-    setProductoAEliminarId(productoId);
-    setProductoAEliminarNombre(productoNombre);
-    setConfirmDialogVisible(true);
-  };
-
-  const borrarProducto = () => {
-    console.log("ID del producto a eliminar:", productoAEliminarId);
-    eliminarProducto(productoAEliminarId);
+  const borrarProducto = async () => {
+    console.log("Comercio:", comercio);
+    // eliminarProducto(productoAEliminarId);
+    try {
+      const { data } = await api.delete(`producto/${productoAEliminarId}/${comercio}`);
+      console.log(data);
+      if (data.success) {
+        toast.current.show({ severity: "info", summary: "Eliminado", detail: "Producto Eliminado", life: 2000 });
+      } else {
+        toast.current.show({ severity: "danger", summary: "Eliminado", detail: "Error al eliminar", life: 5000 });
+      }
+    } catch (error) {
+      console.log(error.message);
+      toast.current.show({ severity: "danger", summary: "Eliminado", detail: error.message, life: 5000 });
+    } finally {
+      traerProductos();
+    }
     setConfirmDialogVisible(false);
-    toast.current.show({ severity: "info", summary: "Eliminado", detail: "Producto Eliminado", life: 2000 });
   };
 
   const abrirFormularioEdicion = (producto) => {
     setProductoAModificar(producto);
     setFormularioVisible(true);
   };
+  const eliminarProducto = async (productoId) => {
+    setProductoAEliminarId(productoId);
+    setConfirmDialogVisible(true);
+  };
 
-  const guardarCambios = () => {
-    modificarProducto(productoAModificar.id, productoAModificar);
-    toast.current.show({ severity: "info", summary: "Modificado", detail: "Producto Modificado", life: 2000 });
+  // EDITAR PRODUCTOS //
+  const guardarCambios = async () => {
+    // modificarProducto(productoAModificar.id, productoAModificar);
+    // console.log(modificarProducto);
+    try {
+      const { data } = await api.put(`producto/${productoAModificar._id}`, productoAModificar);
+      console.log(data);
+      if (data.success) {
+        traerProductos();
+        toast.current.show({ severity: "info", summary: "Modificado", detail: "Producto Modificado", life: 2000 });
+      } else {
+        toast.current.show({ severity: "danger", summary: "Modificado", detail: "Errora la modificar", life: 5000 });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
     setFormularioVisible(false);
   };
 
@@ -159,7 +185,7 @@ export const Productos = () => {
     return (
       <ContenedorOpciones>
         <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => abrirFormularioEdicion(rowData)} />
-        <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => handleEliminarProducto(rowData.id, rowData.nombre)} />
+        <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => eliminarProducto(rowData._id, rowData.nombre)} />
       </ContenedorOpciones>
     );
   };
@@ -176,8 +202,12 @@ export const Productos = () => {
     try {
       const response = await api.get("producto/comercio");
       const { data } = response;
-      console.log(data);
-      setProductos(data.data);
+      if (data.success) {
+        setProductos(data.data);
+        toast.current.show({ severity: "success", summary: "Productos", detail: "Productos cargados", life: 2000 });
+      } else {
+        toast.current.show({ severity: "danger", summary: "Productos", detail: "Error al cargar los productos", life: 5000 });
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -216,7 +246,7 @@ export const Productos = () => {
           <Column header="Acciones" body={actionBodyTemplate} exportable={false} />
         </DataTable>
       </ContenedorTabla>
-
+      {/* DIALOG PARA EDITAR PRODUCTO */}
       <Dialog
         header="Editar Producto"
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
