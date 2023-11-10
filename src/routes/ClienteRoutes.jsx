@@ -11,9 +11,8 @@ export const ClienteRoutes = () => {
     <ProductosProvider>
       <Content>
         <Routes>
-          <Route path="" element={<PrincipalPage />} />
+          <Route path="" element={<VenderProducto />} />
           <Route path="productos" element={<Productos />} />
-          <Route path="venta" element={<VenderProducto />} />
           <Route path="agregarProductos" element={<AgregarProductos />} />
           <Route path="verProvedor" element={<AgregarProveedores />} />
           <Route path="graficos" element={<GraficosCliente />} />

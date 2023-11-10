@@ -12,6 +12,9 @@ import { useSelector } from "react-redux";
 import { InputText } from "primereact/inputtext";
 import { DataTable } from "primereact/datatable";
 
+import { Badge } from "primereact/badge";
+import { TablaVender } from "./components/TablaVender";
+
 const ContenedorPrincipal = styled.div`
   display: flex;
   flex-direction: column;
@@ -31,15 +34,6 @@ const OpcionesBotones = styled.div`
   gap: 0.5rem;
   display: flex;
 `;
-
-const TotalContenedor = styled.div`
-  font-size: 44px;
-`;
-
-const UltimaContenedor = styled.span`
-  font-size: 25px;
-`;
-
 const ContenedorDatos = styled.div`
   display: flex;
   flex-direction: column;
@@ -60,10 +54,6 @@ const OpcionesVenta = styled.div`
   justify-content: flex-end;
 `;
 
-const AgregarVenta = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
 const formatoVenta = {
   productos: [],
   total: 0,
@@ -75,7 +65,7 @@ export const VenderProducto = () => {
 
   const [confirmDialogVenta, setConfirmDialogVenta] = useState(false);
   const [confirmDialogLimpiar, setConfirmDialogLimpiar] = useState(false);
-
+  const [registros, setRegistros] = useState([]);
   const [registro, setRegistro] = useState(formatoVenta);
   const [value, setValue] = useState("");
   const [ultimoAgregado, setUltimoAgregado] = useState(0);
@@ -199,65 +189,53 @@ export const VenderProducto = () => {
       agregarProducto(codigoBarra);
     });
   };
+
+  const cargarRegistros = async () => {
+    try {
+      const { data } = await api.get("registro/ultimosRegistros");
+      console.log(data);
+      if (!data.success) {
+        setRegistros([]);
+      }
+      setRegistros(data.data);
+    } catch (error) {
+      setRegistros([]);
+    }
+  };
   useEffect(() => {
     escucharWSCodigoBarra();
+    cargarRegistros();
   }, []);
 
   return (
     <>
-      <ContenedorPrincipal>
-        <ContenedorInfoVenta>
-          <Toast ref={toast} />
-          <OpcionesBotones>{botonesHeader}</OpcionesBotones>
-          <ContenedorDatos>
-            <DatosVenta>
-              <TotalContenedor>
-                <b>Total: </b>
-                <span>{registro.total}</span>
-              </TotalContenedor>
-              <UltimaContenedor>
-                <b>Ultimo: </b>
-                <span>{ultimoAgregado}</span>
-              </UltimaContenedor>
-            </DatosVenta>
-          </ContenedorDatos>
-          <DataTable value={registro.productos} showGridlines>
-            <Column field="nombre" header="Nombre" />
-            <Column field="cantidad" header="Cantidad" />
-            <Column field="valor" header="Valor U." />
-            <Column field="total" header="Valor T." />
-          </DataTable>
-        </ContenedorInfoVenta>
-        <OpcionesVenta>{botonesVenta}</OpcionesVenta>
-      </ContenedorPrincipal>
-      <ConfirmDialog
-        visible={confirmDialogVenta}
-        onHide={() => setConfirmDialogVenta(false)}
-        message="¿Deseas confirmar la venta?"
-        header="Confirmar venta"
-        icon="pi pi-question-circle"
-        acceptClassName="p-button-success"
-        acceptLabel="Sí"
-        rejectLabel="No"
-        footer={venderProductosDialog}
-      />
-      <ConfirmDialog
-        visible={confirmDialogLimpiar}
-        onHide={() => setConfirmDialogLimpiar(false)}
-        message="¿Seguro de limpiar la tabla?"
-        header="Confirmar limpieza de tabla"
-        icon="pi pi-question-circle"
-        acceptClassName="p-button-success"
-        acceptLabel="Limpiar"
-        rejectLabel="Cancelar"
-        footer={limpiarTablaDialog}
-      />
+      <div className="grid h-full">
+        <div className="col-12">
+          <TablaVender comercio={comercio} />
+        </div>
+        <div className="col-12 grid">
+          <div className="col-6">
+            <DataTable value={registros} showGridlines scrollable>
+              <Column
+                field="tipo"
+                header="Tipo"
+                body={(e) => {
+                  return <Badge value={e.tipo ? "Venta" : "Compra"} severity={e.tipo ? "success" : "danger"} />;
+                }}
+              />
+              <Column field="total" header="Total" />
+              <Column field="createdAt" header="Fecha" />
+            </DataTable>
+          </div>
+          <div className="col-6"></div>
+        </div>
+      </div>
       <Dialog header="Ingresar producto" visible={visible} onHide={() => setVisible(false)}>
-        <AgregarVenta className="p-float-label">
+        <div className="p-float-label glex g-2">
           <InputText id="codigoBarra" value={value} onChange={(e) => setValue(e.target.value)} />
           <label htmlFor="codigoBarra">Codigo de barra</label>
           <Button severity="success" label="Agregar" onClick={() => agregarProducto(value)} />
-        </AgregarVenta>
+        </div>
       </Dialog>
     </>
   );

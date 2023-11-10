@@ -14,13 +14,13 @@ export const rutas = [
     tipo: "",
   },
 
-  {
-    ruta: "/venta",
-    rol: "cliente",
-    icono: "pi pi-money-bill",
-    label: "Vender Producto",
-    tipo: "",
-  },
+  // {
+  //   ruta: "/venta",
+  //   rol: "cliente",
+  //   icono: "pi pi-money-bill",
+  //   label: "Vender Producto",
+  //   tipo: "",
+  // },
   {
     ruta: "/agregarProductos",
     rol: "cliente",
