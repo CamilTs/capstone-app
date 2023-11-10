@@ -1,35 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Toast } from "primereact/toast";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { api } from "../../../api/api";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { useContextSocket } from "../../../context/SocketContext";
+import { formatoCurrencyCLP } from "../../../components/FormatoDinero";
 
-const ContenedorPrincipal = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-content: space-between;
-  gap: 1rem;
-`;
-
-const ContenedorInfoVenta = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  height: 100%;
-  width: 100%;
-`;
-
-const OpcionesBotones = styled.div`
-  gap: 0.5rem;
-  display: flex;
-`;
 const ContenedorDatos = styled.div`
   display: flex;
   flex-direction: column;
@@ -43,24 +27,18 @@ const DatosVenta = styled.div`
   align-items: end;
   flex-flow: column wrap;
 `;
-
-const OpcionesVenta = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-`;
-
 const formatoVenta = {
   productos: [],
   total: 0,
   tipo: true,
 };
 
-export const TablaVender = ({ comercio }) => {
+export const TablaVender = ({ comercio, cargarRegistros }) => {
   const [registro, setRegistro] = useState(formatoVenta);
   const [ultimoAgregado, setUltimoAgregado] = useState(0);
   const [visible, setVisible] = useState(false);
   const [codigoBarra, setCodigoBarra] = useState("");
+  const { socket } = useContextSocket();
 
   const navigate = useNavigate();
 
@@ -72,7 +50,6 @@ export const TablaVender = ({ comercio }) => {
     <>
       <Button label="Agregar" severity="success" icon="pi pi-plus" onClick={() => setVisible(true)} />
       <Button label="Ver Productos" severity="info" icon="pi pi-search" onClick={() => navigate("/productos")} />
-      {/* <Button label="Prueba" severity="danger" icon="pi pi-trash" onClick={() => escucharWSCodigoBarra()} /> */}
     </>
   );
 
@@ -102,6 +79,7 @@ export const TablaVender = ({ comercio }) => {
     console.log(data);
     if (!data.success) return;
     setRegistro(formatoVenta);
+    await cargarRegistros();
     setCodigoBarra("");
     setUltimoAgregado(0);
     setConfirmDialogVenta(false);
@@ -170,34 +148,57 @@ export const TablaVender = ({ comercio }) => {
       // Manejar errores de la API, por ejemplo, mostrar un mensaje al usuario.
     }
   };
+  const escucharWSCodigoBarra = () => {
+    socket.on("venderProducto", (data) => {
+      const { codigoBarra } = data;
+      agregarProducto(codigoBarra);
+    });
+  };
 
+  useEffect(() => {
+    escucharWSCodigoBarra();
+  }, []);
   return (
     <>
-      <ContenedorPrincipal>
-        <ContenedorInfoVenta>
+      {/* <div className="flex flex-column justify-content-between g-3"> */}
+      <div className="flex flex-column gap-3">
+        {/* <div className="flex g-3 flex-column w-full h-full"> */}
+        <div className="flex flex-column">
           <Toast ref={toast} />
-          <OpcionesBotones>{botonesHeader}</OpcionesBotones>
+          <div className="flex gap-2">{botonesHeader}</div>
           <ContenedorDatos>
             <DatosVenta>
               <span className="text-6xl">
                 <b>Total: </b>
-                {registro.total}
+                {formatoCurrencyCLP(registro.total)}
               </span>
               <span className="text-2xl	">
                 <b>Ultimo: </b>
-                {ultimoAgregado}
+                {formatoCurrencyCLP(ultimoAgregado)}
               </span>
             </DatosVenta>
           </ContenedorDatos>
           <DataTable value={registro.productos} showGridlines>
             <Column field="nombre" header="Nombre" />
             <Column field="cantidad" header="Cantidad" />
-            <Column field="valor" header="Valor U." />
-            <Column field="total" header="Valor T." />
+            <Column
+              field="valor"
+              header="Valor U."
+              body={(e) => {
+                return formatoCurrencyCLP(e.valor);
+              }}
+            />
+            <Column
+              field="total"
+              header="Valor T."
+              body={(e) => {
+                return formatoCurrencyCLP(e.total);
+              }}
+            />
           </DataTable>
-        </ContenedorInfoVenta>
-        <OpcionesVenta>{botonesVenta}</OpcionesVenta>
-      </ContenedorPrincipal>
+        </div>
+        <div className="flex gap-2 justify-content-end">{botonesVenta}</div>
+      </div>
       <ConfirmDialog
         visible={confirmDialogVenta}
         onHide={() => setConfirmDialogVenta(false)}

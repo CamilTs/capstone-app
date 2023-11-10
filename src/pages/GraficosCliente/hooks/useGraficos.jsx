@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 
 const useGraficos = (formato = {}, tipo = "", title = "") => {
-  // console.log(formato);
   const formatoDefault = {
     data: { datasets: [] },
     options: {
@@ -14,7 +13,6 @@ const useGraficos = (formato = {}, tipo = "", title = "") => {
     },
   };
   formato = { ...formatoDefault, ...formato };
-  console.log(formato);
   const [loading, setLoading] = useState(false);
   const [infoGrafico, setInfoGrafico] = useState(formato);
 
@@ -63,7 +61,6 @@ const useGraficos = (formato = {}, tipo = "", title = "") => {
         const nuevosValores = [...valores];
         const element = data.data[i];
         const nombre = element.nombre;
-        console.log(element);
         const mes = element.mes - 1;
         valores[mes] = element.cantidadVendida;
         labels[mes] = `${nombre} - ${labels[mes]}`;
@@ -183,7 +180,6 @@ const useGraficos = (formato = {}, tipo = "", title = "") => {
         break;
 
       default:
-        console.log("Secord");
         getGrafico();
         break;
     }
