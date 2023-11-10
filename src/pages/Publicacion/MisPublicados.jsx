@@ -3,32 +3,25 @@ import { api } from "../../api/api";
 import { Column } from "primereact/column";
 import { ContenedorMP, ContenedorTabla, Titulo } from "./components/StyledComponents";
 import { DataTable } from "primereact/datatable";
+import { useSelector } from "react-redux";
 
 export const MisPublicados = () => {
   const [publicacion, setPublicacion] = useState([]);
+  const { id } = useSelector((state) => state.auth);
 
   const toast = useRef(null);
 
   const traerPublicacion = async () => {
     try {
-      const response = await api.get("publicacion");
+      const response = await api.get(`publicacion/${id}`);
       const { data } = response;
-      setPublicacion(data.data);
-      console.log(data);
+      setPublicacion(data.data.publicacion);
+      console.log(data.data.publicacion);
     } catch (error) {
       console.log(error);
       console.log("Se intento traer publicación");
     }
   };
-
-  // const overlay = (
-  //   <div className="card flex justify-content-center">
-  //     <Button type="button" icon="pi pi-image" label="imagen" onClick={(e) => op.current.toggle(e)} />
-  //     <OverlayPanel ref={op}>
-  //       <img id="imagen" src={publicacion.imagen} alt={publicacion.nombre} />
-  //     </OverlayPanel>
-  //   </div>
-  // );
 
   useEffect(() => {
     traerPublicacion();
