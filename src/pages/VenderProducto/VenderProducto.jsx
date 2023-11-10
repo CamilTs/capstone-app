@@ -1,12 +1,8 @@
-import { Column } from "primereact/column";
 import { useEffect, useState } from "react";
 import { api } from "../../api/api";
 import { useSelector } from "react-redux";
-import { DataTable } from "primereact/datatable";
-
-import { Badge } from "primereact/badge";
 import { TablaVender } from "./components/TablaVender";
-import { formatoCurrencyCLP } from "../../components/FormatoDinero";
+import { TablaRegistro } from "./components/TablaRegistro";
 
 export const VenderProducto = () => {
   const { comercio } = useSelector((state) => state.auth);
@@ -35,28 +31,10 @@ export const VenderProducto = () => {
         <div className="col-12">
           <TablaVender comercio={comercio} cargarRegistros={cargarRegistros} />
         </div>
-        <div className="col-12 grid">
-          <div className="col-6">
-            <DataTable value={registros} showGridlines scrollable>
-              <Column
-                field="tipo"
-                header="Tipo"
-                body={(e) => {
-                  return <Badge value={e.tipo ? "Venta" : "Compra"} severity={e.tipo ? "success" : "danger"} />;
-                }}
-              />
-              <Column
-                field="total"
-                header="Total"
-                body={(e) => {
-                  return formatoCurrencyCLP(e.total);
-                }}
-              />
-              <Column field="createdAt" header="Fecha" />
-            </DataTable>
-          </div>
-          <div className="col-6"></div>
+        <div className="col-6">
+          <TablaRegistro registros={registros} />
         </div>
+        <div className="col-6"></div>
       </div>
     </>
   );
