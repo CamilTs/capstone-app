@@ -70,6 +70,13 @@ export const rutas = [
     label: "Agregar productos",
     tipo: "productos",
   },
+  {
+    ruta: "/clientes  ",
+    rol: "admin",
+    icono: "pi pi-plus",
+    label: "Clientes",
+    tipo: "usuarios",
+  },
 ];
 
 // export const rutas = [

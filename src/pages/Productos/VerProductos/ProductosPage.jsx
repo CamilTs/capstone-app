@@ -21,8 +21,9 @@ import {
 import { api } from "../../../api/api";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
-import { Badge } from "./components/Badge";
+// import { Badge } from "./components/Badge";
 import { useSelector } from "react-redux";
+import { Badge } from "../../../components/Badge";
 
 export const Productos = () => {
   // const { eliminarProducto, modificarProducto } = useProductos();

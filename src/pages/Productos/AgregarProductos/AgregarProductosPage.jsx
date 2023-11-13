@@ -280,4 +280,4 @@ export const AgregarProductos = () => {
   );
 };
 
-export default AgregarProductos;
+// export default AgregarProductos;
