@@ -34,6 +34,7 @@ const AgregarProveedores = () => {
   const toast = useRef(null);
   const [proveedor, setProveedor] = useState([]);
   const [Loading, setLoading] = useState(false);
+  const [proveedorId, setProveedorId] = useState("");
 
   const verFormulario = () => {
     limpiarFormulario();
@@ -52,18 +53,9 @@ const AgregarProveedores = () => {
     );
   };
 
-  const agregarProveedor = async () => {
-    try {
-      const response = await api.post("proveedor", {
-        ...formik.values,
-      });
-      const { data } = response;
-      limpiarFormulario();
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-      console.log("se intento agregar al proveedor");
-    }
+  const eliminarProveedor = async (proveedorId) => {
+    setProveedorId(proveedorId);
+    confirmarEliminar();
   };
 
   const traerProveedores = async () => {
@@ -78,6 +70,41 @@ const AgregarProveedores = () => {
       console.log("Error al traer los proveedores");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const agregarProveedor = async () => {
+    try {
+      const response = await api.post("proveedor", {
+        ...formik.values,
+      });
+      const { data } = response;
+      limpiarFormulario();
+      toast.current.show({
+        severity: "success",
+        summary: "Éxito",
+        detail: "Proveedor agregado",
+        life: 3000,
+      });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      console.log("se intento agregar al proveedor");
+    } finally {
+      traerProveedores();
+    }
+  };
+
+  const borrarProveedor = async () => {
+    try {
+      const { data } = await api.delete(`proveedor/${proveedorId}`);
+      console.log(data);
+      toast.current.show({ severity: "info", summary: "Éxito", detail: "Proveedor eliminado", life: 3000 });
+    } catch (error) {
+      console.log(error);
+      console.log("se intento eliminar al proveedor");
+    } finally {
+      traerProveedores();
     }
   };
 
@@ -147,7 +174,7 @@ const AgregarProveedores = () => {
       rejectIcon: "pi pi-times",
       accept: () => {
         toast.current.show({
-          severity: "success",
+          severity: "info",
           summary: "Éxito",
           detail: "Formulario Limpiado",
           life: 3000,
@@ -165,18 +192,53 @@ const AgregarProveedores = () => {
     });
   };
 
+  const confirmarEliminar = () => {
+    confirmDialog({
+      message: "¿Está seguro que desea eliminar el proveedor?",
+      header: "Confirmar",
+      icon: "pi pi-exclamation-triangle",
+      acceptClassName: "p-button-success",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-danger",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        toast.current.show({
+          severity: "info",
+          summary: "Éxito",
+          detail: "Proveedor eliminado",
+          life: 3000,
+        });
+        borrarProveedor();
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "info",
+          summary: "Cancelado",
+          detail: "Eliminación cancelada",
+          life: 3000,
+        });
+      },
+    });
+  };
+
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
     return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
   };
 
-  const botonesOpciones = (
-    <ContenedorBotonProveedor>
-      <Button raised outlined severity="info" icon="pi pi-pencil" rounded />
-      <Button raised outlined severity="danger" icon="pi pi-trash" rounded />
-    </ContenedorBotonProveedor>
-  );
+  const botonesOpciones = (rowData) => {
+    return (
+      <ContenedorBotonProveedor>
+        <Button raised outlined severity="info" icon="pi pi-pencil" rounded />
+        <Button raised outlined severity="danger" icon="pi pi-trash" rounded onClick={() => eliminarProveedor(rowData._id)} />
+      </ContenedorBotonProveedor>
+    );
+  };
+
+  const [proveedorSeleccionado, setProveedorSeleccionado] = useState(null);
 
   useEffect(() => {
     traerProveedores();
@@ -184,6 +246,7 @@ const AgregarProveedores = () => {
 
   return (
     <ContenedorProveedores>
+      <Toast ref={toast} />
       <ContenedorHeader>
         <Button raised label="Agregar Proveedor" severity="success" icon="pi pi-plus" onClick={verFormulario} />
         <Button raised severity="info" icon="pi pi-refresh" onClick={traerProveedores} />
@@ -200,7 +263,6 @@ const AgregarProveedores = () => {
       <Dialog visible={mostrarFormulario} onHide={ocultarFormulario} header="Agregar Proveedor">
         <ContenedorFormulario>
           <Formulario onSubmit={formik.handleSubmit}>
-            <Toast ref={toast} />
             <ContenedorInput>
               <Campos>
                 <label htmlFor="nombre">Nombre</label>
