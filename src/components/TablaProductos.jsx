@@ -1,5 +1,5 @@
 import { DataTable } from "primereact/datatable";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { formatoCurrencyCLP } from "./FormatoDinero";
 import { InputText } from "primereact/inputtext";
 import { Badge } from "./Badge";
@@ -7,8 +7,12 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { classNames } from "primereact/utils";
 import { CustomCircle } from "./styledComponents/styledComponents";
+import { Dialog } from "primereact/dialog";
+import { InputNumber } from "primereact/inputnumber";
+import { api } from "../api/api";
+import { Toast } from "primereact/toast";
 
-export const TablaProductos = ({ productos }) => {
+export const TablaProductos = ({ productos, cargarProductos, comercio }) => {
   const [globalFiltro, setGlobalFiltro] = useState(null);
   const [columnas, setColumnas] = useState(Object.keys(productos[0] || []));
   const [loading, setLoading] = useState(false);
@@ -17,6 +21,8 @@ export const TablaProductos = ({ productos }) => {
   const [formularioVisible, setFormularioVisible] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [productoAEliminarId, setProductoAEliminarId] = useState(null);
+  const [productoAEliminarNombre, setProductoAEliminarNombre] = useState(null);
+  const toast = useRef(null);
 
   const exportarExcel = () => {
     const datosExportar = productos;
@@ -110,6 +116,48 @@ export const TablaProductos = ({ productos }) => {
     setConfirmDialogVisible(true);
   };
 
+  const borrarProducto = async () => {
+    console.log("Comercio:", comercio);
+    // eliminarProducto(productoAEliminarId);
+    try {
+      const { data } = await api.delete(`producto/${productoAEliminarId}/${comercio}`);
+      console.log(data);
+      if (data.success) {
+        toast.current.show({ severity: "info", summary: "Eliminado", detail: "Producto Eliminado", life: 2000 });
+      } else {
+        toast.current.show({ severity: "danger", summary: "Eliminado", detail: "Error al eliminar", life: 5000 });
+      }
+    } catch (error) {
+      console.log(error.message);
+      toast.current.show({ severity: "danger", summary: "Eliminado", detail: error.message, life: 5000 });
+    } finally {
+      cargarProductos();
+    }
+    setConfirmDialogVisible(false);
+  };
+
+  const ocultarEliminarDialog = () => {
+    setConfirmDialogVisible(false);
+  };
+
+  const guardarCambios = async () => {
+    // modificarProducto(productoAModificar.id, productoAModificar);
+    // console.log(modificarProducto);
+    try {
+      const { data } = await api.put(`producto/${productoAModificar._id}`, productoAModificar);
+      console.log(data);
+      if (data.success) {
+        cargarProductos();
+        toast.current.show({ severity: "info", summary: "Modificado", detail: "Producto Modificado", life: 2000 });
+      } else {
+        toast.current.show({ severity: "danger", summary: "Modificado", detail: "Error la modificar", life: 5000 });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+    setFormularioVisible(false);
+  };
+
   const actionBodyTemplate = (rowData) => {
     return (
       <div className="flex gap-1">
@@ -119,34 +167,127 @@ export const TablaProductos = ({ productos }) => {
     );
   };
 
+  const productDialogFooter = (
+    <React.Fragment>
+      <Button label="Guardar" icon="pi pi-check" severity="success" onClick={guardarCambios} />
+      <Button label="Cancelar" icon="pi pi-times" severity="danger" onClick={() => setFormularioVisible(false)} />
+    </React.Fragment>
+  );
+
+  const eliminarProductoDialog = (
+    <React.Fragment>
+      <Button label="Eliminar" icon="pi pi-trash" severity="danger" onClick={borrarProducto} />
+      <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={ocultarEliminarDialog} />
+    </React.Fragment>
+  );
+
   useEffect(() => {}, []);
   return (
-    <DataTable
-      removableSort
-      header={controlInventario}
-      value={productos}
-      showGridlines
-      paginator
-      rows={5}
-      rowsPerPageOptions={[5, 10, 15]}
-      scrollable
-      scrollHeight="580px"
-      globalFilter={globalFiltro}
-      loading={loading}
-      emptyMessage="Producto no registrado"
-    >
-      <Column field="codigo_barra" header="Código de barra" body={(rowData) => rowData.codigo_barra} />
-      <Column field="nombre" header="Producto" body={(rowData) => rowData.nombre} />
-      <Column field="categoria" header="Categoria" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoria")} />
-      <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
-      <Column field="fecha" header="Fecha" body={(rowData) => rowData.fecha} />
-      <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
-      <Column header="Acciones" body={actionBodyTemplate} exportable={false} />
-    </DataTable>
+    <>
+      <Toast ref={toast} />
+      <DataTable
+        removableSort
+        header={controlInventario}
+        value={productos}
+        showGridlines
+        paginator
+        rows={5}
+        rowsPerPageOptions={[5, 10, 15]}
+        scrollable
+        scrollHeight="580px"
+        globalFilter={globalFiltro}
+        loading={loading}
+        emptyMessage="Producto no registrado"
+      >
+        <Column field="codigo_barra" header="Código de barra" body={(rowData) => rowData.codigo_barra} />
+        <Column field="nombre" header="Producto" body={(rowData) => rowData.nombre} />
+        <Column field="categoria" header="Categoria" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoria")} />
+        <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
+        <Column field="fecha" header="Fecha" body={(rowData) => rowData.fecha} />
+        <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
+        <Column header="Acciones" body={actionBodyTemplate} exportable={false} />
+      </DataTable>
+
+      <Dialog
+        header="Editar Producto"
+        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+        className="p-fluid"
+        visible={formularioVisible}
+        footer={productDialogFooter}
+        onHide={setFormularioVisible}
+      >
+        <div>
+          <label htmlFor="codigo_barra" className="font-bold">
+            Código de barra
+          </label>
+          <InputText
+            value={productoAModificar.codigo_barra}
+            onChange={(e) => setProductoAModificar({ ...productoAModificar, codigo_barra: e.target.value })}
+            required
+            autoFocus
+            disabled
+          />
+        </div>
+        <div>
+          <label htmlFor="producto" className="font-bold">
+            Nombre
+          </label>
+          <InputText value={productoAModificar.nombre} onChange={(e) => setProductoAModificar({ ...productoAModificar, nombre: e.target.value })} />
+        </div>
+        <div>
+          <label htmlFor="categoria" className="font-bold">
+            Categoría
+          </label>
+          <InputText
+            value={productoAModificar.categoria}
+            onChange={(e) => setProductoAModificar({ ...productoAModificar, categoria: e.target.value })}
+          />
+        </div>
+        <div>
+          <div className="field col">
+            <label htmlFor="cantidad" className="font-bold">
+              Cantidad
+            </label>
+            <InputNumber
+              id="cantidad"
+              value={productoAModificar.cantidad}
+              onValueChange={(e) => setProductoAModificar({ ...productoAModificar, cantidad: e.target.value })}
+              mode="decimal"
+              showButtons
+              min={0}
+              max={10000}
+            />
+          </div>
+          <div>
+            <label htmlFor="precio" className="font-bold">
+              Precio
+            </label>
+            <InputNumber
+              id="precio"
+              value={productoAModificar.precio}
+              onValueChange={(e) => setProductoAModificar({ ...productoAModificar, precio: e.target.value })}
+              mode="currency"
+              currency="CLP"
+              locale="es-CL"
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      <Dialog
+        visible={confirmDialogVisible}
+        onHide={() => setConfirmDialogVisible(false)}
+        header="Confirmar Eliminación"
+        modal
+        footer={eliminarProductoDialog}
+      >
+        <i className="pi pi-exclamation-triangle" style={{ fontSize: "2rem" }}></i>
+        {productoAEliminarNombre && (
+          <span>
+            ¿Seguro que deseas eliminar <b>{productoAEliminarNombre}</b>?
+          </span>
+        )}
+      </Dialog>
+    </>
   );
 };
-
-// display: flex;
-// justify-content: flex-end;
-// align-items: center;
-// gap: 1rem;

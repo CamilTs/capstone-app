@@ -79,7 +79,7 @@ export const Clientes = () => {
       </Panel>
 
       <div className="col-12">
-        <TablaProductos productos={productos} />
+        <TablaProductos productos={productos} cargarProductos={cargarProductos} comercio={rutSeleccionado ? rutSeleccionado.comercio._id : ""} />
       </div>
     </div>
   );
