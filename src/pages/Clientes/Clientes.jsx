@@ -5,9 +5,11 @@ import { api } from "../../api/api";
 import { Panel } from "primereact/panel";
 import { DataTable } from "primereact/datatable";
 import { TablaProductos } from "../../components/TablaProductos";
+import { TablaRegistro } from "../VenderProducto/components/TablaRegistro";
 export const Clientes = () => {
   const [clientes, setClientes] = useState([]);
   const [productos, setProductos] = useState([]);
+  const [registros, setRegistros] = useState([]);
   const [rutSeleccionado, setRutSeleccionado] = useState(null);
 
   const cargarClientes = async () => {
@@ -16,7 +18,8 @@ export const Clientes = () => {
       if (!data.success) {
         setClientes([]);
       }
-      setClientes(data.data);
+      const nuevosClientes = data.data.filter((e) => e.comercio != null);
+      setClientes(nuevosClientes);
     } catch (error) {
       setClientes([]);
     }
@@ -26,6 +29,8 @@ export const Clientes = () => {
     try {
       if (rutSeleccionado.comercio == null) {
         console.log("NO tiene comercio");
+        setProductos([]);
+        return;
       }
 
       const { data } = await api.get(`comercio/productos/${rutSeleccionado.comercio._id}`);
@@ -38,9 +43,25 @@ export const Clientes = () => {
     }
   };
 
+  const cargarRegistros = async () => {
+    try {
+      if (rutSeleccionado.comercio == null) {
+        setRegistros([]);
+        return;
+      }
+      const { data } = await api.get(`comercio/registros/${rutSeleccionado.comercio._id}`);
+      if (!data.success) {
+        setRegistros([]);
+      }
+      setRegistros(data.data.registros);
+    } catch (error) {
+      setRegistros([]);
+    }
+  };
   useEffect(() => {
     if (rutSeleccionado != {}) {
       cargarProductos();
+      cargarRegistros();
     }
   }, [rutSeleccionado]);
   useEffect(() => {
@@ -80,6 +101,9 @@ export const Clientes = () => {
 
       <div className="col-12">
         <TablaProductos productos={productos} cargarProductos={cargarProductos} comercio={rutSeleccionado ? rutSeleccionado.comercio._id : ""} />
+      </div>
+      <div className="col-12">
+        <TablaRegistro registros={registros} options={true} />
       </div>
     </div>
   );

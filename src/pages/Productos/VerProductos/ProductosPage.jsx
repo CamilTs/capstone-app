@@ -116,6 +116,7 @@ export const Productos = () => {
   const exportarColumnas = cols.map((col) => ({ title: col.header, dataKey: col.field }));
 
   const exportarPdf = () => {
+    console.log(exportarColumnas);
     import("jspdf").then((jsPDF) => {
       import("jspdf-autotable").then(() => {
         const doc = new jsPDF.default(0, 0);

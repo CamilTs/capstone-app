@@ -12,7 +12,7 @@ import { InputNumber } from "primereact/inputnumber";
 import { api } from "../api/api";
 import { Toast } from "primereact/toast";
 
-export const TablaProductos = ({ productos, cargarProductos, comercio }) => {
+export const TablaProductos = ({ productos = [], cargarProductos, comercio }) => {
   const [globalFiltro, setGlobalFiltro] = useState(null);
   const [columnas, setColumnas] = useState(Object.keys(productos[0] || []));
   const [loading, setLoading] = useState(false);
@@ -52,18 +52,28 @@ export const TablaProductos = ({ productos, cargarProductos, comercio }) => {
     });
   };
   const exportarColumnas = columnas.map((col) => {
+    console.log(col);
     return { title: col, dataKey: col };
   });
 
   const exportarPdf = () => {
-    import("jspdf").then((jsPDF) => {
-      import("jspdf-autotable").then(() => {
-        const doc = new jsPDF.default(0, 0);
-        doc.autoTable(exportarColumnas, productos);
-        doc.save("productos.pdf");
-      });
-    });
+    const columnasPrueba = Object.keys(productos[0])
+      .filter((e) => e != "imagenes" && e != "__v")
+      .map(
+        (col) => {
+          return { title: col, dataKey: col };
+        },
+
+        import("jspdf").then((jsPDF) => {
+          import("jspdf-autotable").then(() => {
+            const doc = new jsPDF.default(0, 0);
+            doc.autoTable(columnasPrueba, productos);
+            doc.save("productos.pdf");
+          });
+        })
+      );
   };
+
   const controlInventario = (
     <div className="flex justify-content-between align-items-center">
       <div className="flex gap-2 align-items-center">
@@ -181,7 +191,7 @@ export const TablaProductos = ({ productos, cargarProductos, comercio }) => {
     </React.Fragment>
   );
 
-  useEffect(() => {}, []);
+  useEffect(() => {}, [productos]);
   return (
     <>
       <Toast ref={toast} />
@@ -281,12 +291,7 @@ export const TablaProductos = ({ productos, cargarProductos, comercio }) => {
         modal
         footer={eliminarProductoDialog}
       >
-        <i className="pi pi-exclamation-triangle" style={{ fontSize: "2rem" }}></i>
-        {productoAEliminarNombre && (
-          <span>
-            ¿Seguro que deseas eliminar <b>{productoAEliminarNombre}</b>?
-          </span>
-        )}
+        <p>¿Desea eliminar el producto?</p>
       </Dialog>
     </>
   );
