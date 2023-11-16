@@ -34,35 +34,25 @@ export const Comunicarse = () => {
   ];
 
   const enviarMensaje = () => {
-    if (seleccionarUsuario) {
+    if (socket && seleccionarUsuario && mensaje) {
       socket.current.emit("enviarMensaje", { destinatario: seleccionarUsuario, mensaje });
-
-      // Actualiza el historial de mensajes del canal actual
-      if (canalActual) {
-        if (!this.mensajesPorCanal[canalActual]) {
-          this.mensajesPorCanal[canalActual] = [];
-        }
-        this.mensajesPorCanal[canalActual].push({ emisor: "yo", destinatario: seleccionarUsuario, contenido: mensaje });
-      }
+      setMensajes([...mensajes, { emisor: "yo", destinatario: seleccionarUsuario, contenido: mensaje }]);
+      setMensaje("");
     }
   };
 
-  const [canalActual, setCanalActual] = useState(null);
+  const recibirMensaje = () => {
+    if (socket) {
+      socket.current.on("recibirMensaje", (data) => {
+        setMensajes([...mensajes, data]);
+      });
+    }
+  };
 
   useEffect(() => {
     socket.current = io("http://localhost:81");
-
-    // Obtiene el historial de mensajes del canal actual
-    socket.current.on("mensaje", (mensaje) => {
-      if (mensaje.canal === canalActual) {
-        setMensajes([...mensajes, mensaje]);
-      }
-    });
-
-    return () => {
-      socket.current.off("mensaje");
-    };
-  }, [canalActual]);
+    recibirMensaje();
+  }, []);
   return (
     <>
       <div className="absolute bottom-0 right-0 border-round font-bold m-2">
