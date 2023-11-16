@@ -12,10 +12,10 @@ export const GestionarCuentas = () => {
         <TabPanel rightIcon="pi pi-user-plus ml-2" header="Registrar Cuenta ">
           <RegistrarUsuarios />
         </TabPanel>
-        <TabPanel rightIcon="pi pi-plus-circle ml-2" header="Registrar Comercio">
+        <TabPanel rightIcon="pi pi-plus-circle ml-2" header="Comercio">
           <RegistrarComercio />
         </TabPanel>
-        <TabPanel rightIcon="pi pi-search ml-2" header="Ver Usuarios">
+        <TabPanel rightIcon="pi pi-search ml-2" header="Administrar">
           <VerRegistros />
         </TabPanel>
       </TabView>

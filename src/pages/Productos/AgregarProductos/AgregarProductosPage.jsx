@@ -24,6 +24,7 @@ import {
 import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { ProductoSchema } from "../../../components/Validaciones";
+import { Message } from "primereact/message";
 
 const categorias = [
   { label: "Alimentos y bebidas", value: "Alimentos y bebidas" },
@@ -176,7 +177,7 @@ export const AgregarProductos = () => {
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
-    return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
+    return validacionValores(name) ? <Message severity="error" text={`${formik.errors[name]}`}></Message> : null;
   };
 
   return (

@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
-import { confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
+import { Dialog } from "primereact/dialog";
 import {
   ContenedorProveedores,
   ContenedorHeader,
@@ -20,8 +19,9 @@ import { useSelector } from "react-redux";
 import { InputContainer } from "../../components/InputContainer";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { CustomConfirmDialog } from "../../components/ConfirmDialog";
 
-const AgregarProveedores = () => {
+export const AgregarProveedores = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const { id } = useSelector((state) => state.auth);
   const [formulario, setFormulario] = useState({
@@ -35,30 +35,36 @@ const AgregarProveedores = () => {
   const [proveedor, setProveedor] = useState([]);
   const [Loading, setLoading] = useState(false);
   const [proveedorId, setProveedorId] = useState("");
+  const [verEliminar, setVerEliminar] = useState(false);
+  const [verConfirmar, setVerConfirmar] = useState(false);
+  const [verLimpiar, setVerLimpiar] = useState(false);
 
   const verFormulario = () => {
-    limpiarFormulario();
+    formik.resetForm();
     setMostrarFormulario(true);
-  };
-
-  const ocultarFormulario = () => {
-    setMostrarFormulario();
   };
 
   const limpiarFormulario = () => {
     formik.resetForm(
       setFormulario({
         ...formulario,
-      })
+      }),
+      toast.current.show({
+        severity: "info",
+        summary: "Se limpio correctamente",
+        detail: `Se limpio el formulario`,
+        life: 2000,
+      }),
+      setVerLimpiar(false)
     );
   };
 
   const eliminarProveedor = async (proveedorId) => {
     setProveedorId(proveedorId);
-    confirmarEliminar();
+    setVerEliminar(true);
   };
 
-  const traerProveedores = async () => {
+  const traerMisProveedores = async () => {
     setLoading(true);
     try {
       const response = await api.get(`proveedor/${id}`);
@@ -79,32 +85,40 @@ const AgregarProveedores = () => {
         ...formik.values,
       });
       const { data } = response;
-      limpiarFormulario();
       toast.current.show({
         severity: "success",
-        summary: "Éxito",
-        detail: "Proveedor agregado",
-        life: 3000,
+        summary: "Se agrego correctamente",
+        detail: `Se agrego al proveedor: ${data.data.nombre}`,
+        life: 2000,
       });
       console.log(data);
     } catch (error) {
       console.log(error);
       console.log("se intento agregar al proveedor");
     } finally {
-      traerProveedores();
+      traerMisProveedores();
+      setVerConfirmar(false);
+      setMostrarFormulario(false);
     }
   };
 
   const borrarProveedor = async () => {
     try {
       const { data } = await api.delete(`proveedor/${proveedorId}`);
+
+      toast.current.show({
+        severity: "info",
+        summary: "Se elimino correctamente",
+        detail: `Se elimino al proveedor: ${data.data.nombre}`,
+        life: 2000,
+      });
       console.log(data);
-      toast.current.show({ severity: "info", summary: "Éxito", detail: "Proveedor eliminado", life: 3000 });
     } catch (error) {
       console.log(error);
       console.log("se intento eliminar al proveedor");
     } finally {
-      traerProveedores();
+      traerMisProveedores();
+      setVerEliminar(false);
     }
   };
 
@@ -119,109 +133,6 @@ const AgregarProveedores = () => {
       console.log(data);
     },
   });
-
-  const confirmarGuardado = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea guardar el formulario?",
-      header: "Confirmar",
-      icon: "pi pi-question-circle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        if (formik.values.nombre != "" && formik.values.descripcion != "" && formik.values.telefono != "" && formik.values.correo != "") {
-          toast.current.show({
-            severity: "success",
-            summary: "Éxito",
-            detail: "Formulario Guardado",
-            life: 3000,
-          });
-          agregarProveedor();
-          ocultarFormulario();
-        } else {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Ops! Algo salió mal, revise los campos",
-            life: 3000,
-          });
-        }
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Creación cancelada",
-          life: 3000,
-        });
-      },
-    });
-  };
-
-  const confirmarLimpiar = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea limpiar el formulario?",
-      header: "Confirmar",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Éxito",
-          detail: "Formulario Limpiado",
-          life: 3000,
-        });
-        limpiarFormulario();
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Limpieza cancelada",
-          life: 3000,
-        });
-      },
-    });
-  };
-
-  const confirmarEliminar = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea eliminar el proveedor?",
-      header: "Confirmar",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Éxito",
-          detail: "Proveedor eliminado",
-          life: 3000,
-        });
-        borrarProveedor();
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Eliminación cancelada",
-          life: 3000,
-        });
-      },
-    });
-  };
 
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
@@ -238,10 +149,8 @@ const AgregarProveedores = () => {
     );
   };
 
-  const [proveedorSeleccionado, setProveedorSeleccionado] = useState(null);
-
   useEffect(() => {
-    traerProveedores();
+    traerMisProveedores();
   }, []);
 
   return (
@@ -249,7 +158,7 @@ const AgregarProveedores = () => {
       <Toast ref={toast} />
       <ContenedorHeader>
         <Button raised label="Agregar Proveedor" severity="success" icon="pi pi-plus" onClick={verFormulario} />
-        <Button raised severity="info" icon="pi pi-refresh" onClick={traerProveedores} />
+        <Button raised severity="info" icon="pi pi-refresh" onClick={traerMisProveedores} />
       </ContenedorHeader>
 
       <DataTable value={proveedor} paginator rows={5} rowsPerPageOptions={[5, 10, 15]} scrollable scrollHeight="500px" loading={Loading}>
@@ -260,7 +169,7 @@ const AgregarProveedores = () => {
         <Column header="Opciones" body={botonesOpciones} />
       </DataTable>
 
-      <Dialog visible={mostrarFormulario} onHide={ocultarFormulario} header="Agregar Proveedor">
+      <Dialog visible={mostrarFormulario} onHide={() => setMostrarFormulario()} header="Agregar Proveedor">
         <ContenedorFormulario>
           <Formulario onSubmit={formik.handleSubmit}>
             <ContenedorInput>
@@ -294,7 +203,6 @@ const AgregarProveedores = () => {
                   onBlur={formik.handleBlur}
                   value={formik.values.descripcion}
                   rows={5}
-                  autoResize
                 />
                 {getFormErrorMessage("descripcion")}
               </Campos>
@@ -325,13 +233,35 @@ const AgregarProveedores = () => {
             </ContenedorInput>
           </Formulario>
           <ContenedorBoton>
-            <Button label="Guardar" severity="success" icon="pi pi-check" onClick={confirmarGuardado} />
-            <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={confirmarLimpiar} />
+            <Button label="Guardar" severity="success" icon="pi pi-check" onClick={() => setVerConfirmar(true)} />
+            <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={() => setVerLimpiar(true)} />
           </ContenedorBoton>
         </ContenedorFormulario>
       </Dialog>
+
+      <CustomConfirmDialog
+        visible={verConfirmar}
+        onHide={() => setVerConfirmar()}
+        onConfirm={agregarProveedor}
+        message="¿Confirmar creación?"
+        header="Confirmar"
+      />
+
+      <CustomConfirmDialog
+        visible={verEliminar}
+        onHide={() => setVerEliminar()}
+        onConfirm={borrarProveedor}
+        message="¿Estás seguro de eliminar el proveedor?"
+        header="Eliminar"
+      />
+
+      <CustomConfirmDialog
+        visible={verLimpiar}
+        onHide={() => setVerLimpiar(false)}
+        onConfirm={limpiarFormulario}
+        message="¿Seguro de limpiar el formulario?"
+        header="Eliminar"
+      />
     </ContenedorProveedores>
   );
 };
-
-export default AgregarProveedores;

@@ -25,9 +25,11 @@ const Container = styled.div`
 
 const ContenedorMenuPagina = styled.div`
   width: 100%;
+  min-width: 100vw;
   display: flex;
   height: 100%;
   min-height: 100vh;
+  background-color: #538a95;
 `;
 
 export const Content = styled.div`
@@ -81,23 +83,24 @@ function App() {
     dispatch(checkAuthToken());
   }, []);
   return (
-    <ContenedorMenuPagina>
-      <SocketProvider>
-        {status == "autenticado" ? <MenuLateral cerrarCuenta={confirmarCerrarCuenta} /> : null}
-        <Container>
-          <Routes>
-            {status == "autenticado" ? (
-              <Route path="/*" element={<ProtectedRoutes />} />
-            ) : (
-              <Route path="/*" element={<PublicRoutes status={status} />} />
-            )}
-            {/* <Route path="**" element={<h1>Hola mundo</h1>} /> */}
-          </Routes>
-        </Container>
-      </SocketProvider>
+    <>
+      <ContenedorMenuPagina>
+        <SocketProvider>
+          {status == "autenticado" ? <MenuLateral cerrarCuenta={confirmarCerrarCuenta} /> : null}
+          <Container>
+            <Routes>
+              {status == "autenticado" ? (
+                <Route path="/*" element={<ProtectedRoutes />} />
+              ) : (
+                <Route path="/*" element={<PublicRoutes status={status} />} />
+              )}
+            </Routes>
+          </Container>
+        </SocketProvider>
+      </ContenedorMenuPagina>
       <ConfirmDialog />
       <Toast ref={toast} />
-    </ContenedorMenuPagina>
+    </>
   );
 }
 

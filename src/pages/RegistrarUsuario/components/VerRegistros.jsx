@@ -30,30 +30,21 @@ export const VerRegistros = () => {
   return (
     <Contenedor>
       <div>
-        <DataTable
-          value={usuarios}
-          size="small"
-          paginator
-          rows={5}
-          rowsPerPageOptions={[5, 10, 15]}
-          scrollable
-          scrollHeight="500px"
-          loading={Loading}
-        >
+        <DataTable value={usuarios} paginator rows={5} rowsPerPageOptions={[5, 10, 15]} scrollable scrollHeight="500px" loading={Loading}>
           <Column field="nombre" header="Nombre" />
           <Column field="rut" header="Rut" />
           <Column field="correo" header="Correo" />
           <Column field="rol" header="Rol" />
         </DataTable>
       </div>
-      {/* <div>
-        <DataTable size="small" paginator rows={5} rowsPerPageOptions={[5, 10, 15]} scrollable scrollHeight="500px">
+      <div>
+        <DataTable paginator rows={5} rowsPerPageOptions={[5, 10, 15]} scrollable scrollHeight="500px">
           <Column field="nombre" header="Nombre" />
           <Column field="direccion" header="Dirección" />
           <Column field="propietario" header="Propietario" />
           <Column field="telefono" header="Teléfono" />
         </DataTable>
-      </div> */}
+      </div>
     </Contenedor>
   );
 };

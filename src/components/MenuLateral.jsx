@@ -11,9 +11,10 @@ const Fondo = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 225px;
-  width: 100%;
   gap: 1rem 0;
+  background: #fff;
+  border-radius: 5px;
+  height: 100%;
 `;
 
 const TituloMenu = styled.div`
@@ -33,7 +34,7 @@ const OpcionesMenu = styled.div`
   gap: 10px;
 `;
 
-const MenuLateral = ({ style, cerrarCuenta }) => {
+const MenuLateral = ({ cerrarCuenta }) => {
   const [itemsRuta, setItemsRuta] = useState([]);
   let itemsPrueba = [];
   const { rol } = useSelector((state) => state.auth);
