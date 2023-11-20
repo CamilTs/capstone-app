@@ -13,14 +13,6 @@ export const rutas = [
     label: "Ver proveedores",
     tipo: "",
   },
-
-  // {
-  //   ruta: "/venta",
-  //   rol: "cliente",
-  //   icono: "pi pi-money-bill",
-  //   label: "Vender Producto",
-  //   tipo: "",
-  // },
   {
     ruta: "/agregarProductos",
     rol: "cliente",

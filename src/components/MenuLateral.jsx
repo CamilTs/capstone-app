@@ -5,15 +5,18 @@ import { PerfilCard } from "./PerfilCard";
 import { rutas } from "../rutas";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import { Sidebar } from "primereact/sidebar";
 
 const Fondo = styled.div`
   padding: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 225px;
-  width: 100%;
   gap: 1rem 0;
+  background: #fff;
+  border-radius: 5px;
+  height: 100%;
+  min-height: 100vh;
 `;
 
 const TituloMenu = styled.div`
@@ -30,32 +33,16 @@ const OpcionesMenu = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
 `;
 
-const MenuLateral = ({ style, cerrarCuenta }) => {
+export const MenuLateral = ({ cerrarCuenta }) => {
   const [itemsRuta, setItemsRuta] = useState([]);
   let itemsPrueba = [];
   const { rol } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
-  const [menuVisible, setMenuVisible] = useState(true);
 
-  const abrirMenu = () => {
-    setMenuVisible(true);
-  };
-
-  const cerrarMenu = () => {
-    setMenuVisible(false);
-  };
-
-  const botonMenu = () => {
-    if (menuVisible) {
-      cerrarMenu();
-    } else {
-      abrirMenu();
-    }
-  };
   const prueba = () => {
     itemsPrueba = rutas
       .filter((el) => el.rol == rol)
@@ -71,6 +58,8 @@ const MenuLateral = ({ style, cerrarCuenta }) => {
     setItemsRuta(itemsPrueba);
   };
 
+  const [menuVisible, setMenuVisible] = useState(false);
+
   useEffect(() => {
     prueba();
   }, []);
@@ -82,10 +71,9 @@ const MenuLateral = ({ style, cerrarCuenta }) => {
         <OpcionesMenu>
           <Menu model={itemsRuta} className="" />
           <PerfilCard cerrarCuenta={cerrarCuenta} />
+          <Sidebar visible={menuVisible} onHide={() => setMenuVisible(false)}></Sidebar>
         </OpcionesMenu>
       )}
     </Fondo>
   );
 };
-
-export default MenuLateral;

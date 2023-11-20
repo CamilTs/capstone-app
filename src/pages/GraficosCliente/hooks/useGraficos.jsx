@@ -1,6 +1,39 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 
+export const masVendidoMensual = async () => {
+  try {
+    const response = await api.get("/registro/productosVendidosMes");
+    const { data } = response;
+    return data.data;
+  } catch (error) {
+    console.log(error);
+    return 0;
+  }
+};
+
+export const vendidosAnual = async () => {
+  try {
+    const response = await api.get("/registro/productosVendidosAnio");
+    const { data } = response;
+    return data.data;
+  } catch (error) {
+    console.log(error);
+    return 0;
+  }
+};
+
+export const totalVentas = async () => {
+  try {
+    const response = await api.get("/registro");
+    const { data } = response;
+    return data.data;
+  } catch (error) {
+    console.log(error);
+    return 0;
+  }
+};
+
 const useGraficos = (formato = {}, tipo = "", title = "") => {
   const formatoDefault = {
     data: { datasets: [] },

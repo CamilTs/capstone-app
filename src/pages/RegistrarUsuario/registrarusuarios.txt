@@ -21,13 +21,25 @@ import {
 import { api } from "../../../api/api";
 import { RegistrarSchema } from "../../../components/Validaciones";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
-import { confirmDialog } from "primereact/confirmdialog";
 
 export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormulario, estado }) => {
   const [imagen, setImagen] = useState(null);
-
+<<<<<<< HEAD
+=======
+  const estructuraFormulario = {
+    rut: "",
+    nombre: "",
+    apellido: "",
+    correo: "",
+    contrasena: "",
+    repetir: "",
+    imagen: "",
+    rol: "",
+  };
+  const [formulario, setFormulario] = useState(estructuraFormulario);
   const [verConfirmar, setVerConfirmar] = useState(false);
   const [verLimpiar, setVerLimpiar] = useState(false);
+>>>>>>> cliente
 
   const rolOptions = [
     { label: "Administrador", value: "administrador" },
@@ -80,9 +92,13 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
       limpiarFormulario();
     } catch (error) {
       console.log(error);
+<<<<<<< HEAD
+      console.log("se intentó crear el usuario");
+=======
       console.log("se intento crear el usuario");
     } finally {
       setVerConfirmar(false);
+>>>>>>> cliente
     }
   };
 
@@ -110,6 +126,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
     return rut;
   };
 
+<<<<<<< HEAD
   const camposVacios = () => {
     console.log(formik.values);
     if (estado === "crear") {
@@ -247,6 +264,8 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
 
   const ButtonCrear = <Opciones></Opciones>;
 
+=======
+>>>>>>> cliente
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
@@ -397,27 +416,29 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
               </Campos>
             </InputRow>
             <Opciones>
-              {/* <Button
+              <Button
                 raised
                 label="Registrar"
                 severity="success"
                 rounded
                 disabled={!formik.dirty || !formik.isValid}
                 onClick={() => setVerConfirmar(true)}
-              /> */}
-              {estado == "crear" ? (
-                <Button raised label="Registrar" severity="success" rounded onClick={() => setVerConfirmar(true)} disabled={camposVacios()} />
-              ) : (
-                <Button raised label="Actualizar" severity="warning" rounded onClick={() => setVerConfirmar(true)} disabled={camposVacios()} />
-              )}
+              />
               <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} type="button" />
             </Opciones>
           </ContenedorCampos>
         </Inputs>
       </Formulario>
-      {/* <Opciones>
+<<<<<<< HEAD
+      <Opciones>
+        {estado == "crear" ? (
+          <Button raised label="Registrar" severity="success" rounded onClick={confirmarCrear} disabled={camposVacios()} />
+        ) : (
+          <Button raised label="Actualizar" severity="warning" rounded onClick={confirmarEditar} disabled={camposVacios()} />
+        )}
         <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
-      </Opciones> */}
+      </Opciones>
+=======
 
       <CustomConfirmDialog
         visible={verConfirmar}
@@ -435,6 +456,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
         message="¿Seguro de limpiar el formulario?"
         header="Limpiar"
       />
+>>>>>>> cliente
     </Contenedor>
   );
 };

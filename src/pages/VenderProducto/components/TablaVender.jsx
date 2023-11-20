@@ -8,11 +8,11 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { api } from "../../../api/api";
-import { ConfirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { useContextSocket } from "../../../context/SocketContext";
 import { formatoCurrencyCLP } from "../../../components/FormatoDinero";
+import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 
 const ContenedorDatos = styled.div`
   display: flex;
@@ -39,12 +39,12 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
   const [visible, setVisible] = useState(false);
   const [codigoBarra, setCodigoBarra] = useState("");
   const { socket } = useContextSocket();
+  const [verConfirmar, setVerConfirmar] = useState(false);
+  const [verLimpiar, setVerLimpiar] = useState(false);
 
   const navigate = useNavigate();
 
   const toast = useRef(null);
-  const [confirmDialogVenta, setConfirmDialogVenta] = useState(false);
-  const [confirmDialogLimpiar, setConfirmDialogLimpiar] = useState(false);
 
   const botonesHeader = (
     <>
@@ -55,25 +55,19 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
 
   const botonesVenta = (
     <>
-      <Button
-        label="Vender"
-        severity="info"
-        icon="pi pi-check"
-        disabled={registro.productos.length == 0}
-        onClick={() => setConfirmDialogVenta(true)}
-      />
-      <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={() => setConfirmDialogLimpiar(true)} />
+      <Button label="Vender" severity="info" icon="pi pi-check" disabled={registro.productos.length == 0} onClick={() => setVerConfirmar(true)} />
+      <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={() => setVerLimpiar(true)} />
     </>
   );
 
   const hadleLimpiarTabla = () => {
-    setConfirmDialogLimpiar(false);
+    setVerLimpiar(false);
     setRegistro(formatoVenta);
     setUltimoAgregado(0);
-
     setCodigoBarra("");
     toast.current.show({ severity: "info", summary: "Listo", detail: "¡Tabla limpiada con exito!", life: 2000 });
   };
+
   const venderProductos = async () => {
     const { data } = await api.post("registro", { ...registro, comercio });
     console.log(data);
@@ -82,21 +76,10 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
     await cargarRegistros();
     setCodigoBarra("");
     setUltimoAgregado(0);
-    setConfirmDialogVenta(false);
+    setVerConfirmar(false);
     toast.current.show({ severity: "success", summary: "Listo", detail: "¡Venta realizada con exito!", life: 2000 });
   };
-  const venderProductosDialog = (
-    <>
-      <Button label="Si" icon="pi pi-check" className="p-button-success" onClick={venderProductos} />
-      <Button label="No" icon="pi pi-times" className="p-button-info" onClick={() => setConfirmDialogVenta(false)} />
-    </>
-  );
-  const limpiarTablaDialog = (
-    <>
-      <Button label="Si" icon="pi pi-trash" severity="danger" className="p-button-success" onClick={hadleLimpiarTabla} />
-      <Button label="No" icon="pi pi-times" className="p-button-info" onClick={() => setConfirmDialogLimpiar(false)} />
-    </>
-  );
+
   const agregarProducto = async (codigoBarra = "") => {
     try {
       const { data: response } = await api.get(`producto/${codigoBarra}`);
@@ -160,10 +143,8 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
   }, []);
   return (
     <>
-      {/* <div className="flex flex-column justify-content-between g-3"> */}
       <div className="flex flex-column gap-3">
-        {/* <div className="flex g-3 flex-column w-full h-full"> */}
-        <div className="flex flex-column">
+        <div className="flex flex-column gap-1">
           <Toast ref={toast} />
           <div className="flex gap-2">{botonesHeader}</div>
           <ContenedorDatos>
@@ -199,35 +180,33 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
         </div>
         <div className="flex gap-2 justify-content-end">{botonesVenta}</div>
       </div>
-      <ConfirmDialog
-        visible={confirmDialogVenta}
-        onHide={() => setConfirmDialogVenta(false)}
-        message="¿Deseas confirmar la venta?"
-        header="Confirmar venta"
-        icon="pi pi-question-circle"
-        acceptClassName="p-button-success"
-        acceptLabel="Sí"
-        rejectLabel="No"
-        footer={venderProductosDialog}
-      />
-      <ConfirmDialog
-        visible={confirmDialogLimpiar}
-        onHide={() => setConfirmDialogLimpiar(false)}
-        message="¿Seguro de limpiar la tabla?"
-        header="Confirmar limpieza de tabla"
-        icon="pi pi-question-circle"
-        acceptClassName="p-button-success"
-        acceptLabel="Limpiar"
-        rejectLabel="Cancelar"
-        footer={limpiarTablaDialog}
-      />
+
       <Dialog header="Ingresar producto" visible={visible} onHide={() => setVisible(false)}>
         <div className="p-float-label glex g-2">
-          <InputText id="codigoBarra" value={codigoBarra} onChange={(e) => setCodigoBarra(e.target.value)} />
-          <label htmlFor="codigoBarra">Codigo de barra</label>
-          <Button severity="success" label="Agregar" onClick={() => agregarProducto(codigoBarra)} />
+          <div className="p-inputgroup flex-1 gap-1">
+            <InputText id="codigoBarra" value={codigoBarra} onChange={(e) => setCodigoBarra(e.target.value)} />
+            <label htmlFor="codigoBarra">Codigo de barra</label>
+            <Button severity="success" label="Agregar" onClick={() => agregarProducto(codigoBarra)} />
+          </div>
         </div>
       </Dialog>
+
+      <CustomConfirmDialog
+        visible={verConfirmar}
+        onHide={() => setVerConfirmar(false)}
+        onConfirm={venderProductos}
+        type="submit"
+        message="¿Confirmar creación?"
+        header="Confirmar"
+      />
+
+      <CustomConfirmDialog
+        visible={verLimpiar}
+        onHide={() => setVerLimpiar(false)}
+        onConfirm={hadleLimpiarTabla}
+        message="¿Seguro de limpiar el formulario?"
+        header="Limpiar"
+      />
     </>
   );
 };

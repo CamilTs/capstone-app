@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ContenedorMasivo = styled.div`
   height: 100%;
-
+  border-radius: 10px;
   @media (max-width: 1920px) {
     overflow: auto;
   }
