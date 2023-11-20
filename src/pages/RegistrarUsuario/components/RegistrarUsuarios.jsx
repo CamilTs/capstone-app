@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
@@ -22,19 +22,8 @@ import {
 import { api } from "../../../api/api";
 import { RegistrarSchema } from "../../../components/Validaciones";
 
-export const RegistrarUsuarios = () => {
+export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormulario, estado }) => {
   const [imagen, setImagen] = useState(null);
-  const estructuraFormulario = {
-    rut: "",
-    nombre: "",
-    apellido: "",
-    correo: "",
-    contrasena: "",
-    repetir: "",
-    imagen: "",
-    rol: "",
-  };
-  const [formulario, setFormulario] = useState(estructuraFormulario);
 
   const rolOptions = [
     { label: "Administrador", value: "administrador" },
@@ -66,15 +55,21 @@ export const RegistrarUsuarios = () => {
 
   const crearUsuario = async () => {
     try {
-      const response = await api.post("usuario", {
-        ...formik.values,
-      });
-      const { data } = response;
+      // Excluye la propiedad 'contrasena' si estamos en modo 'editar'
+      const dataToSend = estado === "crear" ? { ...formik.values } : { ...formik.values, contrasena: undefined, rol: undefined };
+
+      if (estado === "crear") {
+        const response = await api.post("usuario", dataToSend);
+        const { data } = response;
+      } else {
+        const response = await api.put("usuario", dataToSend);
+        const { data } = response;
+      }
+
       limpiarFormulario();
-      console.log(data);
     } catch (error) {
       console.log(error);
-      console.log("se intento crear el usuario");
+      console.log("se intentó crear el usuario");
     }
   };
 
@@ -103,20 +98,70 @@ export const RegistrarUsuarios = () => {
   };
 
   const camposVacios = () => {
+    console.log(formik.values);
+    if (estado === "crear") {
+      return (
+        !formik.values.rol ||
+        !formik.values.imagen ||
+        formik.values.rut.length < 12 ||
+        !formik.values.nombre ||
+        !formik.values.apellido ||
+        !formik.values.correo ||
+        !formik.values.contrasena ||
+        formik.values.contrasena !== formik.values.repetir
+      );
+    }
+    // Si estás en modo "editar", verifica solo las condiciones relevantes
     return (
       !formik.values.rol ||
       !formik.values.imagen ||
-      formik.values.rut.length < 12 ||
-      formik.values.nombre < 1 ||
-      formik.values.apellido < 1 ||
-      !formik.values.correo ||
-      !formik.values.contrasena ||
-      !formik.values.repetir ||
-      formik.values.contrasena !== formik.values.repetir
+      formik.values.rut.length < 7 ||
+      !formik.values.nombre ||
+      !formik.values.apellido ||
+      !formik.values.correo
     );
   };
 
   const confirmarCrear = () => {
+    confirmDialog({
+      message: "¿Está seguro que desea crear este usuario?",
+      header: "Confirmar",
+      icon: "pi pi-question-circle",
+      acceptClassName: "p-button-success ",
+      acceptLabel: "Si",
+      acceptIcon: "pi pi-check",
+      rejectClassName: "p-button-danger ",
+      rejectLabel: "No",
+      rejectIcon: "pi pi-times",
+      accept: () => {
+        if (camposVacios()) {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Ops! Algo salió mal, revise los campos",
+            life: 3000,
+          });
+        } else {
+          toast.current.show({
+            severity: "success",
+            summary: "Éxito",
+            detail: "Usuario creado",
+            life: 3000,
+          });
+          crearUsuario();
+        }
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "info",
+          summary: "Cancelado",
+          detail: "Registro cancelado",
+          life: 3000,
+        });
+      },
+    });
+  };
+  const confirmarEditar = () => {
     confirmDialog({
       message: "¿Está seguro que desea crear este usuario?",
       header: "Confirmar",
@@ -195,6 +240,25 @@ export const RegistrarUsuarios = () => {
     return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
   };
 
+  const cargarImagen = async () => {
+    if (estado === "crear") return;
+    try {
+      const { data } = await api.get(`usuario/img/${formulario.rut}`);
+      formik.setFieldValue("imagen", data.data.imagen);
+    } catch (error) {
+      console.log(error);
+      console.log("Error al cargar la imagen");
+    }
+  };
+
+  const prueba = () => {
+    console.log(formik.values);
+  };
+
+  useEffect(() => {
+    cargarImagen();
+  }, [estado]);
+
   return (
     <Contenedor>
       <Toast ref={toast} />
@@ -210,6 +274,7 @@ export const RegistrarUsuarios = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.rol}
+            disabled={estado === "editar"}
           />
           {getFormErrorMessage("rol")}
         </Campos>
@@ -246,6 +311,7 @@ export const RegistrarUsuarios = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formatoRut(formik.values.rut)}
+                  disabled={estado === "editar"}
                 />
                 {getFormErrorMessage("rut")}
               </Campos>
@@ -321,7 +387,11 @@ export const RegistrarUsuarios = () => {
         </Inputs>
       </Formulario>
       <Opciones>
-        <Button raised label="Registrar" severity="success" rounded onClick={confirmarCrear} disabled={camposVacios()} />
+        {estado == "crear" ? (
+          <Button raised label="Registrar" severity="success" rounded onClick={confirmarCrear} disabled={camposVacios()} />
+        ) : (
+          <Button raised label="Actualizar" severity="warning" rounded onClick={confirmarEditar} disabled={camposVacios()} />
+        )}
         <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
       </Opciones>
     </Contenedor>

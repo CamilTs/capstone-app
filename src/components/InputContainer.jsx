@@ -13,7 +13,7 @@ const Container = styled.span`
   width: 100%;
 `;
 
-export const InputContainer = ({ value, name, onChange, type, placeholder, onBlur, maxlength }) => {
+export const InputContainer = ({ value, name, onChange, type, placeholder, onBlur, maxlength, disabled }) => {
   return (
     <Container>
       <Input
@@ -24,6 +24,7 @@ export const InputContainer = ({ value, name, onChange, type, placeholder, onBlu
         type={type ? type : "text"}
         placeholder={placeholder}
         maxLength={maxlength}
+        disabled={disabled}
       />
     </Container>
   );

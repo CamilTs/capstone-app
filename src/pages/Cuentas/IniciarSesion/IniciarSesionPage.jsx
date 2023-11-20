@@ -68,15 +68,6 @@ export const IniciarSesionPage = () => {
           sticky: true,
         },
       ]);
-    } else if (errorMessage) {
-      msgs.current.show([
-        {
-          severity: "error",
-          summary: "Error",
-          detail: errorMessage,
-          sticky: true,
-        },
-      ]);
     } else {
       dispatch(autenticando(formik.values));
       toast.current.show({

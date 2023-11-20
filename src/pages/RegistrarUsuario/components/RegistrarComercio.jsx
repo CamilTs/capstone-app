@@ -30,6 +30,9 @@ export const RegistrarComercio = () => {
         ...formik.values,
       });
       const { data } = response;
+      if (!data.success) {
+        console.log("Error al crear comercio");
+      }
       limpiarFormulario();
       console.log(data);
     } catch (error) {
