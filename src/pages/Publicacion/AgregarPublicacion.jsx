@@ -69,8 +69,14 @@ export const AgregarPublicacion = () => {
         ...formik.values,
       });
       const { data } = response;
-      limpiarFormulario();
       console.log(data);
+      toast.current.show({
+        severity: "success",
+        summary: "Publicación agregada",
+        detail: "Se agregó la publicación",
+        life: 2000,
+      });
+      formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
     } catch (error) {
       console.log(error);
       console.log("Se intento agregar publicación");
@@ -98,7 +104,6 @@ export const AgregarPublicacion = () => {
 
     onSubmit: (data) => {
       console.log(data);
-      limpiarFormulario();
     },
   });
 
