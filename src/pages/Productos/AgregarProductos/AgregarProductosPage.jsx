@@ -1,7 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Toast } from "primereact/toast";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "primereact/button";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
@@ -25,6 +23,8 @@ import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { ProductoSchema } from "../../../components/Validaciones";
 import { Message } from "primereact/message";
+import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
+import { Toast } from "primereact/toast";
 
 const categorias = [
   { label: "Alimentos y bebidas", value: "Alimentos y bebidas" },
@@ -36,7 +36,6 @@ export const AgregarProductos = () => {
   const { id, comercio } = useSelector((state) => state.auth);
   const [imagen, setImagen] = useState(null);
   const toast = useRef(null);
-
   const estructuraFormulario = {
     id: Date.now(),
     fecha: new Date(),
@@ -49,6 +48,8 @@ export const AgregarProductos = () => {
     precio: Number(0),
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
+  const [verConfirmar, setVerConfirmar] = useState(false);
+  const [verLimpiar, setVerLimpiar] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.files[0];
@@ -78,11 +79,24 @@ export const AgregarProductos = () => {
     } catch (error) {
       console.log(error);
       console.log("se intento agregar el producto");
+    } finally {
+      setVerConfirmar(false);
     }
   };
 
   const limpiarFormulario = () => {
-    formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
+    formik.resetForm();
+    setFormulario({
+      ...formulario,
+    }),
+      setImagen(null);
+    toast.current.show({
+      severity: "info",
+      summary: "Éxito",
+      detail: "Formulario Limpiado",
+      life: 2000,
+    });
+    setVerLimpiar(false);
   };
 
   const formik = useFormik({
@@ -96,95 +110,21 @@ export const AgregarProductos = () => {
     },
   });
 
-  const confirmarAgregar = () => {
-    confirmDialog({
-      message: "¿Estás seguro de agregar este producto?",
-      header: "Confirmar",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        if (
-          formik.values.nombre != "" &&
-          formik.values.codigo_barra != "" &&
-          formik.values.categoria != null &&
-          formik.values.cantidad != 0 &&
-          formik.values.precio != 0 &&
-          formik.values.imagen != ""
-        ) {
-          toast.current.show({
-            severity: "success",
-            summary: "Listo",
-            detail: "Producto Agregado",
-            life: 2000,
-          });
-          agregarProductoDB();
-        } else {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Ops! Algo salió mal, revise los campos",
-            life: 3000,
-          });
-        }
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Registro cancelado",
-          life: 3000,
-        });
-      },
-    });
-  };
-
-  const confirmarLimpiar = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea limpiar el formulario?",
-      header: "Confirmar",
-      icon: "pi pi-question-circle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        toast.current.show({
-          severity: "success",
-          summary: "Éxito",
-          detail: "Formulario Limpiado",
-          life: 3000,
-        });
-        limpiarFormulario();
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Limpieza cancelada",
-          life: 3000,
-        });
-      },
-    });
-  };
-
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
-    return validacionValores(name) ? <Message severity="error" text={`${formik.errors[name]}`}></Message> : null;
+    return validacionValores(name) ? (
+      <span>
+        <Message className="sticky" severity="error" text={`${formik.errors[name]}`}></Message>
+      </span>
+    ) : null;
   };
 
   return (
     <ContenedorAncho>
-      <Titulo>Agregar Productos</Titulo>
       <Toast ref={toast} />
-      <div>
+      <Titulo>Agregar Productos</Titulo>
+      <div className="flex flex-column md:gap-1">
         <Formulario onSubmit={formik.handleSubmit}>
           <ContenedorPrimario>
             <ContenedorImg>
@@ -196,7 +136,6 @@ export const AgregarProductos = () => {
                   <img src={URL.createObjectURL(imagen)} alt="Vista previa de la foto de perfil" style={{ maxWidth: "100px" }} />
                 </div>
               )}
-
               <label htmlFor="imagen"></label>
               <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} auto chooseLabel="Subir" onSelect={handleFileChange} />
               {getFormErrorMessage("imagen")}
@@ -269,16 +208,37 @@ export const AgregarProductos = () => {
                   {getFormErrorMessage("precio")}
                 </Campos>
               </ContenedorNumber>
+              <Opciones>
+                <Button
+                  label="Agregar"
+                  icon="pi pi-plus"
+                  className="p-button-success"
+                  disabled={!formik.dirty || !formik.isValid}
+                  onClick={() => setVerConfirmar(true)}
+                />
+                <Button label="Limpiar" icon="pi pi-trash" className="p-button-danger" onClick={() => setVerLimpiar(true)} type="button" />
+              </Opciones>
             </ContenedorCampos>
           </ContenedorPrimario>
         </Formulario>
-        <Opciones>
-          <Button label="Agregar" icon="pi pi-plus" className="p-button-success" rounded onClick={confirmarAgregar} />
-          <Button label="Limpiar" icon="pi pi-trash" className="p-button-danger" rounded onClick={confirmarLimpiar} />
-        </Opciones>
       </div>
+
+      <CustomConfirmDialog
+        visible={verConfirmar}
+        onHide={() => setVerConfirmar(false)}
+        onConfirm={agregarProductoDB}
+        type="submit"
+        message="¿Confirmar creación?"
+        header="Confirmar"
+      />
+
+      <CustomConfirmDialog
+        visible={verLimpiar}
+        onHide={() => setVerLimpiar(false)}
+        onConfirm={limpiarFormulario}
+        message="¿Seguro de limpiar el formulario?"
+        header="Limpiar"
+      />
     </ContenedorAncho>
   );
 };
-
-// export default AgregarProductos;

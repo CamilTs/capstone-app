@@ -6,9 +6,11 @@ export const ContenedorAncho = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  border-radius: 10px;
 
   @media (max-width: 1500px) {
     overflow-y: auto;
+    border-radius: 10px;
   }
 `;
 
@@ -61,8 +63,8 @@ export const ImagenPreview = styled.div`
 
 export const ImagenImagen = styled.img`
   object-fit: contain;
-  width: 600px;
-  height: 600px;
+  width: 500px;
+  height: 500px;
 
   @media (max-width: 1600px) {
     width: 400px;
@@ -123,6 +125,20 @@ export const Opciones = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+
+  @media (max-width: 1600px) {
+    width: 100%;
+  }
+
+  @media (max-width: 1360px) {
+    width: 100%;
+  }
+
+  @media (max-width: 930px) {
+    width: 100%;
+    justify-content: center;
+    gap: 0.5rem;
+  }
 `;
 
 export const Titulo = styled.h2`

@@ -27,7 +27,7 @@ export const VenderProducto = () => {
 
   return (
     <>
-      <div className="grid h-full">
+      <div className="grid h-full m-2">
         <div className="col-12">
           <TablaVender comercio={comercio} cargarRegistros={cargarRegistros} />
         </div>

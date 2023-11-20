@@ -19,8 +19,8 @@ import {
   Titulo,
 } from "./components/StyledComponents";
 import { InputContainer } from "../../components/InputContainer";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { publicacionSchema } from "../../components/Validaciones";
+import { CustomConfirmDialog } from "../../components/CustomConfirmDialog";
 
 const categorias = [
   { label: "Alimento", value: "Alimento" },
@@ -42,6 +42,8 @@ export const AgregarPublicacion = () => {
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
   const [imagen, setImagen] = useState(null);
+  const [verConfirmar, setVerConfirmar] = useState(false);
+  const [verLimpiar, setVerLimpiar] = useState(false);
 
   const toast = useRef(null);
 
@@ -72,11 +74,20 @@ export const AgregarPublicacion = () => {
     } catch (error) {
       console.log(error);
       console.log("Se intento agregar publicación");
+    } finally {
+      setVerConfirmar(false);
     }
   };
 
   const limpiarFormulario = () => {
     formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
+    toast.current.show({
+      severity: "info",
+      summary: "Formulario limpiado",
+      detail: "Se limpió el formulario",
+      life: 2000,
+    });
+    setVerLimpiar(false);
   };
 
   const formik = useFormik({
@@ -95,71 +106,6 @@ export const AgregarPublicacion = () => {
 
   const getFormErrorMessage = (name) => {
     return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
-  };
-
-  const confirmarAgregarPublicacion = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea agregar esta publicación?",
-      header: "Confirmación",
-      icon: "pi pi-question-circle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        if (
-          formik.values.categoria != "" &&
-          formik.values.imagen != "" &&
-          formik.values.nombre != "" &&
-          formik.values.precio != "" &&
-          formik.values.codigo_barra != "0"
-        ) {
-          toast.current.show({ severity: "success", summary: "Éxito", detail: "¡¡Publicación agregada!!", life: 3000 });
-          agregarPublicacion();
-        } else {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Ops! Algo ha salido mal, revisa los campos",
-            life: 3000,
-          });
-        }
-      },
-      reject: () => toast.current.show({ severity: "info", summary: "Cancelado", detail: "Se cancelo el agregar", life: 3000 }),
-    });
-  };
-
-  const confirmarLimpiar = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea limpiar el formulario?",
-      header: "Confirmar",
-      icon: "pi pi-question-circle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        toast.current.show({
-          severity: "success",
-          summary: "Éxito",
-          detail: "Formulario Limpiado",
-          life: 3000,
-        });
-        limpiarFormulario();
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Limpieza cancelada",
-          life: 3000,
-        });
-      },
-    });
   };
 
   return (
@@ -231,12 +177,29 @@ export const AgregarPublicacion = () => {
             />
             {getFormErrorMessage("precio")}
           </Campos>
+          <ContenedorBotones>
+            <Button label="Agregar" className="p-button-success" onClick={() => setVerConfirmar(true)} />
+            <Button label="Limpiar" className="p-button-danger" onClick={() => setVerLimpiar(true)} type="button" />
+          </ContenedorBotones>
         </ContenedorCampos>
       </Formulario>
-      <ContenedorBotones>
-        <Button label="Agregar" className="p-button-success" onClick={confirmarAgregarPublicacion} />
-        <Button label="Limpiar" className="p-button-danger" onClick={confirmarLimpiar} />
-      </ContenedorBotones>
+
+      <CustomConfirmDialog
+        visible={verConfirmar}
+        onHide={() => setVerConfirmar(false)}
+        onConfirm={agregarPublicacion}
+        type="submit"
+        message="¿Confirmar creación?"
+        header="Confirmar"
+      />
+
+      <CustomConfirmDialog
+        visible={verLimpiar}
+        onHide={() => setVerLimpiar(false)}
+        onConfirm={limpiarFormulario}
+        message="¿Seguro de limpiar el formulario?"
+        header="Limpiar"
+      />
     </Contenedor>
   );
 };

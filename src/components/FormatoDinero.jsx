@@ -5,3 +5,14 @@ export const formatoCurrencyCLP = (value) => {
   });
   return formato.format(value);
 };
+
+export const formatoHora = (dateString) => {
+  const date = new Date(dateString);
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+
+  hours = hours < 10 ? `0${hours}` : hours;
+  minutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  return `${hours}:${minutes}`;
+};

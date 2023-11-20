@@ -7,7 +7,7 @@ import { ProductosProvider } from "../context/ProductosContext";
 export const ClienteRoutes = () => {
   return (
     <ProductosProvider>
-      <Content>
+      <Content width="100%">
         <Routes>
           <Route path="" element={<VenderProducto />} />
           <Route path="verProvedor" element={<AgregarProveedores />} />

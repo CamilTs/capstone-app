@@ -3,7 +3,7 @@ import { AdminRoutes } from "./AdminRoutes";
 import { ClienteRoutes } from "./ClienteRoutes";
 import { ProveedorRoutes } from "./ProveedorRoutes";
 import { useSelector } from "react-redux";
-import { Comunicarse } from "../components/Mensajes";
+import { Comunicarse } from "../pages/Chats/Mensajes";
 
 export const ProtectedRoutes = () => {
   const { status, rol } = useSelector((state) => state.auth);

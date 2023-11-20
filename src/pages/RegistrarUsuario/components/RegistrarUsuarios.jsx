@@ -4,7 +4,6 @@ import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { InputContainer } from "../../../components/InputContainer";
 import { Toast } from "primereact/toast";
-import { confirmDialog } from "primereact/confirmdialog";
 import { useFormik } from "formik";
 import {
   Formulario,
@@ -21,6 +20,7 @@ import {
 } from "./StyledComponents";
 import { api } from "../../../api/api";
 import { RegistrarSchema } from "../../../components/Validaciones";
+import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 
 export const RegistrarUsuarios = () => {
   const [imagen, setImagen] = useState(null);
@@ -35,6 +35,8 @@ export const RegistrarUsuarios = () => {
     rol: "",
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
+  const [verConfirmar, setVerConfirmar] = useState(false);
+  const [verLimpiar, setVerLimpiar] = useState(false);
 
   const rolOptions = [
     { label: "Administrador", value: "administrador" },
@@ -46,6 +48,13 @@ export const RegistrarUsuarios = () => {
 
   const limpiarFormulario = () => {
     formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
+    toast.current.show({
+      severity: "info",
+      summary: "Formulario limpiado",
+      detail: "Se limpió el formulario",
+      life: 2000,
+    });
+    setVerLimpiar(false);
   };
 
   const handleFileChange = (e) => {
@@ -75,6 +84,8 @@ export const RegistrarUsuarios = () => {
     } catch (error) {
       console.log(error);
       console.log("se intento crear el usuario");
+    } finally {
+      setVerConfirmar(false);
     }
   };
 
@@ -101,93 +112,6 @@ export const RegistrarUsuarios = () => {
     }
     return rut;
   };
-
-  const camposVacios = () => {
-    return (
-      !formik.values.rol ||
-      !formik.values.imagen ||
-      formik.values.rut.length < 12 ||
-      formik.values.nombre < 1 ||
-      formik.values.apellido < 1 ||
-      !formik.values.correo ||
-      !formik.values.contrasena ||
-      !formik.values.repetir ||
-      formik.values.contrasena !== formik.values.repetir
-    );
-  };
-
-  const confirmarCrear = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea crear este usuario?",
-      header: "Confirmar",
-      icon: "pi pi-question-circle",
-      acceptClassName: "p-button-success ",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger ",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        if (camposVacios()) {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Ops! Algo salió mal, revise los campos",
-            life: 3000,
-          });
-        } else {
-          toast.current.show({
-            severity: "success",
-            summary: "Éxito",
-            detail: "Usuario creado",
-            life: 3000,
-          });
-          crearUsuario();
-        }
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Registro cancelado",
-          life: 3000,
-        });
-      },
-    });
-  };
-
-  const confirmarLimpiar = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea limpiar el formulario?",
-      header: "Confirmar",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        toast.current.show({
-          severity: "success",
-          summary: "Éxito",
-          detail: "Formulario Limpiado",
-          life: 3000,
-        });
-        limpiarFormulario();
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Limpieza cancelada",
-          life: 3000,
-        });
-      },
-    });
-  };
-
-  const ButtonCrear = <Opciones></Opciones>;
 
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
@@ -317,13 +241,37 @@ export const RegistrarUsuarios = () => {
                 {getFormErrorMessage("repetir")}
               </Campos>
             </InputRow>
+            <Opciones>
+              <Button
+                raised
+                label="Registrar"
+                severity="success"
+                rounded
+                disabled={!formik.dirty || !formik.isValid}
+                onClick={() => setVerConfirmar(true)}
+              />
+              <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} type="button" />
+            </Opciones>
           </ContenedorCampos>
         </Inputs>
       </Formulario>
-      <Opciones>
-        <Button raised label="Registrar" severity="success" rounded onClick={confirmarCrear} disabled={camposVacios()} />
-        <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
-      </Opciones>
+
+      <CustomConfirmDialog
+        visible={verConfirmar}
+        onHide={() => setVerConfirmar(false)}
+        onConfirm={crearUsuario}
+        type="submit"
+        message="¿Confirmar creación?"
+        header="Confirmar"
+      />
+
+      <CustomConfirmDialog
+        visible={verLimpiar}
+        onHide={() => setVerLimpiar(false)}
+        onConfirm={limpiarFormulario}
+        message="¿Seguro de limpiar el formulario?"
+        header="Limpiar"
+      />
     </Contenedor>
   );
 };

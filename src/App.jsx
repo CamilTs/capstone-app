@@ -1,7 +1,7 @@
 import "/node_modules/primeflex/primeflex.css";
 
 import { Navigate, Route, Routes } from "react-router-dom";
-import MenuLateral from "./components/MenuLateral";
+import { MenuLateral } from "./components/MenuLateral";
 import "./App.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
@@ -19,16 +19,16 @@ import { Toast } from "primereact/toast";
 const Container = styled.div`
   background-color: #538a95;
   width: 100%;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
 `;
 
 const ContenedorMenuPagina = styled.div`
   width: 100%;
-  min-width: 100vw;
-  display: flex;
   height: 100%;
   min-height: 100vh;
+  display: flex;
   background-color: #538a95;
 `;
 
@@ -38,10 +38,10 @@ export const Content = styled.div`
   margin: ${({ margin }) => (margin ? margin : "50px")};
   background-color: #fff;
   border-radius: 10px;
+  height: auto
   padding: 10px;
   display: flex;
   flex-direction: column;
-  height: auto;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(8.5px);
   color: black;

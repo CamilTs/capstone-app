@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 import { InputContainer } from "../../components/InputContainer";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { CustomConfirmDialog } from "../../components/ConfirmDialog";
+import { CustomConfirmDialog } from "../../components/CustomConfirmDialog";
 
 export const AgregarProveedores = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -260,7 +260,7 @@ export const AgregarProveedores = () => {
         onHide={() => setVerLimpiar(false)}
         onConfirm={limpiarFormulario}
         message="¿Seguro de limpiar el formulario?"
-        header="Eliminar"
+        header="Limpiar"
       />
     </ContenedorProveedores>
   );

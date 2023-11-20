@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Toast } from "primereact/toast";
 
-export const ToastMessage = ({ severity, mensaje }) => {
+export const ToastMessage = ({ setMensaje, setTipoMensaje, setMostrarToast, severity, mensaje }) => {
   const toast = useRef(null);
 
   useEffect(() => {
@@ -21,9 +21,15 @@ export const ToastMessage = ({ severity, mensaje }) => {
         summary,
         detail: mensaje,
         life: 2000,
+        onHide: () => {
+          setMostrarToast(false);
+        },
       });
+      setMensaje(mensaje);
+      setTipoMensaje(severity);
+      setMostrarToast(true);
     }
-  }, [severity, mensaje]);
+  }, [severity, mensaje, setMensaje, setTipoMensaje, setMostrarToast]);
 
   return <Toast ref={toast} />;
 };
