@@ -39,6 +39,12 @@ export const ContenedorUsuarios = styled.div`
   padding: 0.4rem;
 `;
 
+export const ContenedorUsuario = styled.div`
+  &:hover {
+    background-color: #149fb8;
+  }
+`;
+
 export const ContenedorChat = styled.div`
   display: flex;
   flex-direction: column;

@@ -49,12 +49,7 @@ export const Comunicarse = () => {
 
   const traerUsuarios = async (rol) => {
     try {
-      let response;
-      if (rol === "cliente") {
-        response = await api.get("rol/proveedor");
-      } else if (rol === "proveedor") {
-        response = await api.get("rol/cliente");
-      }
+      let response = await api.get(`rol/chat`);
       const { data } = response;
       setUsuarios(data.data);
     } catch (error) {
