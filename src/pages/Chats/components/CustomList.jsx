@@ -16,7 +16,7 @@ export const CustomList = ({ usuarios, onUsuarioSeleccionado, setChat, generateU
             <div className="border-circle overflow-hidden h-3rem">
               <img src={usuario.imagen} alt={usuario.nombre} width="50px" height="50px" />
             </div>
-            <span className="font-bold text-md text-white">
+            <span className="font-bold text-md text-white capitalize">
               {usuario.nombre} ({usuario.rol})
             </span>
           </div>

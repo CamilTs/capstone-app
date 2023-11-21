@@ -6,8 +6,8 @@ import { Button } from "primereact/button";
 import { useFormik } from "formik";
 import { Dropdown } from "primereact/dropdown";
 import { ComercioSchema } from "../../../components/Validaciones";
-import { confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
+import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 
 export const RegistrarComercio = () => {
   const estructuraFormulario = {
@@ -18,10 +18,19 @@ export const RegistrarComercio = () => {
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
   const [nombreCliente, setNombreCliente] = useState([]);
+  const [verConfirmar, setVerConfirmar] = useState(false);
+  const [verLimpiar, setVerLimpiar] = useState(false);
   const toast = useRef(null);
 
   const limpiarFormulario = () => {
     formik.resetForm(setFormulario(estructuraFormulario));
+    toast.current.show({
+      severity: "info",
+      summary: "Éxito",
+      detail: "Formulario Limpiado",
+      life: 3000,
+    });
+    setVerLimpiar(false);
   };
 
   const crearComercio = async () => {
@@ -38,6 +47,8 @@ export const RegistrarComercio = () => {
     } catch (error) {
       console.log(error);
       console.log("Error al crear comercio");
+    } finally {
+      setVerConfirmar(false);
     }
   };
 
@@ -65,81 +76,6 @@ export const RegistrarComercio = () => {
       console.log(data);
     },
   });
-
-  const camposVacios = () => {
-    return !formik.values.propietario || !formik.values.nombre || !formik.values.direccion || !formik.values.telefono;
-  };
-
-  const confirmarComercio = () => {
-    confirmDialog({
-      message: "¿Estás seguro que quieres registrar este comercio?",
-      header: "Confirmar",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        if (camposVacios()) {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Ops! Algo ha salido mal, revisa los campos",
-            life: 3000,
-          });
-        } else {
-          toast.current.show({
-            severity: "success",
-            summary: "Éxito",
-            detail: "¡¡Registro exitoso!!",
-            life: 3000,
-          });
-          crearComercio();
-        }
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Registro cancelado",
-          life: 3000,
-        });
-      },
-    });
-  };
-
-  const confirmarLimpiar = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea limpiar el formulario?",
-      header: "Confirmar",
-      icon: "pi pi-question-circle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        toast.current.show({
-          severity: "success",
-          summary: "Éxito",
-          detail: "Formulario Limpiado",
-          life: 3000,
-        });
-        limpiarFormulario();
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Limpieza cancelada",
-          life: 3000,
-        });
-      },
-    });
-  };
 
   const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
 
@@ -211,9 +147,33 @@ export const RegistrarComercio = () => {
         </ContenedorCampos>
       </Formulario>
       <Opciones>
-        <Button raised label="Registrar" severity="success" rounded onClick={confirmarComercio} disabled={camposVacios()} />
-        <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
+        <Button
+          raised
+          label="Registrar"
+          severity="success"
+          rounded
+          onClick={() => setVerConfirmar(true)}
+          disabled={!formik.dirty || !formik.isValid}
+        />
+        <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} disabled={formik.isValid} />
       </Opciones>
+
+      <CustomConfirmDialog
+        visible={verConfirmar}
+        onHide={() => setVerConfirmar(false)}
+        onConfirm={crearComercio}
+        type="submit"
+        message="¿Confirmar regristro?"
+        header="Confirmar"
+      />
+
+      <CustomConfirmDialog
+        visible={verLimpiar}
+        onHide={() => setVerLimpiar(false)}
+        onConfirm={limpiarFormulario}
+        message="¿Seguro de limpiar el formulario?"
+        header="Limpiar"
+      />
     </Contenedor>
   );
 };

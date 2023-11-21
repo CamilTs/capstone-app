@@ -21,7 +21,6 @@ import {
 import { api } from "../../../api/api";
 import { RegistrarSchema } from "../../../components/Validaciones";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
-import { confirmDialog } from "primereact/confirmdialog";
 
 export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormulario, estado }) => {
   const [imagen, setImagen] = useState(null);
@@ -134,118 +133,6 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
       !formik.values.correo
     );
   };
-
-  const confirmarCrear = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea crear este usuario?",
-      header: "Confirmar",
-      icon: "pi pi-question-circle",
-      acceptClassName: "p-button-success ",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger ",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        if (camposVacios()) {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Ops! Algo salió mal, revise los campos",
-            life: 3000,
-          });
-        } else {
-          toast.current.show({
-            severity: "success",
-            summary: "Éxito",
-            detail: "Usuario creado",
-            life: 3000,
-          });
-          crearUsuario();
-        }
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Registro cancelado",
-          life: 3000,
-        });
-      },
-    });
-  };
-  const confirmarEditar = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea crear este usuario?",
-      header: "Confirmar",
-      icon: "pi pi-question-circle",
-      acceptClassName: "p-button-success ",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger ",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        if (camposVacios()) {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Ops! Algo salió mal, revise los campos",
-            life: 3000,
-          });
-        } else {
-          toast.current.show({
-            severity: "success",
-            summary: "Éxito",
-            detail: "Usuario creado",
-            life: 3000,
-          });
-          crearUsuario();
-        }
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Registro cancelado",
-          life: 3000,
-        });
-      },
-    });
-  };
-
-  const confirmarLimpiar = () => {
-    confirmDialog({
-      message: "¿Está seguro que desea limpiar el formulario?",
-      header: "Confirmar",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-success",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-danger",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        toast.current.show({
-          severity: "success",
-          summary: "Éxito",
-          detail: "Formulario Limpiado",
-          life: 3000,
-        });
-        limpiarFormulario();
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Limpieza cancelada",
-          life: 3000,
-        });
-      },
-    });
-  };
-
-  const ButtonCrear = <Opciones></Opciones>;
 
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
@@ -397,14 +284,6 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
               </Campos>
             </InputRow>
             <Opciones>
-              {/* <Button
-                raised
-                label="Registrar"
-                severity="success"
-                rounded
-                disabled={!formik.dirty || !formik.isValid}
-                onClick={() => setVerConfirmar(true)}
-              /> */}
               {estado == "crear" ? (
                 <Button raised label="Registrar" severity="success" rounded onClick={() => setVerConfirmar(true)} disabled={camposVacios()} />
               ) : (
@@ -415,9 +294,6 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
           </ContenedorCampos>
         </Inputs>
       </Formulario>
-      {/* <Opciones>
-        <Button raised label="Limpiar" severity="danger" rounded onClick={confirmarLimpiar} />
-      </Opciones> */}
 
       <CustomConfirmDialog
         visible={verConfirmar}

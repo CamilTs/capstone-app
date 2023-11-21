@@ -5,7 +5,6 @@ import { PerfilCard } from "./PerfilCard";
 import { rutas } from "../rutas";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { Sidebar } from "primereact/sidebar";
 
 const Fondo = styled.div`
   padding: 15px;
@@ -15,8 +14,6 @@ const Fondo = styled.div`
   gap: 1rem 0;
   background: #fff;
   border-radius: 5px;
-  height: 100%;
-  min-height: 100vh;
 `;
 
 const TituloMenu = styled.div`
@@ -34,31 +31,46 @@ const OpcionesMenu = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+
+  .seleccionado {
+    transition: all 0.3s ease-in-out !important;
+    border-left: 3px solid green;
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.75);
+  }
+
+  .p-menuitem:hover .p-menuitem-icon {
+    color: red !important;
+  }
+  .seleccionado .p-menuitem-icon {
+    color: green !important;
+    transition: all 1.2s ease-in-out !important;
+  }
 `;
 
 export const MenuLateral = ({ cerrarCuenta }) => {
   const [itemsRuta, setItemsRuta] = useState([]);
   let itemsPrueba = [];
   const { rol } = useSelector((state) => state.auth);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const navigate = useNavigate();
 
   const prueba = () => {
     itemsPrueba = rutas
       .filter((el) => el.rol == rol)
-      .map((el) => {
+      .map((el, index) => {
         return {
+          key: index,
           label: el.label,
           icon: el.icono,
           command: () => {
             navigate(el.ruta);
+            setSelectedItem(index);
           },
         };
       });
     setItemsRuta(itemsPrueba);
   };
-
-  const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
     prueba();
@@ -69,9 +81,9 @@ export const MenuLateral = ({ cerrarCuenta }) => {
       <TituloMenu>Ai Zi</TituloMenu>
       {itemsRuta.length > 0 && (
         <OpcionesMenu>
-          <Menu model={itemsRuta} className="" />
+          {/* <Menu model={itemsRuta} /> */}
+          <Menu model={itemsRuta.map((item) => ({ ...item, className: item.key === selectedItem ? "seleccionado" : "" }))} />
           <PerfilCard cerrarCuenta={cerrarCuenta} />
-          <Sidebar visible={menuVisible} onHide={() => setMenuVisible(false)}></Sidebar>
         </OpcionesMenu>
       )}
     </Fondo>

@@ -8,14 +8,7 @@ import { Toast } from "primereact/toast";
 import { formatoHora } from "../../components/FormatoDinero";
 import { CustomList } from "./components/CustomList";
 import { MensajesPanel } from "./components/MensajesPanel";
-import {
-  ContenedorChat,
-  ContenedorDatosUsuario,
-  ContenedorHeaderChat,
-  ContenedorMensajesChat,
-  OverlayButton,
-  StyledOverlayPanel,
-} from "./components/SyledMensajes";
+import { ContenedorChat, ContenedorDatosUsuario, ContenedorHeaderChat, OverlayButton, StyledOverlayPanel } from "./components/SyledMensajes";
 
 export const Comunicarse = () => {
   const [usuario, setUsuario] = useState({}); // Usuario logueado [id, nombre, rol, imagen]
@@ -202,7 +195,7 @@ export const Comunicarse = () => {
                 <span>{receptorID.nombre}</span>
               </ContenedorDatosUsuario>
             </ContenedorHeaderChat>
-            <ContenedorMensajesChat>{renderMensajes()}</ContenedorMensajesChat>
+            <div>{renderMensajes()}</div>
           </ContenedorChat>
         ) : (
           <CustomList usuarios={usuarios} onUsuarioSeleccionado={seleccionarUsuario} setChat={setChat} generateUniqueChatID={generateUniqueChatID} />

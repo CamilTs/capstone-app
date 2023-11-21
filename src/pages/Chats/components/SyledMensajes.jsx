@@ -26,17 +26,33 @@ export const StyledOverlayPanel = styled(OverlayPanel)`
   border-radius: 1rem;
   height: 30rem;
   width: 25rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 `;
 
 export const ContenedorUsuarios = styled.div`
   display: flex;
   flex-direction: column;
   height: 30rem;
-  gap: 1rem;
+  gap: 0.5rem;
   background-color: #036475;
   border-radius: 0.5rem;
   border: 3px solid #024955;
+`;
+
+export const ContenedorUsuario = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  cursor: pointer;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
   padding: 0.4rem;
+  &:active {
+    transform: scale(0.9);
+  }
+  &:hover {
+    background-color: #024955;
+  }
 `;
 
 export const ContenedorUsuario = styled.div`
@@ -48,7 +64,10 @@ export const ContenedorUsuario = styled.div`
 export const ContenedorChat = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 30rem;
+  background-color: #036475;
+  border-radius: 0.5rem;
+  border: 3px solid #024955;
 `;
 
 export const ContenedorHeaderChat = styled.div`
@@ -58,10 +77,9 @@ export const ContenedorHeaderChat = styled.div`
   align-items: center;
   background-color: #036475;
   color: #fff;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
   border-bottom: 3px solid #024955;
-  border-radius: 0.5rem;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
   padding: 0.4rem;
 `;
 
@@ -73,7 +91,6 @@ export const ContenedorDatosUsuario = styled.div`
   text-transform: uppercase;
   align-items: center;
   justify-content: center;
-  border-bottom-radius: 0rem;
   span {
     font-size: 1rem;
   }
@@ -85,30 +102,21 @@ export const ContenedorDatosUsuario = styled.div`
   }
 `;
 
-export const ContenedorMensajesChat = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  height: 100%;
-`;
-
 export const ContenedorMensajes = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background-color: #047f94;
-  border-bottom-left-radius: 0.5rem;
-  border-bottom-right-radius: 0.4rem;
-  border: 4px solid #024955;
+  background-color: gray;
 `;
 
 export const MensajesChat = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
-  overflow-y: auto;
   padding: 0.4rem;
-  border-bottom-left-radius: 0.5rem;
+  overflow-y: scroll;
+  background-color: #ffffff5c;
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
 `;
 
 export const Mensaje = styled.div`
@@ -123,18 +131,15 @@ export const Mensaje = styled.div`
   color: ${(props) => (props.mensajePropio ? "#fff" : "#000")};
   border-radius: 0.5rem;
   font-size: 0.8rem;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
 `;
 
 export const ContenedorEnvio = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  height: auto;
   background-color: #036475;
-  border-bottom-left-radius: 0.5rem;
-  border-top-right-radius: 0rem;
-  border-bottom-right-radius: 0rem;
   border-top: 3px solid #024955;
-  padding: 0.4rem;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  padding: 0.3rem;
 `;
