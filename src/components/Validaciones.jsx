@@ -94,3 +94,16 @@ export const publicacionSchema = Yup.object().shape({
   categoria: Yup.string().required("Categoría requerida"),
   imagen: Yup.string().required("Imagen requerida"),
 });
+
+// Registrar Ticket Validaciones //
+export const ticketSchema = Yup.object().shape({
+  asunto: Yup.string()
+    .required("Asunto requerido")
+    .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Asunto invalido")
+    .min(3, "El asunto debe tener al menos 3 caracteres"),
+  descripcion: Yup.string()
+    .required("Descripción requerida")
+    .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Descripción invalida")
+    .min(3, "La descripción debe tener al menos 3 caracteres"),
+  usuarioID: Yup.string().required("Usuario requerido"),
+});

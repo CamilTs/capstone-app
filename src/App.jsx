@@ -16,20 +16,20 @@ import { PublicRoutes } from "./routes/PublicRoutes";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 
+const ContenedorMenuPagina = styled.div`
+  height: 100%;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  background-color: #538a95;
+`;
+
 const Container = styled.div`
   background-color: #538a95;
-  width: 100%;
   min-height: 100vh;
   display: flex;
   justify-content: center;
-`;
-
-const ContenedorMenuPagina = styled.div`
   width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  display: flex;
-  background-color: #538a95;
 `;
 
 export const Content = styled.div`

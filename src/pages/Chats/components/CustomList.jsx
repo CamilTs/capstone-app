@@ -1,5 +1,5 @@
 import React from "react";
-import { ContenedorUsuarios } from "./SyledMensajes";
+import { ContenedorUsuario, ContenedorUsuarios } from "./SyledMensajes";
 
 export const CustomList = ({ usuarios, onUsuarioSeleccionado, setChat, generateUniqueChatID }) => {
   const seleccionarUsuario = (usuario) => {
@@ -12,14 +12,14 @@ export const CustomList = ({ usuarios, onUsuarioSeleccionado, setChat, generateU
     <ContenedorUsuarios>
       {usuarios.map((usuario) => (
         <div key={usuario._id} className="border-round-2xl" onClick={() => seleccionarUsuario(usuario)}>
-          <div className="flex align-items-center gap-2 cursor-pointer">
+          <ContenedorUsuario>
             <div className="border-circle overflow-hidden h-3rem">
               <img src={usuario.imagen} alt={usuario.nombre} width="50px" height="50px" />
             </div>
-            <span className="font-bold text-md text-white">
+            <span className="font-bold text-md text-white capitalize">
               {usuario.nombre} ({usuario.rol})
             </span>
-          </div>
+          </ContenedorUsuario>
         </div>
       ))}
     </ContenedorUsuarios>

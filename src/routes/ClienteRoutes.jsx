@@ -5,11 +5,12 @@ import { Content } from "../App";
 import { VerPublicaciones } from "../pages/Publicaciones/VerPublicaciones";
 // import AgregarProductos from "../pages/Productos/AgregarProductos/AgregarProductosPage";
 import { ProductosProvider } from "../context/ProductosContext";
+import { Tickets } from "../pages/Tickets/Tickets";
 
 export const ClienteRoutes = () => {
   return (
     <ProductosProvider>
-      <Content width="100%">
+      <Content>
         <Routes>
           <Route path="" element={<VenderProducto />} />
           <Route path="verProvedor" element={<AgregarProveedores />} />
@@ -17,6 +18,7 @@ export const ClienteRoutes = () => {
           <Route path="agregarProductos" element={<AgregarProductos />} />
           <Route path="productos" element={<Productos />} />
           <Route path="graficos" element={<GraficosCliente />} />
+          <Route path="tickets" element={<Tickets />} />
           <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
       </Content>
