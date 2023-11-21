@@ -7,3 +7,4 @@ export * from "./Clientes/Clientes";
 export * from "./Productos/AgregarProductos/AgregarProductosPage";
 export * from "./Chats/Mensajes";
 export * from "./MisProveedores/AgregarProveedores";
+export * from "./Tickets/Tickets";

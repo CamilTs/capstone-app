@@ -1,5 +1,5 @@
 import React from "react";
-import { MensajesChat, Mensaje, ContenedorMensajes, ContenedorEnvio } from "./SyledMensajes";
+import { MensajesChat, Mensaje, ContenedorEnvio } from "./SyledMensajes";
 import { InputContainer } from "../../../components/InputContainer";
 import { Button } from "primereact/button";
 

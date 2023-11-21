@@ -37,6 +37,10 @@ export const ContenedorUsuarios = styled.div`
   background-color: #036475;
   border-radius: 0.5rem;
   border: 3px solid #024955;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
 `;
 
 export const ContenedorUsuario = styled.div`
@@ -52,12 +56,6 @@ export const ContenedorUsuario = styled.div`
   }
   &:hover {
     background-color: #024955;
-  }
-`;
-
-export const ContenedorUsuario = styled.div`
-  &:hover {
-    background-color: #149fb8;
   }
 `;
 

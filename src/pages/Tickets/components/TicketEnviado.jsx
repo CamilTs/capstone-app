@@ -74,8 +74,8 @@ const EnviarButton = styled(Button)`
   }
 `;
 
-export const TicketEnviado = () => {
-  const { id } = useSelector((state) => state.auth);
+export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionado, responderTicketUsuario }) => {
+  const { id, rol } = useSelector((state) => state.auth);
   const [verConfirmar, setVerConfirmar] = useState(false);
   const toast = useRef(null);
 
@@ -99,6 +99,7 @@ export const TicketEnviado = () => {
       descripcion: "",
       estado: true,
       archivo: null,
+      respuesta: "",
     },
     validationSchema: ticketSchema,
 
@@ -152,6 +153,41 @@ export const TicketEnviado = () => {
     }
   };
 
+  const responderTicket = async () => {
+    try {
+      const uniqueTicketID = generateUniqueTicketID();
+      const response = await api.post("tickets", {
+        ...formik.values,
+        ticketsID: uniqueTicketID,
+        usuarioID: ticketSeleccionado.usuarioID,
+        asunto: `Respuesta al ticket ${formik.values.ticketsID}`,
+        descripcion: formik.values.respuesta,
+      });
+      const { data } = response;
+      console.log("Respuesta enviada", data);
+      toast.current.show({
+        severity: "success",
+        summary: "Respuesta enviada",
+        detail: "Se ha enviado la respuesta correctamente",
+        life: 2000,
+      });
+      formik.resetForm();
+      setTicketSeleccionado(null);
+    } catch (error) {
+      console.log("Error al enviar la respuesta", error);
+    }
+  };
+
+  useEffect(() => {
+    if (ticketSeleccionado) {
+      formik.setValues({
+        ...formik.values,
+        asunto: ticketSeleccionado.asunto,
+        descripcion: ticketSeleccionado.descripcion,
+      });
+    }
+  }, [ticketSeleccionado]);
+
   return (
     <>
       <TicketEnviadoContainer>
@@ -180,6 +216,7 @@ export const TicketEnviado = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.asunto}
+                disabled={estado === "responder"}
               />
               {getFormErrorMessage("asunto")}
               <TicketInput
@@ -190,9 +227,26 @@ export const TicketEnviado = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.descripcion}
+                disabled={estado === "responder"}
               />
               {getFormErrorMessage("descripcion")}
-              <EnviarButton label="Enviar" disabled={!formik.dirty || !formik.isValid} />
+              <EnviarButton label="Enviar" disabled={!formik.dirty || !formik.isValid || estado === "responder"} />
+
+              {rol === "admin" && ticketSeleccionado && (
+                <>
+                  <TicketInput
+                    className="respuesta"
+                    name="respuesta"
+                    type="text"
+                    placeholder="Respuesta al Ticket"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.respuesta}
+                  />
+                  {getFormErrorMessage("respuesta")}
+                  <EnviarButton type="button" label="Responder" onClick={() => responderTicket(formik.values.usuarioID)} />
+                </>
+              )}
             </TicketForm>
           </form>
         </TicketCard>

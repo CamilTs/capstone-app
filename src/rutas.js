@@ -83,6 +83,13 @@ export const rutas = [
     label: "Clientes",
     tipo: "usuarios",
   },
+  {
+    ruta: "/tickets",
+    rol: "admin",
+    icono: "pi pi-ticket",
+    label: "Tickets",
+    tipo: "productos",
+  },
 ];
 
 // export const rutas = [

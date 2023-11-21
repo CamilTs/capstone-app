@@ -68,7 +68,7 @@ export const Comunicarse = () => {
     const { emisorID, mensaje, enviadoPorEmisor } = chat;
     console.log(chat);
     if (chatID) {
-      const nuevoMensaje = { emisorID, mensaje, enviadoPorEmisor, chatID: chatID };
+      const nuevoMensaje = { emisorID, mensaje, enviadoPorEmisor, chatID: chatID, createdAt: new Date() };
       console.log(nuevoMensaje);
       try {
         const response = await api.post("chat", nuevoMensaje);
