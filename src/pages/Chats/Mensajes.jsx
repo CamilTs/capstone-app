@@ -2,23 +2,17 @@ import React, { useEffect, useRef } from "react";
 import { api } from "../../api/api";
 import { useState } from "react";
 import { Button } from "primereact/button";
-import { ListBox } from "primereact/listbox";
-import { ScrollPanel } from "primereact/scrollpanel";
 import { useContextSocket } from "../../context/SocketContext";
 import { useSelector } from "react-redux";
-import { InputContainer } from "../../components/InputContainer";
 import { Toast } from "primereact/toast";
 import { formatoHora } from "../../components/FormatoDinero";
+import { CustomList } from "./components/CustomList";
+import { MensajesPanel } from "./components/MensajesPanel";
 import {
   ContenedorChat,
   ContenedorDatosUsuario,
-  ContenedorEnvio,
   ContenedorHeaderChat,
-  ContenedorMensajes,
   ContenedorMensajesChat,
-  MensajesChat,
-  ContenedorUsuarios,
-  Mensaje,
   OverlayButton,
   StyledOverlayPanel,
 } from "./components/SyledMensajes";
@@ -29,7 +23,7 @@ export const Comunicarse = () => {
   const [mensajes, setMensajes] = useState([]);
   const [receptorID, setReceptorID] = useState(null);
   const { socket } = useContextSocket();
-  const { id, nombre, rol } = useSelector((state) => state.auth);
+  const { id, rol } = useSelector((state) => state.auth);
   const op = useRef(null);
   const socketRef = useRef(null);
   const toast = useRef(null);
@@ -68,7 +62,7 @@ export const Comunicarse = () => {
     }
   };
 
-  const selecionarUsuario = (usuario) => {
+  const seleccionarUsuario = (usuario) => {
     setReceptorID(usuario);
     socketRef.current.emit("seleccionarUsuario", { selectedUserId: usuario._id });
   };
@@ -123,44 +117,14 @@ export const Comunicarse = () => {
     });
 
     return (
-      <ContenedorMensajes>
-        <MensajesChat>
-          <ScrollPanel style={{ width: "100%", height: "340px" }}>
-            <div className="flex flex-column gap-3 w-full" id="mensaje-contenedor">
-              {mensajesFiltrados.map((mensaje) =>
-                Array.isArray(mensaje.mensajes)
-                  ? mensaje.mensajes.map((m, index) => {
-                      const esMensajePropio = m.emisorID === id;
-                      // const nombreEmisor = m.emisorID === id ? nombre : receptorID.nombre;
-                      return (
-                        <Mensaje mensajePropio={esMensajePropio} key={`${m._id}-${index}`}>
-                          <div className={`p-2 w-full ${esMensajePropio ? "ml-auto" : "mr-auto"}`}>
-                            {/* <div className={`mb-3 text-left`}>{nombreEmisor}</div> */}
-                            <div className="text-left">{m.mensaje}</div>
-                            <div className="text-right text-xs text-black-500">{formatoHora(m.createdAt)}</div>
-                          </div>
-                        </Mensaje>
-                      );
-                    })
-                  : null
-              )}
-            </div>
-          </ScrollPanel>
-        </MensajesChat>
-        <ContenedorEnvio>
-          <div className="p-inputgroup">
-            <InputContainer
-              className="border-radius-0 p-inputtext-sm w-full"
-              type="text"
-              id="mensaje"
-              placeholder="Ingresa tu mensaje"
-              value={chat.mensaje}
-              onChange={(e) => setChat({ ...chat, mensaje: e.target.value })}
-            />
-            <Button className="p-button-info" size="small" raised icon="pi pi-arrow-right" onClick={enviarMensaje} type="submit" />
-          </div>
-        </ContenedorEnvio>
-      </ContenedorMensajes>
+      <MensajesPanel
+        mensajesFiltrados={mensajesFiltrados}
+        id={id}
+        chat={chat}
+        setChat={setChat}
+        enviarMensaje={enviarMensaje}
+        formatoHora={formatoHora}
+      />
     );
   };
 
@@ -212,13 +176,12 @@ export const Comunicarse = () => {
       <Toast ref={toast} />
       <OverlayButton>
         <Button
-          size="large"
           tooltip="Chat"
           tooltipOptions={{ position: "left", className: "font-bold" }}
-          className="p-button-info"
+          size="large"
+          className="p-button-rounded p-button-outlined p-button-secondary"
           raised
-          rounded
-          icon="pi pi-comments"
+          icon="pi pi-comments text-white"
           onClick={(e) => {
             op.current.toggle(e);
           }}
@@ -226,53 +189,29 @@ export const Comunicarse = () => {
       </OverlayButton>
 
       <StyledOverlayPanel ref={op} className="my-overlay-panel">
-        <ContenedorUsuarios>
-          {chat.chatID ? (
-            <ContenedorChat>
-              <ContenedorHeaderChat>
-                <Button
-                  className="p-button-text text-white"
-                  onClick={() => {
-                    setChat(estructuraChat);
-                    setReceptorID();
-                  }}
-                  icon="pi pi-arrow-left"
-                />
-                <ContenedorDatosUsuario>
-                  <div>
-                    <img src={receptorID && receptorID.imagen} width="50px" height="50px" />
-                  </div>
-                  <span>{receptorID.nombre}</span>
-                </ContenedorDatosUsuario>
-              </ContenedorHeaderChat>
-              <ContenedorMensajesChat>{renderMensajes()}</ContenedorMensajesChat>
-            </ContenedorChat>
-          ) : (
-            <ListBox
-              filter
-              filterPlaceholder="Buscar usuario"
-              filterBy={"nombre" || "rol"}
-              value={chat.chatID}
-              emptyFilterMessage="No se encontraron usuarios"
-              onChange={(e) => {
-                selecionarUsuario(e.value);
-                setChat({ ...chat, chatID: generateUniqueChatID(e.value._id) });
-              }}
-              options={usuarios}
-              optionLabel={"nombre"}
-              itemTemplate={(usuario) => (
-                <ContenedorDatosUsuario>
-                  <div>
-                    <img src={usuario.imagen} alt={usuario.nombre} width="50px" height="50px" />
-                  </div>
-                  <span>{usuario.nombre}</span>
-                  <span>({usuario.rol})</span>
-                </ContenedorDatosUsuario>
-              )}
-              className="w-full md:w-full flex flex-column font-bold"
-            />
-          )}
-        </ContenedorUsuarios>
+        {chat.chatID ? (
+          <ContenedorChat>
+            <ContenedorHeaderChat>
+              <Button
+                className="p-button-text text-white"
+                onClick={() => {
+                  setChat(estructuraChat);
+                  setReceptorID();
+                }}
+                icon="pi pi-arrow-left"
+              />
+              <ContenedorDatosUsuario>
+                <div>
+                  <img src={receptorID && receptorID.imagen} width="50px" height="50px" />
+                </div>
+                <span>{receptorID.nombre}</span>
+              </ContenedorDatosUsuario>
+            </ContenedorHeaderChat>
+            <ContenedorMensajesChat>{renderMensajes()}</ContenedorMensajesChat>
+          </ContenedorChat>
+        ) : (
+          <CustomList usuarios={usuarios} onUsuarioSeleccionado={seleccionarUsuario} setChat={setChat} generateUniqueChatID={generateUniqueChatID} />
+        )}
       </StyledOverlayPanel>
     </>
   );

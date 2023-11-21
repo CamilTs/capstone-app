@@ -5,16 +5,16 @@ export const OverlayButton = styled.div`
   position: fixed;
   bottom: 0;
   right: 0;
-  width: auto;
-  margin: 2rem;
+  margin: 1rem;
+  z-index: 100;
+  background-color: #689733;
+  border: 2px solid #5c7e2a;
   border-radius: 50%;
-  cursor: pointer;
-  transition: 0.8s;
-  background-color: #f1f1f1;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-  transform: scale(1.2);
+  transition: all 0.4s ease-in-out;
+  cursor: pointer;
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.4);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
   }
 `;
@@ -24,57 +24,19 @@ export const StyledOverlayPanel = styled(OverlayPanel)`
     padding: 0rem !important;
   }
   border-radius: 1rem;
+  height: 30rem;
+  width: 25rem;
 `;
 
 export const ContenedorUsuarios = styled.div`
+  display: flex;
+  flex-direction: column;
   height: 30rem;
-  width: 30rem;
-
-  .p-listbox {
-    height: 100%;
-    width: 100%;
-    border-radius: 0.8em;
-    background-color: #f1f1f1;
-    border: 3px solid #024955;
-    overflow-y: auto;
-  }
-  .p-listbox p.listbox-list .p-listbox-item {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    border: 3px solid #024955;
-    border-radius: 0.8em;
-    border-bottom: 3px solid #024955;
-    align-items: center;
-  }
-  .p-listbox-list-wrapper {
-    background-color: #f1f1f1;
-    display: flex;
-    height: 100%;
-    width: 100%;
-    border: 3px solid #024955;
-  }
-  .p-listbox-list {
-    background-color: #036475;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    gap: 1rem;
-    width: 100%;
-    overflow-y: auto;
-  }
-  .p-listbox-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #047f94;
-  }
-  .p-listbox .p-listbox-header {
-    padding: 0.5rem;
-    width: 100%;
-    background-color: #036475;
-    border-bottom: 3px solid #024955;
-  }
+  gap: 1rem;
+  background-color: #036475;
+  border-radius: 0.5rem;
+  border: 3px solid #024955;
+  padding: 0.4rem;
 `;
 
 export const ContenedorChat = styled.div`
@@ -115,7 +77,6 @@ export const ContenedorDatosUsuario = styled.div`
     width: 50px;
     height: 50px;
   }
-  color: #fff;
 `;
 
 export const ContenedorMensajesChat = styled.div`
