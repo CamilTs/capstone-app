@@ -41,6 +41,8 @@ export const IniciarSesionPage = () => {
 
     const { rut, contrasena } = formik.values;
 
+    msgs.current.clear();
+
     if (!rut && !contrasena) {
       msgs.current.show([
         {

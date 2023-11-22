@@ -15,6 +15,7 @@ import { cerrarSesion, checkAuthToken } from "./store/auth";
 import { PublicRoutes } from "./routes/PublicRoutes";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
+import { CustomConfirmDialog } from "./components/CustomConfirmDialog";
 
 const ContenedorMenuPagina = styled.div`
   height: 100%;
@@ -50,33 +51,19 @@ export const Content = styled.div`
 
 function App() {
   const { status, token } = useSelector((state) => state.auth);
+  const [verConfirmar, setVerConfirmar] = useState(false);
   const dispatch = useDispatch();
   const toast = useRef(null);
 
-  const confirmarCerrarCuenta = () => {
-    confirmDialog({
-      message: "¿Deseas cerrar sesión?",
-      header: "Confirmar",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-danger",
-      acceptLabel: "Si",
-      acceptIcon: "pi pi-check",
-      rejectClassName: "p-button-secondary",
-      rejectLabel: "No",
-      rejectIcon: "pi pi-times",
-      accept: () => {
-        toast.current.show({ severity: "success", summary: "Éxito", detail: "Cerrando sesión", life: 2000 });
-        dispatch(cerrarSesion());
-      },
-      reject: () => {
-        toast.current.show({
-          severity: "info",
-          summary: "Cancelado",
-          detail: "Cierre de sesión cancelado",
-          life: 2000,
-        });
-      },
+  const cerrarsesion = () => {
+    dispatch(cerrarSesion());
+    toast.current.show({
+      severity: "warn",
+      summary: "Sesión cerrada",
+      detail: "Tu sesión ha sido cerrada",
+      life: 2000,
     });
+    setVerConfirmar(false);
   };
 
   useEffect(() => {
@@ -86,7 +73,7 @@ function App() {
     <>
       <ContenedorMenuPagina>
         <SocketProvider>
-          {status == "autenticado" ? <MenuLateral cerrarCuenta={confirmarCerrarCuenta} /> : null}
+          {status == "autenticado" ? <MenuLateral cerrarCuenta={() => setVerConfirmar(true)} /> : null}
           <Container>
             <Routes>
               {status == "autenticado" ? (
@@ -100,6 +87,14 @@ function App() {
       </ContenedorMenuPagina>
       <ConfirmDialog />
       <Toast ref={toast} />
+
+      <CustomConfirmDialog
+        visible={verConfirmar}
+        onHide={() => setVerConfirmar()}
+        onConfirm={cerrarsesion}
+        message="¿Deseas cerrar sesión?"
+        header="Confirmar"
+      />
     </>
   );
 }

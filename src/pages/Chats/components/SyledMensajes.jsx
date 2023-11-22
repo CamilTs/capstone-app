@@ -117,18 +117,26 @@ export const MensajesChat = styled.div`
   }
 `;
 
-export const Mensaje = styled.div`
+export const MensajePropio = styled.div`
   display: flex;
   margin-bottom: 0.8rem;
   min-width: 25%;
   max-width: 80%;
-  align-items: ${(props) => (props.mensajePropio ? "flex-end" : "flex-start")};
-  margin-left: ${(props) => (props.mensajePropio ? "auto" : "0")};
-  margin-right: ${(props) => (props.mensajePropio ? "0" : "auto")};
-  background-color: ${(props) => (props.mensajePropio ? "#c72568" : "#e5e7eb")};
-  color: ${(props) => (props.mensajePropio ? "#fff" : "#000")};
+  align-items: flex-end;
+  margin-left: auto;
+  margin-right: 0;
+  background-color: #c72568;
+  color: #fff;
   border-radius: 0.5rem;
   font-size: 0.8rem;
+`;
+
+export const MensajeOtro = styled(MensajePropio)`
+  align-items: flex-start;
+  margin-left: 0;
+  margin-right: auto;
+  background-color: #e5e7eb;
+  color: #000;
 `;
 
 export const ContenedorEnvio = styled.div`
