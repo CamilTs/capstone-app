@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
-import { useProductos } from "../../../context/ProductosContext";
 import { formatoCurrencyCLP } from "../../../components/FormatoDinero";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
-import { InputNumber } from "primereact/inputnumber";
 import {
   Contenedor,
   ContenedorHeader,
@@ -19,17 +17,16 @@ import {
   ContenedorOpciones,
 } from "./components/StyledVerProductos";
 import { api } from "../../../api/api";
-import { ConfirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
-// import { Badge } from "./components/Badge";
 import { useSelector } from "react-redux";
 import { Badge } from "../../../components/Badge";
+import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
+import { InputContainer } from "../../../components/InputContainer";
 
 export const Productos = () => {
-  // const { eliminarProducto, modificarProducto } = useProductos();
   const { comercio } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
-  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+  const [verEliminar, setVerEliminar] = useState(false);
   const [productoAEliminarId, setProductoAEliminarId] = useState(null);
   const [productoAEliminarNombre, setProductoAEliminarNombre] = useState(null);
   const [productoAModificar, setProductoAModificar] = useState({});
@@ -41,7 +38,6 @@ export const Productos = () => {
 
   const borrarProducto = async () => {
     console.log("Comercio:", comercio);
-    // eliminarProducto(productoAEliminarId);
     try {
       const { data } = await api.delete(`producto/${productoAEliminarId}/${comercio}`);
       console.log(data);
@@ -56,22 +52,22 @@ export const Productos = () => {
     } finally {
       traerProductos();
     }
-    setConfirmDialogVisible(false);
+    setVerEliminar(false);
   };
 
   const abrirFormularioEdicion = (producto) => {
     setProductoAModificar(producto);
     setFormularioVisible(true);
   };
-  const eliminarProducto = async (productoId) => {
-    setProductoAEliminarId(productoId);
-    setConfirmDialogVisible(true);
+
+  const eliminarProducto = (productoID, nombre) => {
+    setProductoAEliminarId(productoID);
+    setProductoAEliminarNombre(nombre);
+    setVerEliminar(true);
   };
 
   // EDITAR PRODUCTOS //
   const guardarCambios = async () => {
-    // modificarProducto(productoAModificar.id, productoAModificar);
-    // console.log(modificarProducto);
     try {
       const { data } = await api.put(`producto/${productoAModificar._id}`, productoAModificar);
       console.log(data);
@@ -85,10 +81,6 @@ export const Productos = () => {
       console.log(error.message);
     }
     setFormularioVisible(false);
-  };
-
-  const ocultarEliminarDialog = () => {
-    setConfirmDialogVisible(false);
   };
 
   // Diferentes colores para la cantidad de productos //
@@ -175,30 +167,6 @@ export const Productos = () => {
     </ContenedorHeader>
   );
 
-  // Llama los dialogos de editar y eliminar productos //
-  const productDialogFooter = (
-    <React.Fragment>
-      <Button label="Guardar" icon="pi pi-check" severity="success" onClick={guardarCambios} />
-      <Button label="Cancelar" icon="pi pi-times" severity="danger" onClick={() => setFormularioVisible(false)} />
-    </React.Fragment>
-  );
-
-  const actionBodyTemplate = (rowData) => {
-    return (
-      <ContenedorOpciones>
-        <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => abrirFormularioEdicion(rowData)} />
-        <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => eliminarProducto(rowData._id, rowData.nombre)} />
-      </ContenedorOpciones>
-    );
-  };
-
-  const eliminarProductoDialog = (
-    <React.Fragment>
-      <Button label="Eliminar" icon="pi pi-trash" severity="danger" onClick={borrarProducto} />
-      <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={ocultarEliminarDialog} />
-    </React.Fragment>
-  );
-
   const traerProductos = async () => {
     setLoading(true);
     try {
@@ -250,7 +218,18 @@ export const Productos = () => {
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
           <Column field="fecha" header="Fecha" body={(rowData) => rowData.fecha} />
           <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
-          <Column header="Acciones" body={actionBodyTemplate} exportable={false} />
+          <Column
+            header="Acciones"
+            body={(rowData) => {
+              return (
+                <ContenedorOpciones>
+                  <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => abrirFormularioEdicion(rowData)} />
+                  <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => eliminarProducto(rowData._id, rowData.nombre)} />
+                </ContenedorOpciones>
+              );
+            }}
+            exportable={false}
+          />
         </DataTable>
       </ContenedorTabla>
 
@@ -260,14 +239,19 @@ export const Productos = () => {
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
         className="p-fluid"
         visible={formularioVisible}
-        footer={productDialogFooter}
+        footer={
+          <>
+            <Button label="Guardar" icon="pi pi-check" severity="success" onClick={guardarCambios} />
+            <Button label="Cancelar" icon="pi pi-times" severity="danger" onClick={() => setFormularioVisible(false)} />
+          </>
+        }
         onHide={setFormularioVisible}
       >
         <div>
           <label htmlFor="codigo_barra" className="font-bold">
             Código de barra
           </label>
-          <InputText
+          <InputContainer
             value={productoAModificar.codigo_barra}
             onChange={(e) => setProductoAModificar({ ...productoAModificar, codigo_barra: e.target.value })}
             required
@@ -279,13 +263,16 @@ export const Productos = () => {
           <label htmlFor="producto" className="font-bold">
             Nombre
           </label>
-          <InputText value={productoAModificar.nombre} onChange={(e) => setProductoAModificar({ ...productoAModificar, nombre: e.target.value })} />
+          <InputContainer
+            value={productoAModificar.nombre}
+            onChange={(e) => setProductoAModificar({ ...productoAModificar, nombre: e.target.value })}
+          />
         </div>
         <div>
           <label htmlFor="categoria" className="font-bold">
             Categoría
           </label>
-          <InputText
+          <InputContainer
             value={productoAModificar.categoria}
             onChange={(e) => setProductoAModificar({ ...productoAModificar, categoria: e.target.value })}
           />
@@ -295,10 +282,11 @@ export const Productos = () => {
             <label htmlFor="cantidad" className="font-bold">
               Cantidad
             </label>
-            <InputNumber
+            <InputContainer
+              type="number"
               id="cantidad"
               value={productoAModificar.cantidad}
-              onValueChange={(e) => setProductoAModificar({ ...productoAModificar, cantidad: e.target.value })}
+              onChange={(e) => setProductoAModificar({ ...productoAModificar, cantidad: e.target.value })}
               mode="decimal"
               showButtons
               min={0}
@@ -309,10 +297,11 @@ export const Productos = () => {
             <label htmlFor="precio" className="font-bold">
               Precio
             </label>
-            <InputNumber
+            <InputContainer
+              type="number"
               id="precio"
               value={productoAModificar.precio}
-              onValueChange={(e) => setProductoAModificar({ ...productoAModificar, precio: e.target.value })}
+              onChange={(e) => setProductoAModificar({ ...productoAModificar, precio: e.target.value })}
               mode="currency"
               currency="CLP"
               locale="es-CL"
@@ -321,20 +310,13 @@ export const Productos = () => {
         </div>
       </Dialog>
 
-      <Dialog
-        visible={confirmDialogVisible}
-        onHide={() => setConfirmDialogVisible(false)}
-        header="Confirmar Eliminación"
-        modal
-        footer={eliminarProductoDialog}
-      >
-        <i className="pi pi-exclamation-triangle" style={{ fontSize: "2rem" }}></i>
-        {productoAEliminarNombre && (
-          <span>
-            ¿Seguro que deseas eliminar <b>{productoAEliminarNombre}</b>?
-          </span>
-        )}
-      </Dialog>
+      <CustomConfirmDialog
+        visible={verEliminar}
+        onHide={() => setVerEliminar()}
+        onConfirm={borrarProducto}
+        message={`¿Estás seguro de eliminar el producto ${productoAEliminarNombre}?`}
+        header="Eliminar"
+      />
     </Contenedor>
   );
 };

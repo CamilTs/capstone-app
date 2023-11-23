@@ -38,8 +38,16 @@ export const AgregarProveedores = () => {
   const [verEliminar, setVerEliminar] = useState(false);
   const [verConfirmar, setVerConfirmar] = useState(false);
   const [verLimpiar, setVerLimpiar] = useState(false);
+  const [proveedorSeleccionado, setProveedorSeleccionado] = useState(null);
+
+  const editarProveedor = (proveedor) => {
+    setProveedorSeleccionado(proveedor);
+    formik.setValues(proveedor);
+    setMostrarFormulario(true);
+  };
 
   const verFormulario = () => {
+    setProveedorSeleccionado(null);
     formik.resetForm();
     setMostrarFormulario(true);
   };
@@ -140,15 +148,6 @@ export const AgregarProveedores = () => {
     return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
   };
 
-  const botonesOpciones = (rowData) => {
-    return (
-      <ContenedorBotonProveedor>
-        <Button raised outlined severity="info" icon="pi pi-pencil" rounded />
-        <Button raised outlined severity="danger" icon="pi pi-trash" rounded onClick={() => eliminarProveedor(rowData._id)} />
-      </ContenedorBotonProveedor>
-    );
-  };
-
   useEffect(() => {
     traerMisProveedores();
   }, []);
@@ -166,10 +165,27 @@ export const AgregarProveedores = () => {
         <Column field="descripcion" header="Descripción" />
         <Column field="telefono" header="Telefono" />
         <Column field="correo" header="Correo" />
-        <Column header="Opciones" body={botonesOpciones} />
+        <Column
+          header="Opciones"
+          body={(rowData) => {
+            return (
+              <ContenedorBotonProveedor>
+                <Button raised outlined severity="info" icon="pi pi-pencil" rounded onClick={() => editarProveedor(rowData)} />
+                <Button raised outlined severity="danger" icon="pi pi-trash" rounded onClick={() => eliminarProveedor(rowData._id)} />
+              </ContenedorBotonProveedor>
+            );
+          }}
+        />
       </DataTable>
 
-      <Dialog visible={mostrarFormulario} onHide={() => setMostrarFormulario()} header="Agregar Proveedor">
+      <Dialog
+        visible={mostrarFormulario}
+        onHide={() => {
+          setMostrarFormulario(false);
+          setProveedorSeleccionado(null);
+        }}
+        header="Agregar Proveedor"
+      >
         <ContenedorFormulario>
           <Formulario onSubmit={formik.handleSubmit}>
             <ContenedorInput>

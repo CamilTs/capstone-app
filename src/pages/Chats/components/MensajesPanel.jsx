@@ -1,5 +1,5 @@
 import React from "react";
-import { MensajesChat, Mensaje, ContenedorEnvio } from "./SyledMensajes";
+import { MensajesChat, ContenedorEnvio, MensajePropio, MensajeOtro } from "./SyledMensajes";
 import { InputContainer } from "../../../components/InputContainer";
 import { Button } from "primereact/button";
 
@@ -14,13 +14,14 @@ export const MensajesPanel = ({ mensajesFiltrados, id, chat, setChat, enviarMens
                 Array.isArray(mensaje.mensajes)
                   ? mensaje.mensajes.map((m, index) => {
                       const esMensajePropio = m.emisorID === id;
+                      const MensajeComponente = esMensajePropio ? MensajePropio : MensajeOtro;
                       return (
-                        <Mensaje mensajePropio={esMensajePropio} key={`${m._id}-${index}`}>
+                        <MensajeComponente key={`${m._id}-${index}`}>
                           <div className={`p-2 w-full ${esMensajePropio ? "ml-auto" : "mr-auto"}`}>
                             <div className="text-left">{m.mensaje}</div>
                             <div className="text-right text-xs text-black-500">{formatoHora(m.createdAt)}</div>
                           </div>
-                        </Mensaje>
+                        </MensajeComponente>
                       );
                     })
                   : null

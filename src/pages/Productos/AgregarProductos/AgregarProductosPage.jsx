@@ -74,7 +74,13 @@ export const AgregarProductos = () => {
         imagenes: [formik.values.imagen],
       });
       const { data } = response;
-      limpiarFormulario();
+      toast.current.show({
+        severity: "success",
+        summary: "Éxito",
+        detail: "Producto agregado",
+        life: 2000,
+      });
+      formik.resetForm();
       console.log(data);
     } catch (error) {
       console.log(error);
