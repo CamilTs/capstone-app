@@ -21,6 +21,8 @@ import {
 import { api } from "../../../api/api";
 import { RegistrarSchema } from "../../../components/Validaciones";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
+import { formatoRut } from "../../../components/Formatos";
+import { Message } from "primereact/message";
 
 export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormulario, estado }) => {
   const [imagen, setImagen] = useState(null);
@@ -96,18 +98,18 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
     },
   });
 
-  const formatoRut = (value) => {
-    const rut = value.replace(/[^0-9kK]/g, "");
+  // const formatoRut = (value) => {
+  //   const rut = value.replace(/[^0-9kK]/g, "");
 
-    if (rut.length > 1) {
-      const verificador = rut.slice(-1);
-      const rutPrincipal = rut.slice(0, -1);
+  //   if (rut.length > 1) {
+  //     const verificador = rut.slice(-1);
+  //     const rutPrincipal = rut.slice(0, -1);
 
-      const formattedRUT = rutPrincipal.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + verificador;
-      return formattedRUT;
-    }
-    return rut;
-  };
+  //     const formattedRUT = rutPrincipal.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + verificador;
+  //     return formattedRUT;
+  //   }
+  //   return rut;
+  // };
 
   const camposVacios = () => {
     console.log(formik.values);
@@ -115,7 +117,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
       return (
         !formik.values.rol ||
         !formik.values.imagen ||
-        formik.values.rut.length < 12 ||
+        (formik.values.rut.length < 9 && 12) ||
         !formik.values.nombre ||
         !formik.values.apellido ||
         !formik.values.correo ||
@@ -137,7 +139,11 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
-    return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
+    return validacionValores(name) ? (
+      <span>
+        <Message className="sticky" severity="error" text={`${formik.errors[name]}`}></Message>
+      </span>
+    ) : null;
   };
 
   const cargarImagen = async () => {
@@ -289,7 +295,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
               ) : (
                 <Button raised label="Actualizar" severity="warning" rounded onClick={() => setVerConfirmar(true)} disabled={camposVacios()} />
               )}
-              <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} type="button" />
+              <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} disabled={formik.isValid} type="button" />
             </Opciones>
           </ContenedorCampos>
         </Inputs>

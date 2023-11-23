@@ -1,5 +1,6 @@
 import { OverlayPanel } from "primereact/overlaypanel";
 import styled from "styled-components";
+import { InputContainer } from "../../../components/InputContainer";
 
 export const OverlayButton = styled.div`
   position: fixed;
@@ -141,11 +142,23 @@ export const MensajeOtro = styled(MensajePropio)`
 
 export const ContenedorEnvio = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  align-items: center;
+  height: 3.4rem;
+  gap: 0.5rem;
   background-color: #036475;
   border-top: 3px solid #024955;
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
   padding: 0.3rem;
+`;
+
+export const MensajeInput = styled(InputContainer)`
+  &.asunto {
+    border-radius: 5rem !important;
+    background-color: #f2f2f2 !important;
+    border: none !important;
+    &:hover {
+      background-color: #e6e6e6 !important;
+    }
+  }
 `;

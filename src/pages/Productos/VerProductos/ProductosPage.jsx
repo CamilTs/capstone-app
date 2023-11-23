@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
-import { formatoCurrencyCLP } from "../../../components/FormatoDinero";
+import { formatoCurrencyCLP, formatoFecha } from "../../../components/Formatos";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
@@ -216,7 +216,7 @@ export const Productos = () => {
           <Column field="categoria" header="Categoria" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoria")} />
           <Column field="imagenes" header="Imagen" body={imageBodyTemplate} />
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
-          <Column field="fecha" header="Fecha" body={(rowData) => rowData.fecha} />
+          <Column field="fecha" header="Fecha" body={(rowData) => formatoFecha(rowData.fecha)} />
           <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
           <Column
             header="Acciones"

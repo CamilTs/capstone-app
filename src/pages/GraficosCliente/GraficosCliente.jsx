@@ -7,7 +7,7 @@ import { ScrollPanel } from "primereact/scrollpanel";
 import { masVendidoMensual } from "./hooks/useGraficos";
 import { totalVentas } from "./hooks/useGraficos";
 import { vendidosAnual } from "./hooks/useGraficos";
-import { formatoCurrencyCLP } from "../../components/FormatoDinero";
+import { formatoCurrencyCLP } from "../../components/Formatos";
 import { CustomCard } from "../../components/CustomCard";
 
 export const GraficosCliente = () => {

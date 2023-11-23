@@ -1,6 +1,6 @@
 import { DataTable } from "primereact/datatable";
 import React, { useEffect, useRef, useState } from "react";
-import { formatoCurrencyCLP } from "./FormatoDinero";
+import { formatoCurrencyCLP } from "./Formatos";
 import { InputText } from "primereact/inputtext";
 import { Badge } from "./Badge";
 import { Column } from "primereact/column";

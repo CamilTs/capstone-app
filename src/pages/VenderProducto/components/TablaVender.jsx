@@ -11,7 +11,7 @@ import { api } from "../../../api/api";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { useContextSocket } from "../../../context/SocketContext";
-import { formatoCurrencyCLP } from "../../../components/FormatoDinero";
+import { formatoCurrencyCLP } from "../../../components/Formatos";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 
 const ContenedorDatos = styled.div`
@@ -159,7 +159,7 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
               </span>
             </DatosVenta>
           </ContenedorDatos>
-          <DataTable value={registro.productos} showGridlines>
+          <DataTable emptyMessage="Esperando productos..." value={registro.productos} showGridlines>
             <Column field="nombre" header="Nombre" />
             <Column field="cantidad" header="Cantidad" />
             <Column
