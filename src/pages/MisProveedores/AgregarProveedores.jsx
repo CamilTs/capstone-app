@@ -20,6 +20,7 @@ import { InputContainer } from "../../components/InputContainer";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { CustomConfirmDialog } from "../../components/CustomConfirmDialog";
+import { formatoTelefono } from "../../components/Formatos";
 
 export const AgregarProveedores = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -39,16 +40,19 @@ export const AgregarProveedores = () => {
   const [verConfirmar, setVerConfirmar] = useState(false);
   const [verLimpiar, setVerLimpiar] = useState(false);
   const [proveedorSeleccionado, setProveedorSeleccionado] = useState(null);
+  const [estado, setEstado] = useState("agregar");
 
   const editarProveedor = (proveedor) => {
     setProveedorSeleccionado(proveedor);
     formik.setValues(proveedor);
+    setEstado("editar");
     setMostrarFormulario(true);
   };
 
   const verFormulario = () => {
     setProveedorSeleccionado(null);
     formik.resetForm();
+    setEstado("crear");
     setMostrarFormulario(true);
   };
 
@@ -89,24 +93,37 @@ export const AgregarProveedores = () => {
 
   const agregarProveedor = async () => {
     try {
-      const response = await api.post("proveedor", {
-        ...formik.values,
-      });
-      const { data } = response;
-      toast.current.show({
-        severity: "success",
-        summary: "Se agrego correctamente",
-        detail: `Se agrego al proveedor: ${data.data.nombre}`,
-        life: 2000,
-      });
-      console.log(data);
+      const dataToSend = { ...formik.values };
+
+      if (proveedorSeleccionado === null) {
+        const response = await api.post("proveedor", dataToSend);
+        const { data } = response;
+        toast.current.show({
+          severity: "success",
+          summary: "Se agrego correctamente",
+          detail: `Se agrego al proveedor: ${data.data.nombre}`,
+          life: 2000,
+        });
+        console.log(data);
+      } else {
+        const response = await api.put(`proveedor/${proveedorSeleccionado._id}`, dataToSend);
+        const { data } = response;
+        toast.current.show({
+          severity: "info",
+          summary: "Proveedor editado",
+          detail: `Se edito al proveedor: ${data.data.nombre}`,
+          life: 2000,
+        });
+        console.log(data);
+      }
     } catch (error) {
       console.log(error);
-      console.log("se intento agregar al proveedor");
+      console.log("Se intento agregar al proveedor o editar al proveedor");
     } finally {
       traerMisProveedores();
       setVerConfirmar(false);
       setMostrarFormulario(false);
+      setProveedorSeleccionado(null);
     }
   };
 
@@ -163,7 +180,7 @@ export const AgregarProveedores = () => {
       <DataTable value={proveedor} paginator rows={5} rowsPerPageOptions={[5, 10, 15]} scrollable scrollHeight="500px" loading={Loading}>
         <Column field="nombre" header="Nombre" />
         <Column field="descripcion" header="Descripción" />
-        <Column field="telefono" header="Telefono" />
+        <Column field="telefono" header="Telefono" body={(e) => formatoTelefono(e.telefono)} />
         <Column field="correo" header="Correo" />
         <Column
           header="Opciones"
@@ -226,11 +243,11 @@ export const AgregarProveedores = () => {
                 <label htmlFor="telefono">Número de teléfono</label>
                 <InputContainer
                   name="telefono"
-                  type={"number"}
+                  maxlength="9"
                   placeholder="El telefono debe llevar '9' al inicio"
+                  value={formatoTelefono(formik.values.telefono)}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.telefono}
                 />
                 {getFormErrorMessage("telefono")}
               </Campos>
@@ -249,8 +266,12 @@ export const AgregarProveedores = () => {
             </ContenedorInput>
           </Formulario>
           <ContenedorBoton>
-            <Button label="Guardar" severity="success" icon="pi pi-check" onClick={() => setVerConfirmar(true)} />
-            <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={() => setVerLimpiar(true)} />
+            {estado == "crear" ? (
+              <Button raised label="Agregar" severity="success" rounded onClick={() => setVerConfirmar(true)} />
+            ) : (
+              <Button raised label="Actualizar" severity="warning" rounded onClick={() => setVerConfirmar(true)} />
+            )}
+            <Button label="Limpiar" severity="danger" icon="pi pi-trash" rounded onClick={() => setVerLimpiar(true)} />
           </ContenedorBoton>
         </ContenedorFormulario>
       </Dialog>

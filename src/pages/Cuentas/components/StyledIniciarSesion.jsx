@@ -2,7 +2,7 @@ import { Button } from "primereact/button";
 import styled from "styled-components";
 
 export const Contenedor = styled.div`
-  width: 100%;
+  width: 30rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,9 +12,6 @@ export const Contenedor = styled.div`
 export const Titulo = styled.h2`
   text-transform: uppercase;
   color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-size: 1.5rem;
   font-weight: bold;
   text-shadow: 0 1px 0 #538a90, 0 2px 0 #538a70, 0 3px 0 #538a75, 0 4px 0 #538a80, 0 5px 0 #538a90, 0 6px 1px rgba(0, 0, 0, 0.1),
@@ -37,18 +34,17 @@ export const ContenedorCampos = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-`;
-
-export const ContenedorSpan = styled.span`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  border-radius: 0.5rem;
+  gap: 0.5rem;
 `;
 
 export const Boton = styled(Button)`
   width: 100%;
+  border-radius: 0.5rem;
+  border: none !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    background: #128a80 !important;
+    border: none !important;
+  }
 `;

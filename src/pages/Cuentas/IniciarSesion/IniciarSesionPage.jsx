@@ -3,14 +3,16 @@
 
 // import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { InputText } from "primereact/inputtext";
 import { Messages } from "primereact/messages";
 import { useDispatch, useSelector } from "react-redux";
 import { autenticando, revisandoAutentication } from "../../../store/auth";
 import { Toast } from "primereact/toast";
-import { Contenedor, Titulo, Form, ContenedorCampos, ContenedorSpan, Boton } from "../components/StyledIniciarSesion";
+import { Contenedor, Titulo, Form, ContenedorCampos, Boton } from "../components/StyledIniciarSesion";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { formatoRut } from "../../../components/Formatos";
+import { InputContainer } from "../../../components/InputContainer";
+import { Message } from "primereact/message";
 
 export const IniciarSesionPage = () => {
   const msgs = useRef(null);
@@ -94,10 +96,28 @@ export const IniciarSesionPage = () => {
     },
   });
 
-  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
+  const verContrasena = () => {
+    const input = document.getElementById("contrasena");
+    if (input.type === "password") {
+      input.type = "text";
+    } else {
+      input.type = "password";
+    }
+  };
+
+  const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
-    return isFormFieldInvalid(name) ? <small className="p-error">{formik.errors[name]}</small> : null;
+    return validacionValores(name) ? (
+      <span>
+        <Message
+          style={{ border: "solid red", borderWidth: "0 0 0 6px" }}
+          className="sticky"
+          severity="error"
+          text={`${formik.errors[name]}`}
+        ></Message>
+      </span>
+    ) : null;
   };
 
   return (
@@ -106,17 +126,36 @@ export const IniciarSesionPage = () => {
       <Form onSubmit={formik.handleSubmit}>
         <Titulo>Iniciar Sesión</Titulo>
         <ContenedorCampos>
-          <ContenedorSpan className="p-float-label p-input-icon-left">
-            <i className="pi pi-user"></i>
-            <InputText value={formik.values.rut} name="rut" onChange={formik.handleChange} onBlur={formik.handleBlur} />
-            <label htmlFor="rut">Rut</label>
-          </ContenedorSpan>
+          <div className="flex">
+            <span className="flex p-float-label p-inputgroup-addon">
+              <i className="pi pi-user" />
+            </span>
+            <InputContainer
+              placeholder="Ingrese su rut"
+              className={(validacionValores("rut") ? "p-invalid" : null, "border-noround border-round-right")}
+              name="rut"
+              maxlength="12"
+              value={formatoRut(formik.values.rut)}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+          </div>
           {getFormErrorMessage("rut")}
-          <ContenedorSpan className="p-float-label p-input-icon-left">
-            <i className="pi pi-eye"></i>
-            <InputText type="password" value={formik.values.contrasena} name="contrasena" onChange={formik.handleChange} onBlur={formik.handleBlur} />
-            <label htmlFor="password">Contraseña</label>
-          </ContenedorSpan>
+          <div className="flex">
+            <span className="flex p-float-label p-inputgroup-addon">
+              <i className="pi pi-eye" onClick={verContrasena} />
+            </span>
+            <InputContainer
+              placeholder="Ingrese su contraseña"
+              id="contrasena"
+              className={(validacionValores("contrasena") ? "p-invalid" : null, "border-noround border-round-right")}
+              name="contrasena"
+              type="password"
+              value={formik.values.contrasena}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+          </div>
           {getFormErrorMessage("contrasena")}
         </ContenedorCampos>
         <Messages ref={msgs} />

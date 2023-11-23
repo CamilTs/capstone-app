@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 import { useContextSocket } from "../../context/SocketContext";
 import { useSelector } from "react-redux";
 import { Toast } from "primereact/toast";
-import { formatoHora } from "../../components/FormatoDinero";
+import { formatoHora } from "../../components/Formatos";
 import { CustomList } from "./components/CustomList";
 import { MensajesPanel } from "./components/MensajesPanel";
 import { ContenedorChat, ContenedorDatosUsuario, ContenedorHeaderChat, OverlayButton, StyledOverlayPanel } from "./components/SyledMensajes";
@@ -167,7 +167,7 @@ export const Comunicarse = () => {
           tooltip="Chat"
           tooltipOptions={{ position: "left", className: "font-bold" }}
           size="large"
-          className="p-button-rounded p-button-outlined p-button-secondary"
+          className="p-button-rounded p-button-outlined"
           raised
           icon="pi pi-comments text-white"
           onClick={(e) => {
@@ -176,7 +176,7 @@ export const Comunicarse = () => {
         />
       </OverlayButton>
 
-      <StyledOverlayPanel ref={op} className="my-overlay-panel">
+      <StyledOverlayPanel ref={op}>
         {chat.chatID ? (
           <ContenedorChat>
             <ContenedorHeaderChat>

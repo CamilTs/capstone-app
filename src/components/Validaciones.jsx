@@ -2,7 +2,7 @@ import * as Yup from "yup";
 
 // Registrar Usuario Validaciones //
 export const RegistrarSchema = Yup.object().shape({
-  rut: Yup.string().required("Rut requerido").min(11, "Rut invalido").max(12, "Rut invalido"),
+  rut: Yup.string().required("Rut requerido").min(9, "Rut invalido").max(12, "Rut invalido"),
   nombre: Yup.string()
     .required("Nombre requerido")
     .min(1, "Nombre invalido")
@@ -74,10 +74,11 @@ export const ProveedorSchema = Yup.object().shape({
     .max(200, "La descripcion debe tener maximo 200 caracteres")
     .matches(/^[a-zA-Z0-9 ]+$/, "La descripcion solo debe contener letras y numeros"),
   telefono: Yup.string()
-    .required("El numero es requerido")
-    .min(9, "El numero debe tener al menos 9 caracteres")
-    .max(9, "El numero debe tener maximo 9 caracteres")
-    .matches(/^[0-9]+$/, "El numero solo debe contener numeros"),
+    .required("Teléfono requerido")
+    .matches(/^[9]/, "Debe comenzar con 9")
+    .matches(/^[0-9]{9}$/, "Teléfono invalido")
+    .min(9, "Teléfono invalido")
+    .max(9, "Teléfono invalido"),
   correo: Yup.string().required("El correo es requerido").email("Ingrese un correo valido"),
 });
 

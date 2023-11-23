@@ -6,6 +6,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
+import { formatoRut } from "../../../components/Formatos";
 
 export const VerRegistros = ({ editarUsuario, cambiarPestania }) => {
   const [usuarios, setUsuarios] = useState([]);
@@ -94,7 +95,7 @@ export const VerRegistros = ({ editarUsuario, cambiarPestania }) => {
           loading={Loading}
         >
           <Column field="nombre" header="Nombre" />
-          <Column field="rut" header="Rut" />
+          <Column field="rut" header="Rut" body={(e) => formatoRut(e.rut)} />
           <Column field="correo" header="Correo" />
           <Column field="rol" header="Rol" />
           <Column

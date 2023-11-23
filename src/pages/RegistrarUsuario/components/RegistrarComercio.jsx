@@ -8,6 +8,8 @@ import { Dropdown } from "primereact/dropdown";
 import { ComercioSchema } from "../../../components/Validaciones";
 import { Toast } from "primereact/toast";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
+import { formatoTelefono } from "../../../components/Formatos";
+import { Message } from "primereact/message";
 
 export const RegistrarComercio = () => {
   const estructuraFormulario = {
@@ -42,7 +44,12 @@ export const RegistrarComercio = () => {
       if (!data.success) {
         console.log("Error al crear comercio");
       }
-      limpiarFormulario();
+      toast.current.show({
+        severity: "success",
+        summary: "Éxito",
+        detail: `Comercio asignado a ${formik.values.propietario.nombre}`,
+        life: 2000,
+      });
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -77,10 +84,14 @@ export const RegistrarComercio = () => {
     },
   });
 
-  const isFormFieldInvalid = (name) => formik.touched[name] && formik.errors[name];
+  const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
-    return isFormFieldInvalid(name) ? <small className="p-error">{formik.errors[name]}</small> : null;
+    return validacionValores(name) ? (
+      <span>
+        <Message className="sticky" severity="error" text={`${formik.errors[name]}`}></Message>
+      </span>
+    ) : null;
   };
 
   useEffect(() => {
@@ -132,14 +143,10 @@ export const RegistrarComercio = () => {
             <label htmlFor="telefono">Teléfono</label>
             <InputContainer
               name="telefono"
-              type="number"
+              maxlength="9"
               placeholder="El telefono debe llevar '9' al inicio.."
-              value={formik.values.telefono}
-              onChange={(e) => {
-                if (e.target.value.length <= 9) {
-                  formik.handleChange(e);
-                }
-              }}
+              value={formatoTelefono(formik.values.telefono)}
+              onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
             {getFormErrorMessage("telefono")}

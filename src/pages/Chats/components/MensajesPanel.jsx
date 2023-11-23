@@ -1,5 +1,5 @@
 import React from "react";
-import { MensajesChat, ContenedorEnvio, MensajePropio, MensajeOtro } from "./SyledMensajes";
+import { MensajesChat, ContenedorEnvio, MensajePropio, MensajeOtro, MensajeInput } from "./SyledMensajes";
 import { InputContainer } from "../../../components/InputContainer";
 import { Button } from "primereact/button";
 
@@ -31,17 +31,15 @@ export const MensajesPanel = ({ mensajesFiltrados, id, chat, setChat, enviarMens
         </MensajesChat>
       </div>
       <ContenedorEnvio>
-        <div className="p-inputgroup">
-          <InputContainer
-            className="border-radius-0 p-inputtext-sm w-full"
-            type="text"
-            id="mensaje"
-            placeholder="Ingresa tu mensaje"
-            value={chat.mensaje}
-            onChange={(e) => setChat({ ...chat, mensaje: e.target.value })}
-          />
-          <Button className="p-button-info" size="small" raised icon="pi pi-arrow-right" onClick={enviarMensaje} type="submit" />
-        </div>
+        <MensajeInput
+          className="asunto"
+          type="text"
+          id="mensaje"
+          placeholder="Ingresa tu mensaje"
+          value={chat.mensaje}
+          onChange={(e) => setChat({ ...chat, mensaje: e.target.value })}
+        />
+        <Button severity="info" rounded icon="pi pi-arrow-right" onClick={enviarMensaje} />
       </ContenedorEnvio>
     </>
   );

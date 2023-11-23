@@ -2,7 +2,7 @@
 import { Badge } from "primereact/badge";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { formatoCurrencyCLP } from "../../../components/FormatoDinero";
+import { formatoCurrencyCLP, formatoFecha } from "../../../components/Formatos";
 import { Button } from "primereact/button";
 import { useState } from "react";
 
@@ -108,7 +108,7 @@ export const TablaRegistro = ({ registros, options = false }) => {
             return formatoCurrencyCLP(e.total);
           }}
         />
-        <Column field="createdAt" header="Fecha" />
+        <Column field="createdAt" header="Fecha" body={(e) => formatoFecha(e.createdAt)} />
       </DataTable>
     </div>
   );
