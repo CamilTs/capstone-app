@@ -4,48 +4,67 @@ import { Column } from "primereact/column";
 import { Contenedor, ContenedorMP, ContenedorTabla, Titulo } from "../Publicaciones/components/StyledVerPublicacion";
 import { DataTable } from "primereact/datatable";
 import { useSelector } from "react-redux";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-export const VerPublicaciones = () => {
+export const MisPublicados = () => {
     const [publicacion, setPublicacion] = useState([]);
-    const { id } = useSelector((state) => state.auth);
-
+    const [search, setSearch] = useState('');
     const toast = useRef(null);
 
-    const traerPublicaciones = async () => {
+    const traerPublicacion = async () => {
         try {
             const response = await api.get(`publicacion`);
             const { data } = response;
-            setPublicacion(data.data.publicacion);
+            console.log(data)
+            setPublicacion(data.data);
             console.log(data.data.publicacion);
         } catch (error) {
             console.log(error);
             console.log("Se intento traer publicación");
         }
     };
-
+    const imagenBodyTemplate = (rowData) => {
+        return Array.isArray(rowData.imagen) ? rowData.imagen.map((imagenUrl, index) => 
+            <img key={index} src={imagenUrl} alt={`imagen ${index + 1}`} width="80px" className="shadow-4" />
+        ) : null;
+    };
     useEffect(() => {
-        traerPublicaciones();
+        traerPublicacion();
     }, []);
+    const handleSearch = () => {
+        setFilteredPosts(
+            publicacion.filter(post =>
+                post.titulo.toLowerCase().includes(search.toLowerCase())
+            )
+        );
+    };
 
     return (
         <Contenedor>
-        <div>
-            <div style={{ width: '100%' }}>
-                <h3>Filtro</h3>
-                <div className="Barra filtro etiqueta">
-                    <label htmlFor="buscador">Buscador:</label>
-                    <input type="text" id="buscador" placeholder="Ingrese su búsqueda" />
-                </div>
-                <br />
-                <div>
-                    <label htmlFor="etiquetas">Etiquetas:</label>
-                    <input type="text" id="etiquetas" placeholder="Ingrese etiquetas" />
-                    <button>Buscar</button>
-                </div>
+            <Titulo>Publicaciones</Titulo>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                <input
+                    type="text"
+                    placeholder="Busqueda"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    style={{ marginRight: '10px' }}
+                />
+                <button onClick={handleSearch}>
+                    <FontAwesomeIcon icon={faSearch} />
+                </button>
             </div>
-            
-        </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+                {publicacion.map((post, index) => (
+                    <div key={index} style={{ border: '1px solid #ccc', borderRadius: '10px', padding: '10px' }}>
+                        <h2>{post.nombre}</h2>
+                        <img src={post.imagen} alt={`Imagen ${index + 1}`} style={{ width: '100%', height: 'auto' }} />
+                        <p style={{ fontFamily: 'Arial', fontSize: '20px', fontWeight: 'bold' }}>${post.precio.toLocaleString('de-DE')}</p>
+                    </div>
+                ))}
+            </div>
         </Contenedor>
-        
     );
-};
+}
+export default MisPublicados;
