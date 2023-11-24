@@ -61,12 +61,14 @@ export const VerTickets = ({ responderTicket }) => {
         />
         <Column
           header="Ver"
-          style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          style={{ display: "flex", gap: "0.5rem" }}
           body={(rowData) => {
             return (
               <>
-                <Button severity="warning" onClick={(e) => mostrarTicket(e, rowData)} rounded icon="pi pi-eye" />
-                {rol === "admin" && <Button severity="success" rounded icon="pi pi-pencil" onClick={() => responderTicket(rowData)} />}
+                <Button severity="warning" onClick={(e) => mostrarTicket(e, rowData)} outlined raised rounded icon="pi pi-comments" />
+                {rol === "admin" && (
+                  <Button severity="success" rounded icon="pi pi-pencil" outlined raised onClick={() => responderTicket(rowData)} />
+                )}
               </>
             );
           }}
