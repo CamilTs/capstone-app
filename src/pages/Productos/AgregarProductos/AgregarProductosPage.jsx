@@ -83,8 +83,12 @@ export const AgregarProductos = () => {
       formik.resetForm();
       console.log(data);
     } catch (error) {
-      console.log(error);
-      console.log("se intento agregar el producto");
+      toast.current.show({
+        severity: "warn",
+        summary: "Error",
+        detail: "Error al agregar producto",
+        life: 2000,
+      });
     } finally {
       setVerConfirmar(false);
     }
@@ -217,12 +221,23 @@ export const AgregarProductos = () => {
               <Opciones>
                 <Button
                   label="Agregar"
+                  rounded
+                  raised
                   icon="pi pi-plus"
                   className="p-button-success"
                   disabled={!formik.dirty || !formik.isValid}
                   onClick={() => setVerConfirmar(true)}
                 />
-                <Button label="Limpiar" icon="pi pi-trash" className="p-button-danger" onClick={() => setVerLimpiar(true)} type="button" />
+                <Button
+                  label="Limpiar"
+                  rounded
+                  raised
+                  icon="pi pi-trash"
+                  className="p-button-danger"
+                  onClick={() => setVerLimpiar(true)}
+                  disabled={!formik.dirty}
+                  type="button"
+                />
               </Opciones>
             </ContenedorCampos>
           </ContenedorPrimario>
@@ -234,7 +249,7 @@ export const AgregarProductos = () => {
         onHide={() => setVerConfirmar(false)}
         onConfirm={agregarProductoDB}
         type="submit"
-        message="¿Confirmar creación?"
+        message="¿Confirmar agregar producto?"
         header="Confirmar"
       />
 

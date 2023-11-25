@@ -30,7 +30,7 @@ export const VerRegistros = ({ editarUsuario, cambiarPestania }) => {
     }
   };
 
-  const eliminarProveedor = async (usuarioID) => {
+  const seleccionarUsuarioEliminar = async (usuarioID) => {
     setUsuarioEliminar(usuarioID);
     setVerEliminar(true);
   };
@@ -81,7 +81,7 @@ export const VerRegistros = ({ editarUsuario, cambiarPestania }) => {
               return (
                 <>
                   <Button severity="warning" outlined raised onClick={() => editarUsuario(rowData)} rounded icon="pi pi-user-edit" />
-                  <Button severity="danger" outlined raised onClick={() => eliminarProveedor(rowData._id)} rounded icon="pi pi-trash" />
+                  <Button severity="danger" outlined raised onClick={() => seleccionarUsuarioEliminar(rowData._id)} rounded icon="pi pi-trash" />
                 </>
               );
             }}

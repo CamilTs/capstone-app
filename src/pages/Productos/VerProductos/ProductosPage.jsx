@@ -7,30 +7,23 @@ import { formatoCurrencyCLP, formatoFecha } from "../../../components/Formatos";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
-import {
-  Contenedor,
-  ContenedorHeader,
-  ContenedorExportar,
-  ContenedorTabla,
-  Titulo,
-  CustomCircle,
-  ContenedorOpciones,
-} from "./components/StyledVerProductos";
+import { Contenedor, ContenedorHeader, ContenedorExportar, ContenedorTabla, Titulo, CustomCircle } from "./components/StyledVerProductos";
 import { api } from "../../../api/api";
 import { DataTable } from "primereact/datatable";
 import { useSelector } from "react-redux";
 import { Badge } from "../../../components/Badge";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 import { InputContainer } from "../../../components/InputContainer";
+import { ProductoSchema } from "../../../components/Validaciones";
+import { useFormik } from "formik";
 
 export const Productos = () => {
   const { comercio } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [verEliminar, setVerEliminar] = useState(false);
   const [productoAEliminarId, setProductoAEliminarId] = useState(null);
-  const [productoAEliminarNombre, setProductoAEliminarNombre] = useState(null);
   const [productoAModificar, setProductoAModificar] = useState({});
-  const [formularioVisible, setFormularioVisible] = useState(false);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [productos, setProductos] = useState([]);
   const navigateAgregar = useNavigate();
   const [globalFiltro, setGlobalFiltro] = useState(null);
@@ -55,36 +48,45 @@ export const Productos = () => {
     setVerEliminar(false);
   };
 
-  const abrirFormularioEdicion = (producto) => {
+  const verFormulario = (producto) => {
     setProductoAModificar(producto);
-    setFormularioVisible(true);
+    formik.setValues(producto);
+    setMostrarFormulario(true);
   };
 
-  const eliminarProducto = (productoID, nombre) => {
+  const eliminarProducto = (productoID) => {
     setProductoAEliminarId(productoID);
-    setProductoAEliminarNombre(nombre);
     setVerEliminar(true);
   };
 
-  // EDITAR PRODUCTOS //
-  const guardarCambios = async () => {
+  const editarProducto = async () => {
     try {
-      const { data } = await api.put(`producto/${productoAModificar._id}`, productoAModificar);
+      const response = await api.put(`producto/${productoAModificar._id}`, {
+        ...formik.values,
+      });
+      const { data } = response;
       console.log(data);
-      if (data.success) {
-        traerProductos();
-        toast.current.show({ severity: "info", summary: "Modificado", detail: "Producto Modificado", life: 2000 });
-      } else {
-        toast.current.show({ severity: "danger", summary: "Modificado", detail: "Errora la modificar", life: 5000 });
-      }
+      toast.current.show({
+        severity: "info",
+        summary: "Producto actualizado",
+        detail: "Se actualizó el producto",
+        life: 2000,
+      });
+      setMostrarFormulario(false);
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
+      toast.current.show({
+        severity: "warn",
+        summary: "Error",
+        detail: "No se pudo actualizar el producto",
+        life: 2000,
+      });
+    } finally {
+      traerProductos();
     }
-    setFormularioVisible(false);
   };
 
   // Diferentes colores para la cantidad de productos //
-
   const cantidadProductos = (rowData) => {
     const cantidadClase = classNames({
       "bg-red-100 text-red-900": rowData.cantidad <= 9,
@@ -160,9 +162,9 @@ export const Productos = () => {
       </div>
 
       <ContenedorExportar>
-        <Button label="Agregar" icon="pi pi-plus" severity="info" rounded onClick={() => navigateAgregar("/agregarProductos")} />
-        <Button label="Excel" icon="pi pi-file-excel" severity="success" rounded onClick={exportarExcel} data-pr-tooltip="XLS" />
-        <Button label="PDF" icon="pi pi-file-pdf" severity="danger" rounded onClick={exportarPdf} data-pr-tooltip="PDF" />
+        <Button label="Agregar" icon="pi pi-plus" severity="info" rounded raised onClick={() => navigateAgregar("/agregarProductos")} />
+        <Button label="Excel" icon="pi pi-file-excel" severity="success" rounded raised onClick={exportarExcel} data-pr-tooltip="XLS" />
+        <Button label="PDF" icon="pi pi-file-pdf" severity="danger" rounded raised onClick={exportarPdf} data-pr-tooltip="PDF" />
       </ContenedorExportar>
     </ContenedorHeader>
   );
@@ -172,11 +174,22 @@ export const Productos = () => {
     try {
       const response = await api.get("producto/comercio");
       const { data } = response;
+      console.log(data);
       if (data.success) {
         setProductos(data.data);
-        toast.current.show({ severity: "success", summary: "Productos", detail: "Productos cargados", life: 2000 });
+        toast.current.show({
+          severity: "success",
+          summary: "Productos",
+          detail: "Productos cargados",
+          life: 2000,
+        });
       } else {
-        toast.current.show({ severity: "danger", summary: "Productos", detail: "Error al cargar los productos", life: 3000 });
+        toast.current.show({
+          severity: "danger",
+          summary: "Productos",
+          detail: "Error al cargar los productos",
+          life: 3000,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -186,7 +199,33 @@ export const Productos = () => {
   };
 
   const imageBodyTemplate = (rowData) => {
-    return <img src={rowData.imagenes} alt={rowData.imagenes} width="80px" className="shadow-4" />;
+    return <img style={{ objectFit: "cover" }} src={rowData.imagenes} alt={rowData.imagenes} width="80" height="80" />;
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      codigo_barra: "",
+      nombre: "",
+      imagen: "",
+      categoria: "",
+      cantidad: Number(""),
+      precio: Number(""),
+    },
+    validationSchema: ProductoSchema,
+
+    onSubmit: (data) => {
+      console.log(data);
+    },
+  });
+
+  const validacionValores = (name) => formik.touched[name] && formik.errors[name];
+
+  const getFormErrorMessage = (name) => {
+    return validacionValores(name) ? (
+      <span>
+        <Message className="absolute" severity="error" text={`${formik.errors[name]}`}></Message>
+      </span>
+    ) : null;
   };
 
   useEffect(() => {
@@ -201,20 +240,21 @@ export const Productos = () => {
         <DataTable
           removableSort
           header={controlInventario}
+          className="p-datatable-lg p-datatable-gridlines"
+          emptyMessage="Producto no registrado"
           value={productos}
           paginator
           rows={5}
           rowsPerPageOptions={[5, 10, 15]}
           scrollable
-          scrollHeight="580px"
+          scrollHeight="500px"
           globalFilter={globalFiltro}
           loading={loading}
-          emptyMessage="Producto no registrado"
         >
-          <Column field="codigo_barra" header="Código de barra" body={(rowData) => rowData.codigo_barra} />
-          <Column field="nombre" header="Producto" body={(rowData) => rowData.nombre} />
+          <Column field="codigo_barra" header="Código de barra" />
+          <Column field="nombre" header="Producto" />
           <Column field="categoria" header="Categoria" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoria")} />
-          <Column field="imagenes" header="Imagen" body={imageBodyTemplate} />
+          <Column field="imagen" header="Imagen" body={imageBodyTemplate} />
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
           <Column field="fecha" header="Fecha" body={(rowData) => formatoFecha(rowData.fecha)} />
           <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
@@ -222,10 +262,10 @@ export const Productos = () => {
             header="Acciones"
             body={(rowData) => {
               return (
-                <ContenedorOpciones>
-                  <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => abrirFormularioEdicion(rowData)} />
-                  <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => eliminarProducto(rowData._id, rowData.nombre)} />
-                </ContenedorOpciones>
+                <div className="flex gap-2">
+                  <Button icon="pi pi-pencil" rounded outlined severity="warning" onClick={() => verFormulario(rowData)} />
+                  <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => eliminarProducto(rowData._id)} />
+                </div>
               );
             }}
             exportable={false}
@@ -233,88 +273,104 @@ export const Productos = () => {
         </DataTable>
       </ContenedorTabla>
 
-      {/* DIALOG PARA EDITAR PRODUCTO */}
       <Dialog
         header="Editar Producto"
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        className="p-fluid"
-        visible={formularioVisible}
+        visible={mostrarFormulario}
+        style={{ width: "32rem", height: "42rem" }}
+        onHide={() => setMostrarFormulario(false)}
         footer={
           <>
-            <Button label="Guardar" icon="pi pi-check" severity="success" onClick={guardarCambios} />
-            <Button label="Cancelar" icon="pi pi-times" severity="danger" onClick={() => setFormularioVisible(false)} />
+            <Button
+              label="Actualizar"
+              icon="pi pi-pencil"
+              severity="warning"
+              raised
+              rounded
+              onClick={editarProducto}
+              disabled={
+                productoAModificar.nombre === formik.values.nombre &&
+                productoAModificar.categoria === formik.values.categoria &&
+                productoAModificar.cantidad === formik.values.cantidad &&
+                productoAModificar.precio === formik.values.precio
+              }
+            />
+            <Button label="Cancelar" icon="pi pi-times" severity="danger" raised rounded onClick={() => setMostrarFormulario(false)} />
           </>
         }
-        onHide={setFormularioVisible}
       >
-        <div>
-          <label htmlFor="codigo_barra" className="font-bold">
-            Código de barra
-          </label>
-          <InputContainer
-            value={productoAModificar.codigo_barra}
-            onChange={(e) => setProductoAModificar({ ...productoAModificar, codigo_barra: e.target.value })}
-            required
-            autoFocus
-            disabled
-          />
-        </div>
-        <div>
-          <label htmlFor="producto" className="font-bold">
-            Nombre
-          </label>
-          <InputContainer
-            value={productoAModificar.nombre}
-            onChange={(e) => setProductoAModificar({ ...productoAModificar, nombre: e.target.value })}
-          />
-        </div>
-        <div>
-          <label htmlFor="categoria" className="font-bold">
-            Categoría
-          </label>
-          <InputContainer
-            value={productoAModificar.categoria}
-            onChange={(e) => setProductoAModificar({ ...productoAModificar, categoria: e.target.value })}
-          />
-        </div>
-        <div>
-          <div className="field col">
-            <label htmlFor="cantidad" className="font-bold">
-              Cantidad
-            </label>
-            <InputContainer
-              type="number"
-              id="cantidad"
-              value={productoAModificar.cantidad}
-              onChange={(e) => setProductoAModificar({ ...productoAModificar, cantidad: e.target.value })}
-              mode="decimal"
-              showButtons
-              min={0}
-              max={10000}
-            />
+        <form onSubmit={formik.handleSubmit} className="flex flex-column">
+          <div className="flex flex-column gap-2">
+            <div className="flex justify-content-center">
+              {productoAModificar.imagenes && (
+                <img src={productoAModificar.imagenes} alt={productoAModificar.imagenes} width="200" height="200" style={{ objectFit: "cover" }} />
+              )}
+            </div>
+            <div className="p-field p-col-12 p-md-6">
+              <label htmlFor="codigo_barra">Código de barra</label>
+              <InputContainer id="codigo_barra" name="codigo_barra" value={productoAModificar.codigo_barra} disabled />
+            </div>
+            <div className="p-field p-col-12 p-md-6">
+              <label htmlFor="Producto">Nombre</label>
+              <InputContainer
+                id="nombre"
+                name="nombre"
+                placeholder="Ingrese su nombre del producto..."
+                onChange={(e) => formik.handleChange(e)}
+                onBlur={formik.handleBlur}
+                value={formik.values.nombre}
+              />
+              {getFormErrorMessage("nombre")}
+            </div>
+            <div className="p-field p-col-12 p-md-6">
+              <label htmlFor="categoria">Categoría</label>
+              <InputContainer
+                id="categoria"
+                name="categoria"
+                onChange={(e) => formik.handleChange(e)}
+                onBlur={formik.handleBlur}
+                value={formik.values.categoria}
+              />
+              {getFormErrorMessage("categoria")}
+            </div>
+            <div className="p-field p-col-12 p-md-6">
+              <label htmlFor="cantidad">Cantidad</label>
+              <InputContainer
+                id="cantidad"
+                name="cantidad"
+                onChange={(e) => formik.handleChange(e)}
+                onBlur={formik.handleBlur}
+                value={formik.values.cantidad}
+                mode="decimal"
+                showButtons
+                min={0}
+                max={10000}
+              />
+              {getFormErrorMessage("precio")}
+            </div>
+            <div className="p-field p-col-12 p-md-6">
+              <label htmlFor="precio">Precio</label>
+              <InputContainer
+                id="precio"
+                name="precio"
+                onChange={(e) => formik.handleChange(e)}
+                onBlur={formik.handleBlur}
+                value={formik.values.precio}
+                mode="decimal"
+                showButtons
+                min={0}
+                max={10000}
+              />
+              {getFormErrorMessage("precio")}
+            </div>
           </div>
-          <div>
-            <label htmlFor="precio" className="font-bold">
-              Precio
-            </label>
-            <InputContainer
-              type="number"
-              id="precio"
-              value={productoAModificar.precio}
-              onChange={(e) => setProductoAModificar({ ...productoAModificar, precio: e.target.value })}
-              mode="currency"
-              currency="CLP"
-              locale="es-CL"
-            />
-          </div>
-        </div>
+        </form>
       </Dialog>
 
       <CustomConfirmDialog
         visible={verEliminar}
         onHide={() => setVerEliminar()}
         onConfirm={borrarProducto}
-        message={`¿Estás seguro de eliminar el producto ${productoAEliminarNombre}?`}
+        message="¿Estás seguro de eliminar el producto?"
         header="Eliminar"
       />
     </Contenedor>

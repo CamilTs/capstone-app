@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AgregarProductos, Clientes, GestionarCuentas, Tickets } from "../pages";
 import { Content } from "../App";
-import { ProductosProvider } from "../context/ProductosContext";
 
 export const AdminRoutes = () => {
   // const login = false;
@@ -10,7 +9,7 @@ export const AdminRoutes = () => {
   //   return <Navigate to={'/iniciar-sesion'}/>
   // }
   return (
-    <ProductosProvider>
+    <>
       <Content width="100%">
         <Routes>
           <Route path="" element={<GestionarCuentas />} />
@@ -20,6 +19,6 @@ export const AdminRoutes = () => {
           <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
       </Content>
-    </ProductosProvider>
+    </>
   );
 };

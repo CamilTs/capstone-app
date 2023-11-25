@@ -24,7 +24,7 @@ import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 import { formatoRut } from "../../../components/Formatos";
 import { Message } from "primereact/message";
 
-export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormulario, estado }) => {
+export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormulario, estado, cambiarPestania }) => {
   const [imagen, setImagen] = useState(null);
 
   const [verConfirmar, setVerConfirmar] = useState(false);
@@ -76,12 +76,22 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
       } else {
         const response = await api.put("usuario", dataToSend);
         const { data } = response;
+        console.log(data);
       }
-
-      limpiarFormulario();
+      toast.current.show({
+        severity: estado === "crear" ? "success" : "info",
+        summary: estado === "crear" ? "Creado" : "Editado",
+        detail: estado === "crear" ? "Usuario creado" : "Usuario actualizado",
+        life: 2000,
+      });
+      estado === "crear" ? formik.resetForm() : cambiarPestania(2);
     } catch (error) {
-      console.log(error);
-      console.log("se intento crear el usuario");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: `Error al ${estado === "crear" ? "crear" : "editar"} el usuario`,
+        life: 2000,
+      });
     } finally {
       setVerConfirmar(false);
     }
@@ -97,19 +107,6 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
       console.log(data);
     },
   });
-
-  // const formatoRut = (value) => {
-  //   const rut = value.replace(/[^0-9kK]/g, "");
-
-  //   if (rut.length > 1) {
-  //     const verificador = rut.slice(-1);
-  //     const rutPrincipal = rut.slice(0, -1);
-
-  //     const formattedRUT = rutPrincipal.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + verificador;
-  //     return formattedRUT;
-  //   }
-  //   return rut;
-  // };
 
   const camposVacios = () => {
     console.log(formik.values);
@@ -141,7 +138,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
   const getFormErrorMessage = (name) => {
     return validacionValores(name) ? (
       <span>
-        <Message className="sticky" severity="error" text={`${formik.errors[name]}`}></Message>
+        <Message className="absolute" severity="error" text={`${formik.errors[name]}`}></Message>
       </span>
     ) : null;
   };
@@ -155,10 +152,6 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
       console.log(error);
       console.log("Error al cargar la imagen");
     }
-  };
-
-  const prueba = () => {
-    console.log(formik.values);
   };
 
   useEffect(() => {
@@ -295,20 +288,31 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
               ) : (
                 <Button raised label="Actualizar" severity="warning" rounded onClick={() => setVerConfirmar(true)} disabled={camposVacios()} />
               )}
-              <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} disabled={formik.isValid} type="button" />
+              <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} disabled={!formik.dirty} type="button" />
             </Opciones>
           </ContenedorCampos>
         </Inputs>
       </Formulario>
 
-      <CustomConfirmDialog
-        visible={verConfirmar}
-        onHide={() => setVerConfirmar(false)}
-        onConfirm={crearUsuario}
-        type="submit"
-        message="¿Confirmar creación?"
-        header="Confirmar"
-      />
+      {estado === "crear" ? (
+        <CustomConfirmDialog
+          visible={verConfirmar}
+          onHide={() => setVerConfirmar(false)}
+          onConfirm={crearUsuario}
+          type="submit"
+          message="¿Confirmar creación?"
+          header="Confirmar"
+        />
+      ) : (
+        <CustomConfirmDialog
+          visible={verConfirmar}
+          onHide={() => setVerConfirmar(false)}
+          onConfirm={crearUsuario}
+          type="submit"
+          message={`¿Confirmar modificación del usuario?`}
+          header="Actualización"
+        />
+      )}
 
       <CustomConfirmDialog
         visible={verLimpiar}

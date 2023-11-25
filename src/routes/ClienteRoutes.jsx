@@ -3,13 +3,11 @@ import { AgregarProductos, GraficosCliente, VenderProducto, AgregarProveedores }
 import { Productos } from "../pages/Productos/VerProductos/ProductosPage";
 import { Content } from "../App";
 import { VerPublicaciones } from "../pages/Publicaciones/VerPublicaciones";
-// import AgregarProductos from "../pages/Productos/AgregarProductos/AgregarProductosPage";
-import { ProductosProvider } from "../context/ProductosContext";
 import { Tickets } from "../pages/Tickets/Tickets";
 
 export const ClienteRoutes = () => {
   return (
-    <ProductosProvider>
+    <>
       <Content>
         <Routes>
           <Route path="" element={<VenderProducto />} />
@@ -22,6 +20,6 @@ export const ClienteRoutes = () => {
           <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
       </Content>
-    </ProductosProvider>
+    </>
   );
 };
