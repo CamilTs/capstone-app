@@ -10,15 +10,58 @@ export const Contenedor = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
-  gap: 1rem;
-  height: 100%;
-  padding: 1rem 2rem 1rem 2rem;
+  gap: 2rem;
+  height: 120%;
+  padding: 1rem 5rem 5rem 3rem;
 
-  @media (max-width: 920px) {
+  @media (max-width: 100%) {
     overflow-y: scroll;
   }
 `;
+export const ContenedorHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
+  @media (max-width: 675px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+`;
+export const CustomCircle = styled.div`
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  font-weight: bold;
+  font-size: 14px;
+  width: 2rem;
+  height: 2rem;
+
+  &.bg-red-100 {
+    background-color: #ffcdd2;
+  }
+
+  &.text-red-900 {
+    color: #b71c1c;
+  }
+
+  &.bg-yellow-100 {
+    background-color: #ffecb3;
+  }
+
+  &.text-yellow-900 {
+    color: #ff6f00;
+  }
+
+  &.bg-green-100 {
+    background-color: #c8e6c9;
+  }
+
+  &.text-green-900 {
+    color: #1b5e20;
+  }
+`;
 export const Formulario = styled.form`
   display: flex;
   gap: 1rem;
@@ -44,8 +87,8 @@ export const ContenedorImg = styled.div`
 
 export const ImagenPreview = styled.div`
   border: 1px solid #999999bf;
-  width: 502px;
-  height: 502px;
+  width: 502%;
+  height: 502%;
   display: grid;
   justify-items: center;
   align-items: center;
@@ -120,15 +163,21 @@ export const ContenedorBotones = styled.div`
 
 // Mis Publicados estilos //
 
-export const ContenedorMP = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-`;
+
 
 export const ContenedorTabla = styled.div`
   width: 100%;
   height: 100%;
   padding: 1rem 2rem 1rem 2rem;
+`;
+
+export const ContenedorMP = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;

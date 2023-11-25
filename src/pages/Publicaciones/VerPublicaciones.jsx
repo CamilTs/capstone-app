@@ -1,16 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../../api/api";
-import { Column } from "primereact/column";
-import { Contenedor, ContenedorMP, ContenedorTabla, Titulo } from "../Publicaciones/components/StyledVerPublicacion";
+import { Contenedor, ContenedorMP, ContenedorTabla, Titulo, ContenedorHeader } from "../Publicaciones/components/StyledVerPublicacion";
 import { DataTable } from "primereact/datatable";
-import { useSelector } from "react-redux";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Card } from 'primereact/card';
+import { CustomCircle } from "../Publicaciones/components/StyledVerPublicacion";
+import { classNames } from "primereact/utils";
+import { MultiSelect } from 'primereact/multiselect';
+import { Slider } from 'primereact/slider';
+import { InputNumber } from 'primereact/inputnumber';
+import { InputText } from 'primereact/inputtext';
+
 
 export const MisPublicados = () => {
     const [publicacion, setPublicacion] = useState([]);
     const [search, setSearch] = useState('');
     const toast = useRef(null);
+    const [selectedCategories, setSelectedCategories] = useState(null);
+    const categoryOptions = publicacion.map(post => ({ label: post.categoria, value: post.categoria }));
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(1000000);
+    const [searchCategory, setSearchCategory] = useState('');
+    const [searchName, setSearchName] = useState('');
+
 
     const traerPublicacion = async () => {
         try {
@@ -25,46 +36,75 @@ export const MisPublicados = () => {
         }
     };
     const imagenBodyTemplate = (rowData) => {
-        return Array.isArray(rowData.imagen) ? rowData.imagen.map((imagenUrl, index) => 
+        return Array.isArray(rowData.imagen) ? rowData.imagen.map((imagenUrl, index) =>
             <img key={index} src={imagenUrl} alt={`imagen ${index + 1}`} width="80px" className="shadow-4" />
         ) : null;
     };
     useEffect(() => {
         traerPublicacion();
     }, []);
-    const handleSearch = () => {
+    const handleSearchName = () => {
         setFilteredPosts(
             publicacion.filter(post =>
-                post.titulo.toLowerCase().includes(search.toLowerCase())
+                post.titulo && search && post.titulo.toLowerCase().includes(search.toLowerCase())
             )
         );
     };
+    const FilterBar = ({ onFilter }) => {
+        const [searchName, setSearchName] = useState('');
+        const [searchCategory, setSearchCategory] = useState('');
+        const [searchPrice, setSearchPrice] = useState('');
 
-    return (
-        <Contenedor>
-            <Titulo>Publicaciones</Titulo>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+        const handleFilter = (event) => {
+            event.preventDefault();
+            onFilter({ searchName, searchCategory, searchPrice });
+        };
+
+        return (
+            <form onSubmit={handleFilter}>
                 <input
                     type="text"
-                    placeholder="Busqueda"
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    style={{ marginRight: '10px' }}
+                    placeholder="Nombre"
+                    value={searchName}
+                    onChange={e => setSearchName(e.target.value)}
                 />
-                <button onClick={handleSearch}>
-                    <FontAwesomeIcon icon={faSearch} />
-                </button>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
-                {publicacion.map((post, index) => (
-                    <div key={index} style={{ border: '1px solid #ccc', borderRadius: '10px', padding: '10px' }}>
-                        <h2>{post.nombre}</h2>
-                        <img src={post.imagen} alt={`Imagen ${index + 1}`} style={{ width: '100%', height: 'auto' }} />
-                        <p style={{ fontFamily: 'Arial', fontSize: '20px', fontWeight: 'bold' }}>${post.precio.toLocaleString('de-DE')}</p>
-                    </div>
-                ))}
-            </div>
-        </Contenedor>
-    );
+                <input
+                    type="text"
+                    placeholder="Categoría"
+                    value={searchCategory}
+                    onChange={e => setSearchCategory(e.target.value)}
+                />
+                <input
+                    type="number"
+                    placeholder="Precio"
+                    value={searchPrice}
+                    onChange={e => setSearchPrice(e.target.value)}
+                />
+                <button type="submit">Filtrar</button>
+            </form>
+        );
+    };
+return (
+    <Contenedor>
+        <Titulo>Publicaciones</Titulo>
+        <form>
+            <InputText value={searchName} onChange={(e) => setSearchName(e.target.value)} placeholder="Buscar por nombre" />
+            <MultiSelect value={selectedCategories} options={categoryOptions} onChange={(e) => setSelectedCategories(e.value)} placeholder="Selecciona categorías" />
+            <InputNumber value={minPrice} onValueChange={(e) => setMinPrice(e.value)} mode="currency" currency="CLP" locale="es-CL" placeholder="Precio mínimo" />
+            <InputNumber value={maxPrice} onValueChange={(e) => setMaxPrice(e.value)} mode="currency" currency="CLP" locale="es-CL" placeholder="Precio máximo" />
+        </form>
+        <ContenedorMP>
+    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+        {publicacion.filter(post => (!selectedCategories || selectedCategories.includes(post.categoria)) && post.precio >= minPrice && post.precio <= maxPrice && post.nombre.toLowerCase().includes(searchName.toLowerCase())).map((post, index) => (
+            <Card key={index} title={post.nombre} style={{ width: '16%', marginBottom: '1em', flex: '0 0 auto', margin: '1rem' }}>
+                <p style={{ fontWeight: 'bold' }}>Categoría: {post.categoria}</p>
+                <img src={post.imagen} alt={`Imagen ${index + 1}`} style={{ width: '100%', height: 'auto' }} />
+                <p style={{ fontFamily: 'Arial', fontSize: '20px', fontWeight: 'bold' }}>${post.precio.toLocaleString('de-DE')}</p>
+            </Card>
+        ))}
+    </div>
+</ContenedorMP>
+    </Contenedor>
+);
 }
 export default MisPublicados;
