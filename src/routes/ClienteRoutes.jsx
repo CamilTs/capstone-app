@@ -2,14 +2,12 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AgregarProductos, GraficosCliente, VenderProducto, AgregarProveedores } from "../pages";
 import { Productos } from "../pages/Productos/VerProductos/ProductosPage";
 import { Content } from "../App";
-import { MisPublicados } from "../pages/Publicaciones/VerPublicaciones";
-// import AgregarProductos from "../pages/Productos/AgregarProductos/AgregarProductosPage";
-import { ProductosProvider } from "../context/ProductosContext";
+import { VerPublicaciones } from "../pages/Publicaciones/VerPublicaciones";
 import { Tickets } from "../pages/Tickets/Tickets";
 
 export const ClienteRoutes = () => {
   return (
-    <ProductosProvider>
+    <>
       <Content>
         <Routes>
           <Route path="" element={<VenderProducto />} />
@@ -22,6 +20,6 @@ export const ClienteRoutes = () => {
           <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
       </Content>
-    </ProductosProvider>
+    </>
   );
 };

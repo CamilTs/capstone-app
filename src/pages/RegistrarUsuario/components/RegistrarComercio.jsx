@@ -11,65 +11,50 @@ import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 import { formatoTelefono } from "../../../components/Formatos";
 import { Message } from "primereact/message";
 
-export const RegistrarComercio = () => {
-  const estructuraFormulario = {
-    nombre: "",
-    direccion: "",
-    propietario: "",
-    telefono: "",
-  };
-  const [formulario, setFormulario] = useState(estructuraFormulario);
-  const [nombreCliente, setNombreCliente] = useState([]);
+export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, setFormulario, estado, cambiarPestania, nombreCliente }) => {
   const [verConfirmar, setVerConfirmar] = useState(false);
   const [verLimpiar, setVerLimpiar] = useState(false);
   const toast = useRef(null);
 
   const limpiarFormulario = () => {
-    formik.resetForm(setFormulario(estructuraFormulario));
+    formik.resetForm(setFormulario(estructuraFormularioComercio));
     toast.current.show({
       severity: "info",
-      summary: "Éxito",
-      detail: "Formulario Limpiado",
-      life: 3000,
+      summary: "Formulario limpio",
+      detail: "Se limpia el formulario",
+      life: 2000,
     });
     setVerLimpiar(false);
   };
 
   const crearComercio = async () => {
     try {
-      const response = await api.post("comercio", {
-        ...formik.values,
-      });
-      const { data } = response;
-      if (!data.success) {
-        console.log("Error al crear comercio");
+      const dataToSend = estado === "crear" ? { ...formik.values } : { ...formik.values };
+
+      if (estado === "crear") {
+        const response = await api.post("comercio", dataToSend);
+        const { data } = response;
+      } else {
+        const response = await api.put(`comercio/${dataToSend._id}`, dataToSend);
+        const { data } = response;
       }
       toast.current.show({
-        severity: "success",
-        summary: "Éxito",
-        detail: `Comercio asignado a ${formik.values.propietario.nombre}`,
+        severity: estado === "crear" ? "success" : "info",
+        summary: estado === "crear" ? "Creado" : "Editado",
+        detail: estado === "crear" ? `Comercio asignado a ${formik.values.propietario.nombre}` : "Comercio editado",
         life: 2000,
       });
-      console.log(data);
+      estado === "crear" ? formik.resetForm() : cambiarPestania(3);
     } catch (error) {
       console.log(error);
-      console.log("Error al crear comercio");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: `Error al ${estado === "crear" ? "crear" : "editar"} el comercio`,
+        life: 2000,
+      });
     } finally {
       setVerConfirmar(false);
-    }
-  };
-
-  const traerUsuarios = async () => {
-    try {
-      const response = await api.get("rol/cliente");
-      const { data } = response;
-      console.log(data);
-      const nombreCliente = data.data.map((usuario) => usuario);
-      console.log(nombreCliente);
-      setNombreCliente(nombreCliente);
-    } catch (error) {
-      console.log(error);
-      console.log("Error al traer los usuarios");
     }
   };
 
@@ -89,14 +74,12 @@ export const RegistrarComercio = () => {
   const getFormErrorMessage = (name) => {
     return validacionValores(name) ? (
       <span>
-        <Message className="sticky" severity="error" text={`${formik.errors[name]}`}></Message>
+        <Message className="absolute" severity="error" text={`${formik.errors[name]}`}></Message>
       </span>
     ) : null;
   };
 
-  useEffect(() => {
-    traerUsuarios();
-  }, []);
+  useEffect(() => {}, [estado]);
 
   return (
     <Contenedor>
@@ -114,6 +97,7 @@ export const RegistrarComercio = () => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.propietario}
+              disabled={estado === "editar"}
             />
             {getFormErrorMessage("propietario")}
           </Campos>
@@ -154,25 +138,40 @@ export const RegistrarComercio = () => {
         </ContenedorCampos>
       </Formulario>
       <Opciones>
-        <Button
-          raised
-          label="Registrar"
-          severity="success"
-          rounded
-          onClick={() => setVerConfirmar(true)}
-          disabled={!formik.dirty || !formik.isValid}
-        />
-        <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} disabled={formik.isValid} />
+        {estado == "crear" ? (
+          <Button
+            raised
+            label="Registrar"
+            severity="success"
+            rounded
+            onClick={() => setVerConfirmar(true)}
+            disabled={!formik.dirty || !formik.isValid}
+          />
+        ) : (
+          <Button raised label="Actualizar" severity="warning" rounded onClick={() => setVerConfirmar(true)} disabled={!formik.dirty} />
+        )}
+        <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} disabled={!formik.dirty} type="button" />
       </Opciones>
 
-      <CustomConfirmDialog
-        visible={verConfirmar}
-        onHide={() => setVerConfirmar(false)}
-        onConfirm={crearComercio}
-        type="submit"
-        message="¿Confirmar regristro?"
-        header="Confirmar"
-      />
+      {estado === "crear" ? (
+        <CustomConfirmDialog
+          visible={verConfirmar}
+          onHide={() => setVerConfirmar(false)}
+          onConfirm={crearComercio}
+          type="submit"
+          message="¿Confirmar creación?"
+          header="Confirmar"
+        />
+      ) : (
+        <CustomConfirmDialog
+          visible={verConfirmar}
+          onHide={() => setVerConfirmar(false)}
+          onConfirm={crearComercio}
+          type="submit"
+          message={`¿Confirmar modificación del comercio?`}
+          header="Actualización"
+        />
+      )}
 
       <CustomConfirmDialog
         visible={verLimpiar}

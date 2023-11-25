@@ -21,6 +21,7 @@ import {
 import { InputContainer } from "../../components/InputContainer";
 import { publicacionSchema } from "../../components/Validaciones";
 import { CustomConfirmDialog } from "../../components/CustomConfirmDialog";
+import { Message } from "primereact/message";
 
 const categorias = [
   { label: "Alimento", value: "Alimento" },
@@ -32,7 +33,6 @@ export const AgregarPublicacion = () => {
   const { id } = useSelector((state) => state.auth);
 
   const estructuraFormulario = {
-    id: Date.now(),
     nombre: "",
     precio: Number(""),
     codigo_barra: "",
@@ -78,8 +78,12 @@ export const AgregarPublicacion = () => {
       });
       formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
     } catch (error) {
-      console.log(error);
-      console.log("Se intento agregar publicación");
+      toast.current.show({
+        severity: "warn",
+        summary: "Error",
+        detail: "No se pudo agregar la publicación",
+        life: 2000,
+      });
     } finally {
       setVerConfirmar(false);
     }
@@ -110,7 +114,11 @@ export const AgregarPublicacion = () => {
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
-    return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
+    return validacionValores(name) ? (
+      <span>
+        <Message className="absolute" severity="error" text={`${formik.errors[name]}`}></Message>
+      </span>
+    ) : null;
   };
 
   return (
@@ -183,8 +191,27 @@ export const AgregarPublicacion = () => {
             {getFormErrorMessage("precio")}
           </Campos>
           <ContenedorBotones>
-            <Button label="Agregar" className="p-button-success" onClick={() => setVerConfirmar(true)} />
-            <Button label="Limpiar" className="p-button-danger" onClick={() => setVerLimpiar(true)} type="button" />
+            <Button
+              label="Agregar"
+              className="p-button-success"
+              icon="pi pi-plus-circle"
+              loadingIcon="pi pi-spin"
+              onClick={() => setVerConfirmar(true)}
+              raised
+              rounded
+              disabled={!formik.dirty || !formik.isValid}
+            />
+            <Button
+              label="Limpiar"
+              className="p-button-danger"
+              icon="pi pi-trash"
+              loadingIcon="pi pi-spin"
+              onClick={() => setVerLimpiar(true)}
+              raised
+              rounded
+              type="button"
+              disabled={!formik.dirty}
+            />
           </ContenedorBotones>
         </ContenedorCampos>
       </Formulario>
@@ -194,7 +221,7 @@ export const AgregarPublicacion = () => {
         onHide={() => setVerConfirmar(false)}
         onConfirm={agregarPublicacion}
         type="submit"
-        message="¿Confirmar creación?"
+        message="¿Confirmar agregar publicación?"
         header="Confirmar"
       />
 

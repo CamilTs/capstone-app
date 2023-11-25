@@ -4,13 +4,15 @@ import { Contenedor } from "./StyledComponents";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
-import { confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 import { formatoRut } from "../../../components/Formatos";
+import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 
 export const VerRegistros = ({ editarUsuario, cambiarPestania }) => {
   const [usuarios, setUsuarios] = useState([]);
   const [Loading, setLoading] = useState(false);
+  const [verEliminar, setVerEliminar] = useState(false);
+  const [usuarioEliminar, setUsuarioEliminar] = useState("");
   const toast = useRef(null);
 
   const traerUsuarios = async () => {
@@ -28,6 +30,11 @@ export const VerRegistros = ({ editarUsuario, cambiarPestania }) => {
     }
   };
 
+  const seleccionarUsuarioEliminar = async (usuarioID) => {
+    setUsuarioEliminar(usuarioID);
+    setVerEliminar(true);
+  };
+
   const eliminarUsuario = async (id) => {
     setLoading(true);
     console.log(id);
@@ -43,37 +50,6 @@ export const VerRegistros = ({ editarUsuario, cambiarPestania }) => {
       setLoading(false);
     }
   };
-  const confirmEliminar = (id) => {
-    confirmDialog({
-      message: "¿Seguro que desea eliminar este usuario?",
-      header: "Confirmation",
-      icon: "pi pi-exclamation-triangle",
-      accept: () => {
-        toast.current.show({
-          severity: "success",
-          summary: "Éxito",
-          detail: "Formulario Limpiado",
-          life: 3000,
-        });
-        eliminarUsuario(id);
-      },
-      reject: () => {},
-    });
-  };
-  // const editarUsuario = (usuario) => {
-  //   editarUsuario({
-  //     rut: usuario.rut,
-  //     nombre: usuario.nombre,
-  //     apellido: usuario.apellido,
-  //     correo: usuario.correo,
-  //     contrasena: usuario.contrasena,
-  //     repetir: usuario.contrasena,
-  //     imagen: usuario.imagen,
-  //     rol: usuario.rol,
-  //   });
-
-  //   cambiarPestania(0);
-  // };
 
   useEffect(() => {
     traerUsuarios();
@@ -100,18 +76,26 @@ export const VerRegistros = ({ editarUsuario, cambiarPestania }) => {
           <Column field="rol" header="Rol" />
           <Column
             header="Acciones"
-            style={{ width: "10%" }}
+            style={{ display: "flex", gap: "0.5rem" }}
             body={(rowData) => {
               return (
                 <>
-                  <Button severity="warning" onClick={() => editarUsuario(rowData)} rounded icon="pi pi-user-edit" />
-                  <Button severity="danger" onClick={() => confirmEliminar(rowData._id)} rounded icon="pi pi-trash" />
+                  <Button severity="warning" outlined raised onClick={() => editarUsuario(rowData)} rounded icon="pi pi-user-edit" />
+                  <Button severity="danger" outlined raised onClick={() => seleccionarUsuarioEliminar(rowData._id)} rounded icon="pi pi-trash" />
                 </>
               );
             }}
           />
         </DataTable>
       </div>
+
+      <CustomConfirmDialog
+        visible={verEliminar}
+        onHide={() => setVerEliminar()}
+        onConfirm={eliminarUsuario}
+        message="¿Estás seguro de eliminar al usuario?"
+        header="Eliminar"
+      />
     </Contenedor>
   );
 };

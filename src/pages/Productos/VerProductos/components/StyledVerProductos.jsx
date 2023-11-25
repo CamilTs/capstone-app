@@ -24,11 +24,6 @@ export const ContenedorHeader = styled.div`
   }
 `;
 
-export const ContenedorOpciones = styled.div`
-  gap: 5px;
-  display: flex;
-`;
-
 export const ContenedorExportar = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -37,10 +32,9 @@ export const ContenedorExportar = styled.div`
 `;
 
 export const ContenedorTabla = styled.div`
-  height: 100%;
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  padding: 1rem 1rem 1rem 1rem;
 `;
 
 export const Titulo = styled.h2`

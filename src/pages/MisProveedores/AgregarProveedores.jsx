@@ -21,6 +21,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { CustomConfirmDialog } from "../../components/CustomConfirmDialog";
 import { formatoTelefono } from "../../components/Formatos";
+import { Message } from "primereact/message";
 
 export const AgregarProveedores = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -40,17 +41,18 @@ export const AgregarProveedores = () => {
   const [verConfirmar, setVerConfirmar] = useState(false);
   const [verLimpiar, setVerLimpiar] = useState(false);
   const [proveedorSeleccionado, setProveedorSeleccionado] = useState(null);
-  const [estado, setEstado] = useState("agregar");
+  const [estado, setEstado] = useState("crear");
 
   const editarProveedor = (proveedor) => {
     setProveedorSeleccionado(proveedor);
+    console.log(proveedor);
     formik.setValues(proveedor);
+    console.log(proveedorSeleccionado);
     setEstado("editar");
     setMostrarFormulario(true);
   };
 
   const verFormulario = () => {
-    setProveedorSeleccionado(null);
     formik.resetForm();
     setEstado("crear");
     setMostrarFormulario(true);
@@ -162,7 +164,11 @@ export const AgregarProveedores = () => {
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
-    return validacionValores(name) ? <div className="p-error">{formik.errors[name]}</div> : null;
+    return validacionValores(name) ? (
+      <span>
+        <Message severity="error" text={`${formik.errors[name]}`}></Message>
+      </span>
+    ) : null;
   };
 
   useEffect(() => {
@@ -187,7 +193,7 @@ export const AgregarProveedores = () => {
           body={(rowData) => {
             return (
               <ContenedorBotonProveedor>
-                <Button raised outlined severity="info" icon="pi pi-pencil" rounded onClick={() => editarProveedor(rowData)} />
+                <Button raised outlined severity="warning" icon="pi pi-pencil" rounded onClick={() => editarProveedor(rowData)} />
                 <Button raised outlined severity="danger" icon="pi pi-trash" rounded onClick={() => eliminarProveedor(rowData._id)} />
               </ContenedorBotonProveedor>
             );
@@ -197,14 +203,14 @@ export const AgregarProveedores = () => {
 
       <Dialog
         visible={mostrarFormulario}
+        style={{ width: "32rem", height: "40rem" }}
         onHide={() => {
           setMostrarFormulario(false);
-          setProveedorSeleccionado(null);
         }}
         header="Agregar Proveedor"
       >
-        <ContenedorFormulario>
-          <Formulario onSubmit={formik.handleSubmit}>
+        <div className="flex flex-column gap-3">
+          <form onSubmit={formik.handleSubmit}>
             <ContenedorInput>
               <Campos>
                 <label htmlFor="nombre">Nombre</label>
@@ -264,16 +270,41 @@ export const AgregarProveedores = () => {
                 {getFormErrorMessage("correo")}
               </Campos>
             </ContenedorInput>
-          </Formulario>
-          <ContenedorBoton>
+          </form>
+          <div className="flex gap-2 justify-content-end">
             {estado == "crear" ? (
-              <Button raised label="Agregar" severity="success" rounded onClick={() => setVerConfirmar(true)} />
+              <Button
+                raised
+                icon="pi pi-plus"
+                label="Agregar"
+                severity="success"
+                rounded
+                onClick={() => setVerConfirmar(true)}
+                disabled={!formik.dirty || !formik.isValid}
+              />
             ) : (
-              <Button raised label="Actualizar" severity="warning" rounded onClick={() => setVerConfirmar(true)} />
+              <Button
+                raised
+                icon="pi pi-pencil"
+                label="Actualizar"
+                severity="warning"
+                rounded
+                onClick={() => setVerConfirmar(true)}
+                disabled={
+                  proveedorSeleccionado.nombre === formik.values.nombre &&
+                  proveedorSeleccionado.descripcion === formik.values.descripcion &&
+                  proveedorSeleccionado.telefono === formik.values.telefono &&
+                  proveedorSeleccionado.correo === formik.values.correo
+                }
+              />
             )}
-            <Button label="Limpiar" severity="danger" icon="pi pi-trash" rounded onClick={() => setVerLimpiar(true)} />
-          </ContenedorBoton>
-        </ContenedorFormulario>
+            {estado == "crear" ? (
+              <Button label="Limpiar" severity="danger" icon="pi pi-trash" rounded onClick={() => setVerLimpiar(true)} disabled={!formik.dirty} />
+            ) : (
+              <Button label="Cancelar" severity="danger" icon="pi pi-times" rounded onClick={() => setMostrarFormulario(false)} />
+            )}
+          </div>
+        </div>
       </Dialog>
 
       <CustomConfirmDialog

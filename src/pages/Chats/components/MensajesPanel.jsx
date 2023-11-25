@@ -1,6 +1,5 @@
 import React from "react";
 import { MensajesChat, ContenedorEnvio, MensajePropio, MensajeOtro, MensajeInput } from "./SyledMensajes";
-import { InputContainer } from "../../../components/InputContainer";
 import { Button } from "primereact/button";
 
 export const MensajesPanel = ({ mensajesFiltrados, id, chat, setChat, enviarMensaje, formatoHora }) => {
