@@ -27,6 +27,7 @@ const DatosVenta = styled.div`
   align-items: end;
   flex-flow: column wrap;
 `;
+
 const formatoVenta = {
   productos: [],
   total: 0,
@@ -55,7 +56,7 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
 
   const botonesVenta = (
     <>
-      <Button label="Vender" severity="info" icon="pi pi-check" disabled={registro.productos.length == 0} onClick={() => setVerConfirmar(true)} />
+      <Button label="Vender" severity="info" icon="pi pi-check" disabled={registro.productos.length === 0} onClick={() => setVerConfirmar(true)} />
       <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={() => setVerLimpiar(true)} />
     </>
   );
@@ -82,12 +83,19 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
 
   const agregarProducto = async (codigoBarra = "") => {
     try {
+      console.log("Iniciando agregarProducto");
+      console.log("Código de barras:", codigoBarra);
+
       const { data: response } = await api.get(`producto/${codigoBarra}`);
+      console.log("Respuesta de la API:", response);
+
       const producto = response.data;
 
       if (producto) {
         setUltimoAgregado(producto.precio);
+
         const productoExistenteIndex = registro.productos.findIndex((el) => el.codigoBarra === producto.codigo_barra);
+        console.log("Existe: ", productoExistenteIndex);
 
         if (productoExistenteIndex >= 0) {
           setRegistro((prevRegistro) => {
@@ -97,13 +105,11 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
             productoExiste.total = productoExiste.cantidad * productoExiste.valor;
             clonProducts[productoExistenteIndex] = productoExiste;
 
-            // Calcular el nuevo total después de actualizar el producto existente
             const nuevoTotal = clonProducts.reduce((acc, el) => acc + el.total, 0);
 
             return { ...prevRegistro, productos: clonProducts, total: nuevoTotal };
           });
         } else {
-          // Si no existe en la lista, agrégalo
           setRegistro((e) => {
             return {
               ...e,
@@ -124,23 +130,28 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
         }
       } else {
         console.log("Producto no encontrado");
-        // Manejar el caso en que el producto no existe
       }
+
+      console.log("Finalizando agregarProducto");
     } catch (error) {
       console.error("Error al obtener el producto:", error);
-      // Manejar errores de la API, por ejemplo, mostrar un mensaje al usuario.
     }
-  };
-  const escucharWSCodigoBarra = () => {
-    socket.on("venderProducto", (data) => {
-      const { codigoBarra } = data;
-      agregarProducto(codigoBarra);
-    });
   };
 
   useEffect(() => {
-    escucharWSCodigoBarra();
+    const escucharWSCodigoBarra = async (data) => {
+      const { codigoBarra } = data;
+      console.log("Código de barras recibido por WebSocket:", codigoBarra);
+      await agregarProducto(codigoBarra);
+    };
+
+    socket.on("venderProducto", escucharWSCodigoBarra);
+
+    return () => {
+      socket.off("venderProducto", escucharWSCodigoBarra);
+    };
   }, []);
+
   return (
     <>
       <div className="flex flex-column gap-3">
