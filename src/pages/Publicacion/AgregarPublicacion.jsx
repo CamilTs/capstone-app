@@ -38,7 +38,7 @@ export const AgregarPublicacion = () => {
     codigo_barra: "",
     categoria: null,
     imagen: "",
-    proveedorId: id,
+    proveedor: id,
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
   const [imagen, setImagen] = useState(null);
