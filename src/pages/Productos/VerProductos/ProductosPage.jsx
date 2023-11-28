@@ -200,6 +200,9 @@ export const Productos = () => {
   };
 
   const imageBodyTemplate = (rowData) => {
+    if (rowData.imagenes.length === 0) {
+      return <span>Sin imagen</span>;
+    }
     return <img style={{ objectFit: "cover" }} src={rowData.imagenes} alt={rowData.imagenes} width="80" height="80" />;
   };
 
