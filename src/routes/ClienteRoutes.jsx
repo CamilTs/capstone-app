@@ -12,7 +12,7 @@ export const ClienteRoutes = () => {
         <Routes>
           <Route path="" element={<VenderProducto />} />
           <Route path="verProvedor" element={<AgregarProveedores />} />
-          <Route path="verPublicaciones" element={<MisPublicados />} />
+          <Route path="verPublicaciones" element={<VerPublicaciones />} />
           <Route path="agregarProductos" element={<AgregarProductos />} />
           <Route path="productos" element={<Productos />} />
           <Route path="graficos" element={<GraficosCliente />} />

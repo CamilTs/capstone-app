@@ -11,10 +11,10 @@ import { MensajesPanel } from "./components/MensajesPanel";
 import { ContenedorChat, ContenedorDatosUsuario, ContenedorHeaderChat, OverlayButton, StyledOverlayPanel } from "./components/SyledMensajes";
 
 export const Comunicarse = () => {
-  const [usuario, setUsuario] = useState({}); // Usuario logueado [id, nombre, rol, imagen]
   const [usuarios, setUsuarios] = useState([]);
   const [mensajes, setMensajes] = useState([]);
   const [receptorID, setReceptorID] = useState(null);
+  const [favoritos, setFavoritos] = useState({});
   const { socket } = useContextSocket();
   const { id, rol } = useSelector((state) => state.auth);
   const op = useRef(null);
@@ -29,22 +29,21 @@ export const Comunicarse = () => {
   };
   const [chat, setChat] = useState(estructuraChat);
 
-  const traerUsuario = async () => {
-    try {
-      const response = await api.get(`usuario/${id}`);
-      const usuarioData = response.data.data;
-      console.log("Usuario conectado", usuarioData._id, true);
-      setUsuario(usuarioData);
-    } catch (error) {
-      console.log("Error al obtener el usuario", error);
-    }
-  };
-
   const traerUsuarios = async (rol) => {
     try {
       let response = await api.get(`rol/chat`);
       const { data } = response;
-      setUsuarios(data.data);
+      console.log(data.data);
+      const usuariosConEstadoFavorito = data.data.map((usuario) => {
+        const chatID = [id, usuario._id].sort().join("-");
+        return {
+          ...usuario,
+          favorito: usuario.favorito,
+          chatID,
+        };
+      });
+      usuariosConEstadoFavorito.sort((a, b) => (b.favorito === true ? 1 : -1));
+      setUsuarios(usuariosConEstadoFavorito);
     } catch (error) {
       console.log("Error al traer los usuarios", error);
     }
@@ -53,6 +52,39 @@ export const Comunicarse = () => {
   const seleccionarUsuario = (usuario) => {
     setReceptorID(usuario);
     socketRef.current.emit("seleccionarUsuario", { selectedUserId: usuario._id });
+  };
+
+  const marcarComoFavorito = async (chatID, favorito, nombreUsuario) => {
+    try {
+      const response = await api.put(`chat/${chatID}/favorito`, { favorito });
+      const { data } = response;
+      console.log(data.data);
+      if (data.data.favorito === true) {
+        toast.current.show({
+          severity: "info",
+          summary: "Exito",
+          detail: `Chat con ${nombreUsuario} marcado como favorito`,
+          life: 2000,
+        });
+      } else {
+        toast.current.show({
+          severity: "warn",
+          summary: "Exito",
+          detail: `Chat con ${nombreUsuario} desmarcado como favorito`,
+          life: 2000,
+        });
+      }
+      setFavoritos((prevFavoritos) => ({ ...prevFavoritos, [chatID]: data.data.favorito }));
+    } catch (error) {
+      console.log("Error al marcar como favorito", error);
+      toast.current.show({
+        style: { fontSize: "1rem" },
+        severity: "warn",
+        summary: "Advertencia",
+        detail: "Debes al menos tener un mensaje para marcar como favorito",
+        life: 2000,
+      });
+    }
   };
 
   const generateUniqueChatID = (receptorID) => {
@@ -121,7 +153,6 @@ export const Comunicarse = () => {
       console.log("Cliente conectado");
     });
 
-    traerUsuario();
     traerUsuarios(rol);
     traerMensajes();
 
@@ -138,7 +169,6 @@ export const Comunicarse = () => {
             }
           });
         } else {
-          // Si el chat no existe, creamos un nuevo chat con el nuevo mensaje
           return [...prevMensajes, { chatID: nuevoMensaje.chatID, mensajes: [nuevoMensaje] }];
         }
       });
@@ -198,7 +228,14 @@ export const Comunicarse = () => {
             <div>{renderMensajes()}</div>
           </ContenedorChat>
         ) : (
-          <CustomList usuarios={usuarios} onUsuarioSeleccionado={seleccionarUsuario} setChat={setChat} generateUniqueChatID={generateUniqueChatID} />
+          <CustomList
+            usuarios={usuarios}
+            onUsuarioSeleccionado={seleccionarUsuario}
+            setChat={setChat}
+            generateUniqueChatID={generateUniqueChatID}
+            marcarComoFavorito={marcarComoFavorito}
+            favoritos={favoritos}
+          />
         )}
       </StyledOverlayPanel>
     </>

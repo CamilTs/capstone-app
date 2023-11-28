@@ -48,7 +48,15 @@ export const PerfilCard = ({ cerrarCuenta: cerrarCuentaDialog }) => {
             </TextoUsuario>
             <TextoUsuario>{usuario.rol.rol}</TextoUsuario>
             <TextoUsuario>{usuario.correo}</TextoUsuario>
-            <Button raised severity="danger" label="Cerrar Sesión" onClick={cerrarCuentaDialog} style={{ width: "100%" }} />
+            <Button
+              raised
+              severity="danger"
+              icon="pi pi-sign-out"
+              iconPos="right"
+              label="Cerrar Sesión"
+              onClick={cerrarCuentaDialog}
+              style={{ width: "100%" }}
+            />
           </ContenedorDatos>
         </ContenedorTotal>
       )}

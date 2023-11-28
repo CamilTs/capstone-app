@@ -8,3 +8,4 @@ export * from "./Productos/AgregarProductos/AgregarProductosPage";
 export * from "./Chats/Mensajes";
 export * from "./MisProveedores/AgregarProveedores";
 export * from "./Tickets/Tickets";
+export * from "./Publicaciones/VerPublicaciones";

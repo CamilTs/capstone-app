@@ -48,15 +48,31 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
 
   const botonesHeader = (
     <>
-      <Button label="Agregar" severity="success" icon="pi pi-plus" onClick={() => setVisible(true)} />
-      <Button label="Ver Productos" severity="info" icon="pi pi-search" onClick={() => navigate("/productos")} />
+      <Button label="Agregar" rounded raised severity="success" icon="pi pi-plus" onClick={() => setVisible(true)} />
+      <Button label="Ver Productos" rounded raised severity="info" icon="pi pi-search" onClick={() => navigate("/productos")} />
     </>
   );
 
   const botonesVenta = (
     <>
-      <Button label="Vender" severity="info" icon="pi pi-check" disabled={registro.productos.length == 0} onClick={() => setVerConfirmar(true)} />
-      <Button label="Limpiar" severity="danger" icon="pi pi-trash" onClick={() => setVerLimpiar(true)} />
+      <Button
+        label="Vender"
+        rounded
+        raised
+        severity="info"
+        icon="pi pi-check-square"
+        disabled={registro.productos.length == 0}
+        onClick={() => setVerConfirmar(true)}
+      />
+      <Button
+        label="Vaciar"
+        rounded
+        raised
+        severity="danger"
+        icon="pi pi-eraser"
+        onClick={() => setVerLimpiar(true)}
+        disabled={registro.productos.length == 0}
+      />
     </>
   );
 
@@ -65,7 +81,12 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
     setRegistro(formatoVenta);
     setUltimoAgregado(0);
     setCodigoBarra("");
-    toast.current.show({ severity: "info", summary: "Listo", detail: "¡Tabla limpiada con exito!", life: 2000 });
+    toast.current.show({
+      severity: "info",
+      summary: "Realizado",
+      detail: "¡Tabla vaciada!",
+      life: 2000,
+    });
   };
 
   const venderProductos = async () => {
@@ -77,7 +98,12 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
     setCodigoBarra("");
     setUltimoAgregado(0);
     setVerConfirmar(false);
-    toast.current.show({ severity: "success", summary: "Listo", detail: "¡Venta realizada con exito!", life: 2000 });
+    toast.current.show({
+      severity: "success",
+      summary: "Exito",
+      detail: "¡Registro creado con exito!",
+      life: 2000,
+    });
   };
 
   const agregarProducto = async (codigoBarra = "") => {
@@ -123,12 +149,20 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
           });
         }
       } else {
-        console.log("Producto no encontrado");
-        // Manejar el caso en que el producto no existe
+        toast.current.show({
+          severity: "warn",
+          summary: "Advertencia",
+          detail: "¡Producto no encontrado!",
+          life: 2000,
+        });
       }
     } catch (error) {
-      console.error("Error al obtener el producto:", error);
-      // Manejar errores de la API, por ejemplo, mostrar un mensaje al usuario.
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "¡Error al agregar producto!",
+        life: 2000,
+      });
     }
   };
   const escucharWSCodigoBarra = () => {
@@ -141,6 +175,7 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
   useEffect(() => {
     escucharWSCodigoBarra();
   }, []);
+
   return (
     <>
       <div className="flex flex-column gap-3">
@@ -181,7 +216,13 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
         <div className="flex gap-2 justify-content-end">{botonesVenta}</div>
       </div>
 
-      <Dialog header="Ingresar producto" visible={visible} onHide={() => setVisible(false)}>
+      <Dialog
+        header="Ingresar producto"
+        visible={visible}
+        onHide={() => {
+          setVisible(false), setCodigoBarra("");
+        }}
+      >
         <div className="p-float-label glex g-2">
           <div className="p-inputgroup flex-1 gap-1">
             <InputText id="codigoBarra" value={codigoBarra} onChange={(e) => setCodigoBarra(e.target.value)} />
@@ -196,16 +237,16 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
         onHide={() => setVerConfirmar(false)}
         onConfirm={venderProductos}
         type="submit"
-        message="¿Confirmar creación?"
-        header="Confirmar"
+        message="¿Confirmar la venta del producto?"
+        header="Confirmar venta"
       />
 
       <CustomConfirmDialog
         visible={verLimpiar}
         onHide={() => setVerLimpiar(false)}
         onConfirm={hadleLimpiarTabla}
-        message="¿Seguro de limpiar el formulario?"
-        header="Limpiar"
+        message="¿Seguro de vaciar la tabla?"
+        header="Vaciar tabla"
       />
     </>
   );

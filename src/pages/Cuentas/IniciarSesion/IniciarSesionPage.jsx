@@ -143,7 +143,7 @@ export const IniciarSesionPage = () => {
           {getFormErrorMessage("rut")}
           <div className="flex">
             <span className="flex p-float-label p-inputgroup-addon">
-              <i className="pi pi-eye" onClick={verContrasena} />
+              <i style={{ cursor: "pointer" }} className="pi pi-eye" onClick={verContrasena} />
             </span>
             <InputContainer
               placeholder="Ingrese su contraseña"
@@ -159,7 +159,7 @@ export const IniciarSesionPage = () => {
           {getFormErrorMessage("contrasena")}
         </ContenedorCampos>
         <Messages ref={msgs} />
-        <Boton label="Iniciar Sesión" disabled={loading} severity="success" onClick={submit} />
+        <Boton label="Iniciar Sesión" icon="pi pi-sign-in" iconPos="right" disabled={loading} severity="success" onClick={submit} />
       </Form>
     </Contenedor>
   );

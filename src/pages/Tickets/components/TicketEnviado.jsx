@@ -1,8 +1,4 @@
-import { Card } from "primereact/card";
 import React, { useEffect, useRef, useState } from "react";
-import { InputContainer } from "../../../components/InputContainer";
-import { Button } from "primereact/button";
-import styled from "styled-components";
 import { api } from "../../../api/api";
 import { useSelector } from "react-redux";
 import { useFormik } from "formik";
@@ -11,73 +7,21 @@ import { Toast } from "primereact/toast";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 import { ticketSchema } from "../../../components/Validaciones";
 import { Message } from "primereact/message";
+import { Dropdown } from "primereact/dropdown";
+import { EnviarButton, TicketCard, TicketEnviadoContainer, TicketForm, TicketInput } from "./StyledTickets";
 
-const TicketEnviadoContainer = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const TicketCard = styled(Card)`
-  width: 100%;
-  height: 100%;
-`;
-
-const TicketForm = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`;
-
-const TicketInput = styled(InputContainer)`
-  &.asunto {
-    width: 100%;
-    height: 3rem !important;
-    border-radius: 5rem !important;
-    background-color: #f2f2f2 !important;
-    border: none !important;
-
-    &:hover {
-      background-color: #e6e6e6 !important;
-    }
-  }
-  &.descripcion {
-    width: 100%;
-    align-self: center;
-    align-items: center;
-    height: 10rem !important;
-    border-radius: 1rem !important;
-    background-color: #f2f2f2 !important;
-    border: none !important;
-
-    &:hover {
-      background-color: #e6e6e6 !important;
-    }
-  }
-`;
-
-const EnviarButton = styled(Button)`
-  align-self: center;
-  width: 10rem;
-  height: 3rem !important;
-  border-radius: 5rem !important;
-  background-color: #00bfa5 !important;
-  color: white !important;
-  font-weight: bold !important;
-  border: none !important;
-
-  &:hover {
-    background-color: #009e8c !important;
-  }
-`;
-
-export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionado, responderTicketUsuario }) => {
+export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionado }) => {
   const { id, rol } = useSelector((state) => state.auth);
   const [verConfirmar, setVerConfirmar] = useState(false);
   const toast = useRef(null);
+
+  const Motivos = [
+    { label: "Actualización Producto", value: "Actualización de producto/s" },
+    { label: "Problema con el servicio", value: "Problema con el servicio" },
+    { label: "Problema con la cuenta", value: "Problema con la cuenta" },
+    { label: "Solicitud de registros", value: "Solicitud de registros" },
+    { label: "Otro", value: "Otro" },
+  ];
 
   const generateUniqueTicketID = () => {
     const timestamp = Date.now();
@@ -143,25 +87,19 @@ export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionad
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Cuando se completa la lectura del archivo, el resultado estará en reader.result
         const base64String = reader.result;
         formik.setFieldValue("archivo", base64String);
       };
 
-      // Lee el archivo como una URL de datos (base64)
       reader.readAsDataURL(file);
     }
   };
 
-  const responderTicket = async () => {
+  const responderTicket = async (ticketsID) => {
     try {
-      const uniqueTicketID = generateUniqueTicketID();
-      const response = await api.post("tickets", {
-        ...formik.values,
-        ticketsID: uniqueTicketID,
-        usuarioID: ticketSeleccionado.usuarioID,
-        asunto: `Respuesta al ticket ${formik.values.ticketsID}`,
-        descripcion: formik.values.respuesta,
+      const response = await api.put(`tickets/${ticketsID}`, {
+        respuesta: formik.values.respuesta,
+        archivo: formik.values.archivo,
       });
       const { data } = response;
       console.log("Respuesta enviada", data);
@@ -193,7 +131,7 @@ export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionad
       <TicketEnviadoContainer>
         <Toast ref={toast} />
         <TicketCard>
-          <div className="flex flex-row gap-2 align-items-center">
+          <div className="flex flex-row justify-content-between align-items-center">
             <h1>Crear ticket</h1>
             <FileUpload
               mode="basic"
@@ -204,15 +142,17 @@ export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionad
               onSelect={handleFileChange}
               onBlur={formik.handleBlur}
               value={formik.values.archivo}
+              disabled={estado === "crear"}
             />
           </div>
           <form onSubmit={formik.handleSubmit}>
             <TicketForm>
-              <TicketInput
-                className="asunto"
+              <Dropdown
+                style={{ width: "100%", height: "3rem", borderRadius: "5rem", backgroundColor: "#f2f2f2", border: "none" }}
+                id="asunto"
+                options={Motivos}
                 name="asunto"
-                type="text"
-                placeholder="Motivo del Ticket"
+                placeholder="Seleccione un motivo"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.asunto}
@@ -244,7 +184,14 @@ export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionad
                     value={formik.values.respuesta}
                   />
                   {getFormErrorMessage("respuesta")}
-                  <EnviarButton type="button" label="Responder" onClick={() => responderTicket(formik.values.usuarioID)} />
+                  <EnviarButton
+                    type="button"
+                    label="Responder"
+                    onClick={() => {
+                      console.log(ticketSeleccionado);
+                      responderTicket(ticketSeleccionado._id);
+                    }}
+                  />
                 </>
               )}
             </TicketForm>
