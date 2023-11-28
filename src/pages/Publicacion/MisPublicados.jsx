@@ -122,7 +122,7 @@ export const MisPublicados = () => {
       codigo_barra: "",
       categoria: null,
       imagen: "",
-      proveedorId: id,
+      proveedor: id,
     },
     validationSchema: publicacionSchema,
 
