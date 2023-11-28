@@ -207,6 +207,7 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
             </DatosVenta>
           </ContenedorDatos>
           <DataTable emptyMessage="Esperando productos..." value={registro.productos} showGridlines>
+            <Column field="codigoBarra" header="Código de barra" />
             <Column field="nombre" header="Nombre" />
             <Column field="cantidad" header="Cantidad" />
             <Column
