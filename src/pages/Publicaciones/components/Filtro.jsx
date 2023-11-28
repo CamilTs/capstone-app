@@ -47,9 +47,6 @@ export const Filtro = ({ seleccionarFiltro, filtro, categorias, buscar }) => {
           <Button className="btn btn-primary" onClick={buscar}>
             Buscar
           </Button>
-          <Button className="btn btn-primary" onClick={() => console.log(filtro)}>
-            Buscar
-          </Button>
         </div>
       </div>{" "}
     </Panel>

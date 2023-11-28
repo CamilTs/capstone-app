@@ -16,20 +16,25 @@ export const GraficosCliente = () => {
   const { infoGrafico: registroAnioData, loading: registroAnioLoading, title } = useGraficos(null, "registroAnio", "Registros por Año");
 
   const [masVendido, setMasVendido] = useState([]);
+  const [nombreMasVendido, setNombreMasVendido] = useState("");
   const [ventasAnuales, setVentasAnuales] = useState([]);
+  const [mesMejorVenta, setMesMejorVenta] = useState([]);
   const [vendidosAnio, setVendidosAnio] = useState([]);
+
+  const getMasVendido = async () => {
+    const data = await masVendidoMensual();
+    setMasVendido(data[0].cantidadVendida);
+    setNombreMasVendido(data[0].nombre);
+  };
 
   const getTotalVentas = async () => {
     const data = await totalVentas();
     const sumaTotal = data.reduce((a, b) => a + b.total, 0);
+    const mes = data.map((mes) => mes);
     console.log(sumaTotal);
     setVentasAnuales(sumaTotal);
-  };
-
-  const getMasVendido = async () => {
-    const data = await masVendidoMensual();
-    setMasVendido(data.slice(0, 3));
-    console.log(data);
+    setMesMejorVenta(mes);
+    console.log(mesMejorVenta);
   };
 
   const getVendidosAnual = async () => {
@@ -49,11 +54,12 @@ export const GraficosCliente = () => {
       <Titulo className="tituloCard m-0 text-3xl">Dashboard</Titulo>
       <div className="flex">
         <CustomCard
-          titulo="Vendidos este mes"
+          titulo="Producto mas vendido"
           icono="pi pi-box"
           colorContenedor="bg-yellow-100"
           colorIcono="text-yellow-500"
-          datos={masVendido}
+          primerDatos={nombreMasVendido}
+          segundoDatos={masVendido}
           scrollable={false}
           texto="unidades"
         />
@@ -62,7 +68,8 @@ export const GraficosCliente = () => {
           icono="pi pi-money-bill"
           colorContenedor="bg-green-100"
           colorIcono="text-green-500"
-          datos={formatoCurrencyCLP(ventasAnuales)}
+          primerDatos={formatoCurrencyCLP(ventasAnuales)}
+          segundoDatos={ventasAnuales}
           scrollable={false}
           texto="CLP"
         />
@@ -71,7 +78,8 @@ export const GraficosCliente = () => {
           icono="pi pi-shopping-cart"
           colorContenedor="bg-blue-100"
           colorIcono="text-blue-500"
-          datos={vendidosAnio}
+          primerDatos={vendidosAnio}
+          segundoDatos={vendidosAnio}
           scrollable={true}
           texto="unidades"
         />

@@ -119,6 +119,13 @@ export const Comunicarse = () => {
       const response = await api.get(`chat/buscarTodos/${id}`);
       const { data } = response;
       console.log(data);
+
+      const newFavoritos = {};
+      data.data.forEach((chat) => {
+        newFavoritos[chat.chatID] = chat.favorito;
+      });
+      setFavoritos(newFavoritos);
+
       setMensajes(data.data);
     } catch (error) {
       console.log(error);

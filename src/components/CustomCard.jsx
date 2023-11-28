@@ -17,19 +17,23 @@ const Titulo = styled.h5`
   }
 `;
 
-export const CustomCard = ({ titulo, icono, colorContenedor, colorIcono, datos, texto }) => (
+export const CustomCard = ({ titulo, icono, colorContenedor, colorIcono, primerDatos, segundoDatos, texto }) => (
   <div className="col-12 md:col-4 lg:col-4">
     <div className="surface-card shadow-2 p-3 border-round">
       <div className="flex justify-content-between mb-3">
         <div>
           <Titulo className="block mb-3">{titulo}</Titulo>
-          <div className="text-900 font-medium text-xl">{Array.isArray(datos) ? datos.reduce((a, b) => a + b.cantidadVendida, 0) : datos}</div>
+          <div className="text-900 font-medium text-xl">
+            {Array.isArray(primerDatos) ? primerDatos.reduce((a, b) => a + b.cantidadVendida, 0) : primerDatos}
+          </div>
         </div>
         <div className={`flex align-items-center justify-content-center ${colorContenedor} border-round`} style={{ width: "3rem", height: "3rem" }}>
           <i className={`pi ${icono} ${colorIcono} text-xl`}></i>
         </div>
       </div>
-      <span className="text-green-500 font-medium">{Array.isArray(datos) ? datos.reduce((a, b) => a + b.cantidadVendida, 0) : datos} </span>
+      <span className="text-green-500 font-medium">
+        {Array.isArray(segundoDatos) ? segundoDatos.reduce((a, b) => a + b.cantidadVendida, 0) : segundoDatos}{" "}
+      </span>
       <span className="text-500"> {texto} </span>
     </div>
   </div>
