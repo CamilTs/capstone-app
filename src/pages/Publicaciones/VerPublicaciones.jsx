@@ -73,7 +73,7 @@ export const Publicaciones = () => {
       ) : (
         <>
           <Panel header="Publicaciones">
-            <div className="grid col-offset-1 gap-3 w-full">
+            <div className="grid lg:col-offset-1 xl:justify-content-start sm:justify-content-center gap-3 w-full">
               {publicacion.map((post, index) => (
                 <Publicacion key={index} publicacion={post} />
               ))}

@@ -16,7 +16,7 @@ export const Publicacion = ({ publicacion, key }) => {
     );
   };
   return (
-    <Card className="col-2 border-1 border-black-alpha-10" key={key} title={nombre} header={header} footer={footer}>
+    <Card className="lg:col-3 xl:col-2 sm:col-6 border-1 border-black-alpha-10" key={key} title={nombre} header={header} footer={footer}>
       <div>
         <i className="pi pi-tag p-mr-2"></i>
         <span className="m-0 p-0">{categoria}</span>
