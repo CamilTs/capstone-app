@@ -130,7 +130,11 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
               maxlength="9"
               placeholder="El telefono debe llevar '9' al inicio.."
               value={formatoTelefono(formik.values.telefono)}
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                if (!e.target.value || /^[0-9]*$/.test(e.target.value)) {
+                  formik.handleChange(e);
+                }
+              }}
               onBlur={formik.handleBlur}
             />
             {getFormErrorMessage("telefono")}

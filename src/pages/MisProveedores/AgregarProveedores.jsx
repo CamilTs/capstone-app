@@ -252,7 +252,11 @@ export const AgregarProveedores = () => {
                   maxlength="9"
                   placeholder="El telefono debe llevar '9' al inicio"
                   value={formatoTelefono(formik.values.telefono)}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    if (!e.target.value || /^[0-9]*$/.test(e.target.value)) {
+                      formik.handleChange(e);
+                    }
+                  }}
                   onBlur={formik.handleBlur}
                 />
                 {getFormErrorMessage("telefono")}
@@ -291,6 +295,7 @@ export const AgregarProveedores = () => {
                 rounded
                 onClick={() => setVerConfirmar(true)}
                 disabled={
+                  proveedorSeleccionado &&
                   proveedorSeleccionado.nombre === formik.values.nombre &&
                   proveedorSeleccionado.descripcion === formik.values.descripcion &&
                   proveedorSeleccionado.telefono === formik.values.telefono &&

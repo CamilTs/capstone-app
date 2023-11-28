@@ -9,7 +9,7 @@ export const useContextSocket = () => {
 };
 
 export const SocketProvider = ({ children }) => {
-  const { socket, online } = useSocket("https://capstone-api-mhrj.onrender.com//socket.io/socket.io.js");
+  const { socket, online } = useSocket("https://capstone-api-mhrj.onrender.com/socket.io/socket.io.js");
   const value = { socket, online };
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 };

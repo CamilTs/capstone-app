@@ -1,25 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
 import { api } from "../../../api/api";
 import { useSelector } from "react-redux";
 import { Toast } from "primereact/toast";
-import { OverlayPanel } from "primereact/overlaypanel";
-import { Card } from "primereact/card";
+import { Dropdown } from "primereact/dropdown";
+import { TablaRegistros } from "./StyledTickets";
+import { Dialog } from "primereact/dialog";
 
-export const VerTickets = ({ responderTicket }) => {
+export const VerTickets = ({ responderTicket, addClosedTicket, estado }) => {
   const { id, rol } = useSelector((state) => state.auth);
   const [tickets, setTickets] = useState([]);
-  const [ticketSeleccionado, setTicketSeleccionado] = useState(null);
+  const [ticketSeleccionado, setTicketSeleccionado] = useState({});
   const [Loading, setLoading] = useState(false);
+  const [mensajeVisible, setMensajeVisible] = useState(false);
   const toast = useRef(null);
-  const op = useRef(null);
 
   const traerTickets = async () => {
     setLoading(true);
     try {
-      const path = rol === "admin" ? "tickets" : `tickets/${id}`; // Decide qué ruta usar basándote en el rol del usuario
+      const path = rol === "admin" ? "tickets/true" : `tickets/${id}/true`;
       const response = await api.get(path);
       const { data } = response;
       console.log(data);
@@ -34,12 +34,55 @@ export const VerTickets = ({ responderTicket }) => {
       });
     } finally {
       setLoading(false);
+      console.log(tickets.ticketsID);
+    }
+  };
+
+  const estadosDeTicket = [
+    { label: "Abierto", value: true },
+    { label: "Cerrado", value: false },
+  ];
+
+  const ActualizarEstadoTicket = async (estado, ticketsID) => {
+    try {
+      const response = await api.put(`tickets/${ticketsID}`, {
+        estado,
+      });
+      const { data } = response;
+      console.log("Estado actualizado", data);
+      {
+        estado === false &&
+          toast.current.show({
+            severity: "info",
+            summary: "Estado actualizado",
+            detail: "Se ha cerrado el ticket correctamente",
+            life: 2000,
+          });
+        addClosedTicket(data);
+      }
+      {
+        estado === true &&
+          toast.current.show({
+            severity: "info",
+            summary: "Estado actualizado",
+            detail: "Se ha abierto el ticket correctamente",
+            life: 2000,
+          });
+      }
+      traerTickets();
+    } catch (error) {
+      console.log("Error al actualizar el estado", error);
     }
   };
 
   const mostrarTicket = (e, ticket) => {
     setTicketSeleccionado(ticket);
-    op.current.toggle(e);
+    setMensajeVisible(true);
+  };
+
+  const cerrarTicket = () => {
+    setMensajeVisible(false);
+    setTicketSeleccionado({});
   };
 
   useEffect(() => {
@@ -48,17 +91,36 @@ export const VerTickets = ({ responderTicket }) => {
 
   return (
     <div>
-      <DataTable value={tickets} loading={Loading}>
-        <Toast ref={toast} />
+      <Toast ref={toast} />
+      <TablaRegistros emptyMessage="No hay tickets..." value={tickets} loading={Loading}>
         {rol === "admin" && <Column header="Ticket" field="ticketsID" />}
         <Column header="Asunto" field="asunto" />
-        <Column
-          header="Estado"
-          field="estado"
-          body={(rowData) => {
-            return rowData.estado ? "Enviado" : "Respondido";
-          }}
-        />
+        {rol === "admin" && (
+          <Column
+            header="Estado"
+            field={(rowData) => {
+              return rowData.estado ? "Abierto" : "Cerrado";
+            }}
+          />
+        )}
+        {rol !== "admin" && (
+          <Column
+            header="Estado"
+            field="estado"
+            body={(rowData) => {
+              return (
+                <Dropdown
+                  value={rowData.estado}
+                  options={estadosDeTicket}
+                  onChange={(e) => {
+                    ActualizarEstadoTicket(e.value, rowData._id);
+                  }}
+                  placeholder="Selecciona un estado"
+                />
+              );
+            }}
+          />
+        )}
         <Column
           header="Ver"
           style={{ display: "flex", gap: "0.5rem" }}
@@ -67,20 +129,45 @@ export const VerTickets = ({ responderTicket }) => {
               <>
                 <Button severity="warning" onClick={(e) => mostrarTicket(e, rowData)} outlined raised rounded icon="pi pi-comments" />
                 {rol === "admin" && (
-                  <Button severity="success" rounded icon="pi pi-pencil" outlined raised onClick={() => responderTicket(rowData)} />
+                  <Button
+                    severity="success"
+                    rounded
+                    icon="pi pi-pencil"
+                    outlined
+                    raised
+                    onClick={() => {
+                      console.log(rowData._id);
+                      responderTicket(rowData);
+                    }}
+                  />
                 )}
               </>
             );
           }}
         />
-      </DataTable>
-      <OverlayPanel ref={op}>
+      </TablaRegistros>
+      <Dialog visible={mensajeVisible} onHide={cerrarTicket}>
         {ticketSeleccionado && (
-          <Card title={ticketSeleccionado.asunto}>
-            <p>{ticketSeleccionado.descripcion}</p>
-          </Card>
+          <div className="flex flex-column w-full h-20rem gap-2 border-2 border-gray-200">
+            <div className="flex h-4rem w-full border-gray-200 border-2">
+              <h3>{ticketSeleccionado.asunto}</h3>
+            </div>
+            <div className="flex flex-row w-25rem">
+              <p>{ticketSeleccionado.descripcion}</p>
+            </div>
+            {ticketSeleccionado.respuesta && (
+              <div className="flex flex-row w-25rem gap-2">
+                <p>{ticketSeleccionado.respuesta}</p>
+                {ticketSeleccionado.archivo && (
+                  <a href={ticketSeleccionado.archivo} download="archivo">
+                    <Button icon="pi pi-download" severity="info" rounded raised outlined />
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
         )}
-      </OverlayPanel>
+      </Dialog>
     </div>
   );
 };

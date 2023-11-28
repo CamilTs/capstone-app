@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 
-const url = "https://capstone-api-mhrj.onrender.com/";
+const url = "https://capstone-api-mhrj.onrender.com";
 
 export const api = axios.create({
   baseURL: url,

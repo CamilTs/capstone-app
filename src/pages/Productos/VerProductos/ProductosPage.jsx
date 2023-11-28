@@ -25,7 +25,7 @@ export const Productos = () => {
   const [productoAModificar, setProductoAModificar] = useState({});
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [productos, setProductos] = useState([]);
-  const navigateAgregar = useNavigate();
+  const navigate = useNavigate();
   const [globalFiltro, setGlobalFiltro] = useState(null);
   const toast = useRef(null);
 
@@ -162,7 +162,8 @@ export const Productos = () => {
       </div>
 
       <ContenedorExportar>
-        <Button label="Agregar" icon="pi pi-plus" severity="info" rounded raised onClick={() => navigateAgregar("/agregarProductos")} />
+        <Button label="Agregar" icon="pi pi-plus" severity="info" rounded raised onClick={() => navigate("/agregarProductos")} />
+        <Button label="Ventas" rounded raised severity="help" icon="pi pi-tag" onClick={() => navigate("/")} />
         <Button label="Excel" icon="pi pi-file-excel" severity="success" rounded raised onClick={exportarExcel} data-pr-tooltip="XLS" />
         <Button label="PDF" icon="pi pi-file-pdf" severity="danger" rounded raised onClick={exportarPdf} data-pr-tooltip="PDF" />
       </ContenedorExportar>
