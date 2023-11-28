@@ -10,7 +10,6 @@ export const CustomList = ({ usuarios, marcarComoFavorito, onUsuarioSeleccionado
   const [usuariosFiltrados, setUsuariosFiltrados] = useState(usuarios);
   const { id: emisorID } = useSelector((state) => state.auth);
 
-export const CustomList = ({ usuarios, onUsuarioSeleccionado, setChat, generateUniqueChatID }) => {
   const seleccionarUsuario = (usuario) => {
     onUsuarioSeleccionado(usuario);
     const chatID = generateUniqueChatID(usuario._id);
