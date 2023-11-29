@@ -3,19 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
-import { formatoCurrencyCLP, formatoFecha } from "../../../components/Formatos";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
+import { DataTable } from "primereact/datatable";
+import { Message } from "primereact/message";
+import { formatoCurrencyCLP, formatoFecha } from "../../../components/Formatos";
 import { Contenedor, ContenedorHeader, ContenedorExportar, ContenedorTabla, Titulo, CustomCircle } from "./components/StyledVerProductos";
 import { api } from "../../../api/api";
-import { DataTable } from "primereact/datatable";
 import { useSelector } from "react-redux";
 import { Badge } from "../../../components/Badge";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 import { InputContainer } from "../../../components/InputContainer";
 import { ProductoSchema } from "../../../components/Validaciones";
 import { useFormik } from "formik";
+import { FileUpload } from "primereact/fileupload";
 
 export const Productos = () => {
   const { comercio } = useSelector((state) => state.auth);
@@ -35,13 +37,27 @@ export const Productos = () => {
       const { data } = await api.delete(`producto/${productoAEliminarId}/${comercio}`);
       console.log(data);
       if (data.success) {
-        toast.current.show({ severity: "info", summary: "Eliminado", detail: "Producto Eliminado", life: 2000 });
+        toast.current.show({
+          severity: "info",
+          summary: "Eliminado",
+          detail: "Producto Eliminado",
+          life: 2000,
+        });
       } else {
-        toast.current.show({ severity: "danger", summary: "Eliminado", detail: "Error al eliminar", life: 5000 });
+        toast.current.show({
+          severity: "danger",
+          summary: "Eliminado",
+          detail: "Error al eliminar",
+          life: 5000,
+        });
       }
     } catch (error) {
-      console.log(error.message);
-      toast.current.show({ severity: "danger", summary: "Eliminado", detail: error.message, life: 5000 });
+      toast.current.show({
+        severity: "danger",
+        summary: "Eliminado",
+        detail: error.message,
+        life: 5000,
+      });
     } finally {
       traerProductos();
     }
@@ -52,6 +68,7 @@ export const Productos = () => {
     setProductoAModificar(producto);
     formik.setValues(producto);
     setMostrarFormulario(true);
+    console.log(productoAModificar);
   };
 
   const eliminarProducto = (productoID) => {
@@ -61,11 +78,13 @@ export const Productos = () => {
 
   const editarProducto = async () => {
     try {
-      const response = await api.put(`producto/${productoAModificar._id}`, {
-        ...formik.values,
-      });
+      const body = { ...formik.values };
+      if (formik.values.imagen) {
+        body.imagenes = [formik.values.imagen];
+      }
+      const response = await api.put(`producto/${productoAModificar._id}`, body);
       const { data } = response;
-      console.log(data);
+      console.log(data.data);
       toast.current.show({
         severity: "info",
         summary: "Producto actualizado",
@@ -76,7 +95,7 @@ export const Productos = () => {
     } catch (error) {
       console.log(error);
       toast.current.show({
-        severity: "warn",
+        severity: "warning",
         summary: "Error",
         detail: "No se pudo actualizar el producto",
         life: 2000,
@@ -127,7 +146,7 @@ export const Productos = () => {
       Producto: producto.nombre,
       Categoria: producto.categoria,
       Cantidad: producto.cantidad,
-      Fecha: producto.fecha instanceof Date ? producto.fecha.toLocaleDateString() : "",
+      Fecha: formatoFecha(producto.fecha),
       Precio: formatoCurrencyCLP(producto.precio),
     }));
 
@@ -145,12 +164,11 @@ export const Productos = () => {
         let EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
         let EXCEL_EXTENSION = ".xlsx";
         const data = new Blob([buffer], { type: EXCEL_TYPE });
-        module.default.saveAs(data, fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION);
+        module.default.saveAs(data, fileName + "_export_" + EXCEL_EXTENSION);
       }
     });
   };
 
-  // Buscar productos, ademas de mostrar los botones de agregar, exportar y pdf //
   const controlInventario = (
     <ContenedorHeader>
       <div className="flex gap-2 align-items-center">
@@ -189,13 +207,30 @@ export const Productos = () => {
           severity: "danger",
           summary: "Productos",
           detail: "Error al cargar los productos",
-          life: 3000,
+          life: 2000,
         });
       }
     } catch (error) {
-      console.log(error);
+      toast.current.show({
+        severity: "danger",
+        summary: "Productos",
+        detail: "Error al cargar los productos",
+        life: 2000,
+      });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        formik.setFieldValue("imagen", base64String);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -292,22 +327,44 @@ export const Productos = () => {
               rounded
               onClick={editarProducto}
               disabled={
+                productoAModificar.imagen === formik.values.imagen &&
                 productoAModificar.nombre === formik.values.nombre &&
                 productoAModificar.categoria === formik.values.categoria &&
                 productoAModificar.cantidad === formik.values.cantidad &&
                 productoAModificar.precio === formik.values.precio
               }
             />
-            <Button label="Cancelar" icon="pi pi-times" severity="danger" raised rounded onClick={() => setMostrarFormulario(false)} />
+            <Button
+              label="Cancelar"
+              icon="pi pi-times"
+              severity="danger"
+              raised
+              rounded
+              onClick={() => setMostrarFormulario(false) && formik.resetForm()}
+            />
           </>
         }
       >
         <form onSubmit={formik.handleSubmit} className="flex flex-column">
           <div className="flex flex-column gap-2">
             <div className="flex justify-content-center">
-              {productoAModificar.imagenes && (
-                <img src={productoAModificar.imagenes} alt={productoAModificar.imagenes} width="200" height="200" style={{ objectFit: "cover" }} />
-              )}
+              <div className="flex flex-column align-items-center">
+                {formik.values.imagen ? (
+                  <img src={formik.values.imagen} alt="Imagen del producto" width="200" height="200" style={{ objectFit: "cover" }} />
+                ) : productoAModificar.imagenes ? (
+                  <img src={productoAModificar.imagenes} alt="Imagen del producto" width="200" height="200" style={{ objectFit: "cover" }} />
+                ) : null}
+                <FileUpload
+                  name="imagen"
+                  mode="basic"
+                  accept="image/*"
+                  maxFileSize={1000000}
+                  auto
+                  chooseLabel="Cambiar"
+                  onSelect={handleFileChange}
+                  className="p-mt-2"
+                />
+              </div>
             </div>
             <div className="p-field p-col-12 p-md-6">
               <label htmlFor="codigo_barra">Código de barra</label>
