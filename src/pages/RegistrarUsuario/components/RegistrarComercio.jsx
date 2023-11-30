@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { InputContainer } from "../../../components/InputContainer";
+import { InputContainer, InputContainerDropdown } from "../../../components/InputContainer";
 import { Formulario, Opciones, Campos, ContenedorCampos, Contenedor } from "./StyledComponents";
 import { api } from "../../../api/api";
 import { Button } from "primereact/button";
@@ -88,7 +88,7 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
         <ContenedorCampos>
           <Campos>
             <label htmlFor="propietario">Propietario</label>
-            <Dropdown
+            <InputContainerDropdown
               name="propietario"
               id="propietario"
               options={nombreCliente}
@@ -129,7 +129,7 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
               name="telefono"
               maxlength="9"
               placeholder="El telefono debe llevar '9' al inicio.."
-              value={formatoTelefono(formik.values.telefono)}
+              value={formik.values.telefono}
               onChange={(e) => {
                 if (!e.target.value || /^[0-9]*$/.test(e.target.value)) {
                   formik.handleChange(e);

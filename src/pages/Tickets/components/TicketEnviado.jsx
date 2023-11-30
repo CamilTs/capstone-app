@@ -2,16 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { api } from "../../../api/api";
 import { useSelector } from "react-redux";
 import { useFormik } from "formik";
-import { FileUpload } from "primereact/fileupload";
 import { Toast } from "primereact/toast";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 import { ticketSchema } from "../../../components/Validaciones";
 import { Message } from "primereact/message";
-import { Dropdown } from "primereact/dropdown";
-import { EnviarButton, TicketCard, TicketEnviadoContainer, TicketForm, TicketInput } from "./StyledTickets";
+import { EnviarButton, TicketCard, TicketEnviadoContainer, TicketForm } from "./StyledTickets";
+import { InputContainerDropdown, InputContainerTextArea } from "../../../components/InputContainer";
 
-export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionado }) => {
-  const { id, rol } = useSelector((state) => state.auth);
+export const TicketEnviado = ({ ticketSeleccionado }) => {
+  const { id } = useSelector((state) => state.auth);
   const [verConfirmar, setVerConfirmar] = useState(false);
   const toast = useRef(null);
 
@@ -42,8 +41,6 @@ export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionad
       asunto: "",
       descripcion: "",
       estado: true,
-      archivo: null,
-      respuesta: "",
     },
     validationSchema: ticketSchema,
 
@@ -81,41 +78,6 @@ export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionad
     }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result;
-        formik.setFieldValue("archivo", base64String);
-      };
-
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const responderTicket = async (ticketsID) => {
-    try {
-      const response = await api.put(`tickets/${ticketsID}`, {
-        respuesta: formik.values.respuesta,
-        archivo: formik.values.archivo,
-      });
-      const { data } = response;
-      console.log("Respuesta enviada", data);
-      toast.current.show({
-        severity: "success",
-        summary: "Respuesta enviada",
-        detail: "Se ha enviado la respuesta correctamente",
-        life: 2000,
-      });
-      formik.resetForm();
-      setTicketSeleccionado(null);
-    } catch (error) {
-      console.log("Error al enviar la respuesta", error);
-    }
-  };
-
   useEffect(() => {
     if (ticketSeleccionado) {
       formik.setValues({
@@ -133,22 +95,10 @@ export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionad
         <TicketCard>
           <div className="flex flex-row justify-content-between align-items-center">
             <h1>Crear ticket</h1>
-            <FileUpload
-              mode="basic"
-              accept="*"
-              maxFileSize={1000000}
-              auto
-              chooseLabel="Seleccionar"
-              onSelect={handleFileChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.archivo}
-              disabled={estado === "crear"}
-            />
           </div>
           <form onSubmit={formik.handleSubmit}>
             <TicketForm>
-              <Dropdown
-                style={{ width: "100%", height: "3rem", borderRadius: "5rem", backgroundColor: "#f2f2f2", border: "none" }}
+              <InputContainerDropdown
                 id="asunto"
                 options={Motivos}
                 name="asunto"
@@ -156,44 +106,18 @@ export const TicketEnviado = ({ estado, ticketSeleccionado, setTicketSeleccionad
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.asunto}
-                disabled={estado === "responder"}
               />
               {getFormErrorMessage("asunto")}
-              <TicketInput
+              <InputContainerTextArea
                 className="descripcion"
                 name="descripcion"
-                type="text"
                 placeholder="Descripción del Ticket"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.descripcion}
-                disabled={estado === "responder"}
               />
               {getFormErrorMessage("descripcion")}
-              <EnviarButton label="Enviar" disabled={!formik.dirty || !formik.isValid || estado === "responder"} />
-
-              {rol === "admin" && ticketSeleccionado && (
-                <>
-                  <TicketInput
-                    className="respuesta"
-                    name="respuesta"
-                    type="text"
-                    placeholder="Respuesta al Ticket"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.respuesta}
-                  />
-                  {getFormErrorMessage("respuesta")}
-                  <EnviarButton
-                    type="button"
-                    label="Responder"
-                    onClick={() => {
-                      console.log(ticketSeleccionado);
-                      responderTicket(ticketSeleccionado._id);
-                    }}
-                  />
-                </>
-              )}
+              <EnviarButton label="Enviar" disabled={!formik.dirty || !formik.isValid} />
             </TicketForm>
           </form>
         </TicketCard>

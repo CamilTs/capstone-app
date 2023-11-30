@@ -2,21 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
-import {
-  ContenedorProveedores,
-  ContenedorHeader,
-  ContenedorBoton,
-  Formulario,
-  ContenedorInput,
-  Campos,
-  ContenedorFormulario,
-  ContenedorBotonProveedor,
-} from "./components/StyledAgregarProveedor";
+import { ContenedorProveedores, ContenedorHeader, ContenedorInput, Campos, ContenedorBotonProveedor } from "./components/StyledAgregarProveedor";
 import { api } from "../../api/api";
 import { useFormik } from "formik";
 import { ProveedorSchema } from "../../components/Validaciones";
 import { useSelector } from "react-redux";
-import { InputContainer } from "../../components/InputContainer";
+import { InputContainer, InputContainerTextArea } from "../../components/InputContainer";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { CustomConfirmDialog } from "../../components/CustomConfirmDialog";
@@ -215,6 +206,7 @@ export const AgregarProveedores = () => {
               <Campos>
                 <label htmlFor="nombre">Nombre</label>
                 <InputContainer
+                  className="asunto"
                   type="text"
                   name="nombre"
                   placeholder="Ingrese su nombre"
@@ -226,16 +218,7 @@ export const AgregarProveedores = () => {
               </Campos>
               <Campos>
                 <label htmlFor="descripcion">Descripción</label>
-                <textarea
-                  style={{
-                    resize: "none",
-                    padding: "10px",
-                    borderRadius: "5px",
-                    border: "1px solid #ccc",
-                    fontSize: "15px",
-                    outline: "none",
-                    color: "#333",
-                  }}
+                <InputContainerTextArea
                   name="descripcion"
                   placeholder="Ingrese la descripción del proveedor"
                   onChange={formik.handleChange}
@@ -251,7 +234,7 @@ export const AgregarProveedores = () => {
                   name="telefono"
                   maxlength="9"
                   placeholder="El telefono debe llevar '9' al inicio"
-                  value={formatoTelefono(formik.values.telefono)}
+                  value={formik.values.telefono}
                   onChange={(e) => {
                     if (!e.target.value || /^[0-9]*$/.test(e.target.value)) {
                       formik.handleChange(e);

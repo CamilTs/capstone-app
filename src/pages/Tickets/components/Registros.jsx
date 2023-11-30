@@ -140,6 +140,7 @@ export const Registros = () => {
                       downloadLink.download = fileName;
                       downloadLink.click();
                     }}
+                    disabled={!rowData.archivo}
                   />
                 ) : (
                   <>

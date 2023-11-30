@@ -1,8 +1,15 @@
 import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import styled from "styled-components";
-import { InputContainer } from "../../../components/InputContainer";
 import { Card } from "primereact/card";
+
+export const ContenedorMasivo = styled.div`
+  border-radius: 10px;
+  height: 100%;
+  @media (max-width: 1920px) {
+    overflow: auto;
+  }
+`;
 
 export const TicketEnviadoContainer = styled.div`
   display: flex;
@@ -23,33 +30,6 @@ export const TicketForm = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-`;
-
-export const TicketInput = styled(InputContainer)`
-  &.asunto {
-    width: 100%;
-    height: 3rem !important;
-    border-radius: 5rem !important;
-    background-color: #f2f2f2 !important;
-    border: none !important;
-
-    &:hover {
-      background-color: #e6e6e6 !important;
-    }
-  }
-  &.descripcion {
-    width: 100%;
-    align-self: center;
-    align-items: center;
-    height: 10rem !important;
-    border-radius: 1rem !important;
-    background-color: #f2f2f2 !important;
-    border: none !important;
-
-    &:hover {
-      background-color: #e6e6e6 !important;
-    }
-  }
 `;
 
 export const EnviarButton = styled(Button)`

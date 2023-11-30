@@ -4,7 +4,7 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { api } from "../../../api/api";
-import { InputContainer } from "../../../components/InputContainer";
+import { InputContainer, InputContainerDropdown } from "../../../components/InputContainer";
 import {
   ContenedorAncho,
   ContenedorPrimario,
@@ -57,11 +57,9 @@ export const AgregarProductos = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Cuando se completa la lectura del archivo, el resultado estará en reader.result
         const base64String = reader.result;
         formik.setFieldValue("imagen", base64String);
       };
-      // Lee el archivo como una URL de datos (base64)
       reader.readAsDataURL(file);
     }
   };
@@ -153,7 +151,7 @@ export const AgregarProductos = () => {
             <ContenedorCampos>
               <Campos>
                 <label htmlFor="nombre">Nombre</label>
-                <InputText
+                <InputContainer
                   id="nombre"
                   name="nombre"
                   placeholder="Ingrese nombre del producto.."
@@ -163,7 +161,7 @@ export const AgregarProductos = () => {
                 />
                 {getFormErrorMessage("nombre")}
                 <label htmlFor="codigo_barra">Código de barra</label>
-                <InputText
+                <InputContainer
                   id="codigo_barra"
                   name="codigo_barra"
                   placeholder="Ingrese código de barra.."
@@ -173,7 +171,7 @@ export const AgregarProductos = () => {
                 />
                 {getFormErrorMessage("codigo_barra")}
                 <label htmlFor="categoria">Categoría</label>
-                <Dropdown
+                <InputContainerDropdown
                   id="categoria"
                   name="categoria"
                   options={categorias}
@@ -188,7 +186,6 @@ export const AgregarProductos = () => {
                 <Campos>
                   <label htmlFor="cantidad">Cantidad</label>
                   <InputContainer
-                    inputId="minmax-buttons"
                     name="cantidad"
                     type="number"
                     mode="decimal"
@@ -204,7 +201,6 @@ export const AgregarProductos = () => {
                 <Campos>
                   <label htmlFor="precio">Precio</label>
                   <InputContainer
-                    id="precio"
                     name="precio"
                     type="number"
                     mode="decimal"

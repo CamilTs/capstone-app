@@ -1,6 +1,6 @@
 import { DataTable } from "primereact/datatable";
 import React, { useEffect, useRef, useState } from "react";
-import { formatoCurrencyCLP } from "./Formatos";
+import { formatoCurrencyCLP, formatoFecha } from "./Formatos";
 import { InputText } from "primereact/inputtext";
 import { Badge } from "./Badge";
 import { Column } from "primereact/column";
@@ -171,7 +171,7 @@ export const TablaProductos = ({ productos = [], cargarProductos, comercio }) =>
   const actionBodyTemplate = (rowData) => {
     return (
       <div className="flex gap-1">
-        <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => abrirFormularioEdicion(rowData)} />
+        <Button icon="pi pi-pencil" rounded outlined severity="warning" onClick={() => abrirFormularioEdicion(rowData)} />
         <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => eliminarProducto(rowData._id, rowData.nombre)} />
       </div>
     );
@@ -213,19 +213,12 @@ export const TablaProductos = ({ productos = [], cargarProductos, comercio }) =>
         <Column field="nombre" header="Producto" body={(rowData) => rowData.nombre} />
         <Column field="categoria" header="Categoria" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoria")} />
         <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
-        <Column field="fecha" header="Fecha" body={(rowData) => rowData.fecha} />
+        <Column field="fecha" header="Fecha" body={(rowData) => formatoFecha(rowData.fecha)} />
         <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
         <Column header="Acciones" body={actionBodyTemplate} exportable={false} />
       </DataTable>
 
-      <Dialog
-        header="Editar Producto"
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        className="p-fluid"
-        visible={formularioVisible}
-        footer={productDialogFooter}
-        onHide={setFormularioVisible}
-      >
+      <Dialog header="Editar Producto" className="p-fluid" visible={formularioVisible} footer={productDialogFooter} onHide={setFormularioVisible}>
         <div>
           <label htmlFor="codigo_barra" className="font-bold">
             Código de barra

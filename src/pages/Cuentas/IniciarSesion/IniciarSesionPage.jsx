@@ -19,6 +19,7 @@ export const IniciarSesionPage = () => {
   const toast = useRef(null);
   const { status, errorMessage } = useSelector((state) => state.auth);
   const loading = useMemo(() => status === "cargando", [status]);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -100,8 +101,10 @@ export const IniciarSesionPage = () => {
     const input = document.getElementById("contrasena");
     if (input.type === "password") {
       input.type = "text";
+      setIsPasswordVisible(true);
     } else {
       input.type = "password";
+      setIsPasswordVisible(false);
     }
   };
 
@@ -131,8 +134,8 @@ export const IniciarSesionPage = () => {
               <i className="pi pi-user" />
             </span>
             <InputContainer
+              className="inicio"
               placeholder="Ingrese su rut"
-              className={(validacionValores("rut") ? "p-invalid" : null, "border-noround border-round-right")}
               name="rut"
               maxlength="12"
               value={formatoRut(formik.values.rut)}
@@ -143,12 +146,12 @@ export const IniciarSesionPage = () => {
           {getFormErrorMessage("rut")}
           <div className="flex">
             <span className="flex p-float-label p-inputgroup-addon">
-              <i style={{ cursor: "pointer" }} className="pi pi-eye" onClick={verContrasena} />
+              <i style={{ cursor: "pointer" }} className={isPasswordVisible ? "pi pi-eye" : "pi pi-eye-slash"} onClick={verContrasena} />
             </span>
             <InputContainer
+              className="inicio"
               placeholder="Ingrese su contraseña"
               id="contrasena"
-              className={(validacionValores("contrasena") ? "p-invalid" : null, "border-noround border-round-right")}
               name="contrasena"
               type="password"
               value={formik.values.contrasena}

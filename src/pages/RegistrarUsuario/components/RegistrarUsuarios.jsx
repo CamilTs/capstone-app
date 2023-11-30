@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
-import { InputContainer } from "../../../components/InputContainer";
+import { InputContainer, InputContainerDropdown } from "../../../components/InputContainer";
 import { Toast } from "primereact/toast";
 import { useFormik } from "formik";
 import {
@@ -164,7 +164,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
       <Formulario onSubmit={formik.handleSubmit}>
         <Campos>
           <label htmlFor="rol">Rol</label>
-          <Dropdown
+          <InputContainerDropdown
             style={{ width: "100%" }}
             name="rol"
             id="rol"

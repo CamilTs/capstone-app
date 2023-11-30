@@ -9,4 +9,3 @@ export * from "./Chats/Mensajes";
 export * from "./publicaciones/VerPublicaciones";
 export * from "./MisProveedores/AgregarProveedores";
 export * from "./Tickets/Tickets";
-export * from "./Publicaciones/VerPublicaciones";

@@ -72,7 +72,7 @@ export const ProveedorSchema = Yup.object().shape({
     .required("La descripcion es requerida")
     .min(10, "La descripcion debe tener al menos 10 caracteres")
     .max(200, "La descripcion debe tener maximo 200 caracteres")
-    .matches(/^[a-zA-Z0-9 ]+$/, "La descripcion solo debe contener letras y numeros"),
+    .matches(/[\s\S]*/, "La descripcion puede contener cualquier caracter"),
   telefono: Yup.string()
     .required("Teléfono requerido")
     .matches(/^[9]/, "Debe comenzar con 9")
@@ -101,7 +101,11 @@ export const ticketSchema = Yup.object().shape({
   asunto: Yup.string().required("Asunto requerido"),
   descripcion: Yup.string()
     .required("Descripción requerida")
-    .matches(/^[a-zA-ZÀ-ÿ\s]{1,100}$/, "El maximo de caracteres es 100")
-    .min(5, "La descripción debe tener al menos 3 caracteres"),
+    .min(5, "La descripción debe tener al menos 5 caracteres")
+    .max(250, "El máximo de caracteres es 250"),
   usuarioID: Yup.string().required("Usuario requerido"),
+  // respuesta: Yup.string()
+  //   .required("Respuesta requerida")
+  //   .min(5, "La respuesta debe tener al menos 5 caracteres")
+  //   .max(250, "El máximo de caracteres es 250"),
 });

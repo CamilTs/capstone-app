@@ -8,7 +8,7 @@ import { Dropdown } from "primereact/dropdown";
 import { TablaRegistros } from "./StyledTickets";
 import { Dialog } from "primereact/dialog";
 
-export const VerTickets = ({ responderTicket, addClosedTicket, estado }) => {
+export const VerTickets = ({ responderTicket, addClosedTicket }) => {
   const { id, rol } = useSelector((state) => state.auth);
   const [tickets, setTickets] = useState([]);
   const [ticketSeleccionado, setTicketSeleccionado] = useState({});
@@ -137,7 +137,7 @@ export const VerTickets = ({ responderTicket, addClosedTicket, estado }) => {
                     raised
                     onClick={() => {
                       console.log(rowData._id);
-                      responderTicket(rowData);
+                      responderTicket(rowData._id);
                     }}
                   />
                 )}
