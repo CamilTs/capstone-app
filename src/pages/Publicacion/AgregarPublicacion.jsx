@@ -18,7 +18,7 @@ import {
   SpanImagen,
   Titulo,
 } from "./components/StyledComponents";
-import { InputContainer } from "../../components/InputContainer";
+import { InputContainer, InputContainerDropdown } from "../../components/InputContainer";
 import { publicacionSchema } from "../../components/Validaciones";
 import { CustomConfirmDialog } from "../../components/CustomConfirmDialog";
 import { Message } from "primereact/message";
@@ -53,12 +53,10 @@ export const AgregarPublicacion = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Cuando se completa la lectura del archivo, el resultado estará en reader.result
         const base64String = reader.result;
         formik.setFieldValue("imagen", base64String);
       };
 
-      // Lee el archivo como una URL de datos (base64)
       reader.readAsDataURL(file);
     }
   };
@@ -116,7 +114,7 @@ export const AgregarPublicacion = () => {
   const getFormErrorMessage = (name) => {
     return validacionValores(name) ? (
       <span>
-        <Message className="absolute" severity="error" text={`${formik.errors[name]}`}></Message>
+        <Message severity="error" text={`${formik.errors[name]}`}></Message>
       </span>
     ) : null;
   };
@@ -167,7 +165,7 @@ export const AgregarPublicacion = () => {
           </Campos>
           <Campos>
             <label htmlFor="categoria">Categoría</label>
-            <Dropdown
+            <InputContainerDropdown
               id="categoria"
               name="categoria"
               options={categorias}

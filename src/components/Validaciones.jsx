@@ -104,8 +104,12 @@ export const ticketSchema = Yup.object().shape({
     .min(5, "La descripción debe tener al menos 5 caracteres")
     .max(250, "El máximo de caracteres es 250"),
   usuarioID: Yup.string().required("Usuario requerido"),
-  // respuesta: Yup.string()
-  //   .required("Respuesta requerida")
-  //   .min(5, "La respuesta debe tener al menos 5 caracteres")
-  //   .max(250, "El máximo de caracteres es 250"),
+});
+
+export const ticketSchemaRespuesta = Yup.object().shape({
+  respuesta: Yup.string()
+    .required("Respuesta requerida")
+    .min(5, "La respuesta debe tener al menos 5 caracteres")
+    .max(250, "El máximo de caracteres es 250"),
+  ticketsID: Yup.object().required("ticketsID es requerido").nullable(),
 });

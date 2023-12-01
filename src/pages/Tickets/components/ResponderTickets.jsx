@@ -1,55 +1,48 @@
 import React, { useEffect, useRef, useState } from "react";
-import { api } from "../../../api/api";
-import { useSelector } from "react-redux";
+import { InputContainer, InputContainerTextArea, InputContainerDropdown } from "../../../components/InputContainer";
+import { EnviarButton, TicketCard, TicketEnviadoContainer, TicketForm } from "./StyledTickets";
+import { ticketSchemaRespuesta } from "../../../components/Validaciones";
+import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
+import { Toast } from "primereact/toast";
 import { useFormik } from "formik";
 import { FileUpload } from "primereact/fileupload";
-import { Toast } from "primereact/toast";
-import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
-import { ticketSchema } from "../../../components/Validaciones";
+import { api } from "../../../api/api";
 import { Message } from "primereact/message";
-import { EnviarButton, TicketCard, TicketEnviadoContainer, TicketForm } from "./StyledTickets";
-import { InputContainerDropdown, InputContainerTextArea } from "../../../components/InputContainer";
 
-export const ResponderTickets = ({ ticketSeleccionado, setTicketSeleccionado }) => {
-  const { id } = useSelector((state) => state.auth);
-  const [verConfirmar, setVerConfirmar] = useState(false);
+export const ResponderTickets = () => {
   const [tickets, setTickets] = useState([]);
-
+  const [ticketSeleccionado, setTicketSeleccionado] = useState(null);
+  const [verConfirmar, setVerConfirmar] = useState(false);
   const toast = useRef(null);
+  const fileUploadRef = useRef(null);
 
   const traerTickets = async () => {
     try {
       const response = await api.get(`tickets/true`);
       const { data } = response;
-      console.log(data.data);
+      console.log(data);
       setTickets(data.data);
+      console.log(tickets);
     } catch (error) {
-      console.log(error);
       toast.current.show({
-        severity: "info",
-        summary: "Vacio",
-        detail: "¡Sin tickets!",
+        severity: "error",
+        summary: "Error",
+        detail: "No se pudieron traer los tickets",
         life: 2000,
       });
-    } finally {
-      console.log(tickets.ticketsID);
     }
   };
 
   const formik = useFormik({
     initialValues: {
-      ticketsID: "",
-      usuarioID: id,
-      asunto: "",
-      descripcion: "",
-      estado: true,
+      ticketsID: null,
       archivo: null,
       respuesta: "",
     },
-    validationSchema: ticketSchema,
+    validationSchema: ticketSchemaRespuesta,
 
     onSubmit: (values) => {
-      setVerConfirmar(true);
+      console.log(values);
     },
   });
 
@@ -67,27 +60,45 @@ export const ResponderTickets = ({ ticketSeleccionado, setTicketSeleccionado }) 
     }
   };
 
-  const responderTicket = async () => {
+  const enviarRespuesta = async () => {
     try {
-      console.log("ticketSeleccionado:", ticketSeleccionado);
-      const response = await api.put(`tickets/${ticketSeleccionado}`, {
+      const response = await api.put(`tickets/${ticketSeleccionado._id}`, {
         respuesta: formik.values.respuesta,
         archivo: formik.values.archivo,
       });
       const { data } = response;
-      console.log("Respuesta enviada", data);
+      console.log(data);
       toast.current.show({
         severity: "success",
-        summary: "Respuesta enviada",
-        detail: "Se ha enviado la respuesta correctamente",
+        summary: "Éxito",
+        detail: "Respuesta enviada",
         life: 2000,
       });
+      fileUploadRef.current.clear();
       formik.resetForm();
       setTicketSeleccionado(null);
     } catch (error) {
-      console.log("Error al enviar la respuesta", error);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "No se pudo enviar la respuesta",
+        life: 2000,
+      });
     } finally {
       setVerConfirmar(false);
+    }
+  };
+
+  const confirmarEnvio = () => {
+    if (ticketSeleccionado) {
+      setVerConfirmar(true);
+    } else {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Seleccione un ticket",
+        life: 2000,
+      });
     }
   };
 
@@ -103,10 +114,7 @@ export const ResponderTickets = ({ ticketSeleccionado, setTicketSeleccionado }) 
 
   useEffect(() => {
     traerTickets();
-    if (ticketSeleccionado) {
-      formik.setFieldValue("ticketsID", ticketSeleccionado._id);
-    }
-  }, [ticketSeleccionado]);
+  }, []);
 
   return (
     <>
@@ -116,91 +124,77 @@ export const ResponderTickets = ({ ticketSeleccionado, setTicketSeleccionado }) 
           <div className="flex flex-row justify-content-between align-items-center">
             <h1>Responder Tickets</h1>
           </div>
-          <form onSubmit={formik.handleSubmit}>
-            <TicketForm>
-              <InputContainerDropdown
-                name="ticketsID"
-                value={formik.values.ticketsID}
-                options={tickets}
-                onChange={(e) => {
-                  formik.setFieldValue("ticketsID", e.value._id);
-                  setTicketSeleccionado(e.value);
+          <TicketForm>
+            <InputContainerDropdown
+              id="ticketsID"
+              name="ticketsID"
+              placeholder="Seleccione un ticket.."
+              options={tickets}
+              optionLabel="ticketsID"
+              value={formik.values.ticketsID}
+              onChange={(e) => {
+                formik.handleChange(e);
+                setTicketSeleccionado(e.value);
+              }}
+              onBlur={formik.handleBlur}
+            />
+            {getFormErrorMessage("ticketsID")}
+            <InputContainer id="asunto" value={ticketSeleccionado?.asunto || "Esperando que seleccione un ticket..."} name="asunto" disabled={true} />
+            <InputContainerTextArea
+              id="descripcion"
+              value={ticketSeleccionado?.descripcion || "Esperando que seleccione un ticket..."}
+              name="descripcion"
+              disabled={true}
+            />
+            <InputContainerTextArea
+              id="respuesta"
+              value={formik.values.respuesta}
+              name="respuesta"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              placeholder="Respuesta"
+              disabled={!ticketSeleccionado}
+            />
+            {getFormErrorMessage("respuesta")}
+            <div className="flex w-full justify-content-around gap-2">
+              <FileUpload
+                ref={fileUploadRef}
+                mode="basic"
+                accept="*"
+                maxFileSize={1000000}
+                chooseOptions={{
+                  iconOnly: true,
+                  icon: "pi pi-paperclip",
+                  style: {
+                    backgroundColor: "rgb(180 10 180)",
+                    color: "white",
+                    border: "2px solid rgb(119 40 129)",
+                    borderRadius: "2rem",
+                  },
                 }}
-                onBlur={formik.handleBlur}
-                placeholder="Seleccionar ticket"
-                optionLabel="ticketsID"
-                optionValue="_id"
-                disabled={!!ticketSeleccionado}
+                auto={false}
+                onSelect={handleFileChange}
+                value={formik.values.archivo}
+                disabled={!ticketSeleccionado}
               />
-              <InputContainerTextArea
-                name="respuesta"
-                type="text"
-                placeholder="Escriba la respuesta del ticket..."
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.respuesta}
-              />
-              {getFormErrorMessage("respuesta")}
-              <div className="flex flex-column w-full gap-2">
-                <div>
-                  <FileUpload
-                    mode="advanced"
-                    multiple
-                    accept="*"
-                    maxFileSize={1000000}
-                    chooseOptions={{
-                      iconOnly: true,
-                      icon: "pi pi-paperclip",
-                      style: {
-                        marginRight: ".5em",
-                        backgroundColor: "#00bfa5",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "2rem",
-                      },
-                    }}
-                    cancelOptions={{
-                      iconOnly: true,
-                      icon: "pi pi-times",
-                      style: {
-                        marginRight: ".5em",
-                        backgroundColor: "red",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "2rem",
-                      },
-                    }}
-                    auto={false}
-                    uploadOptions={{
-                      style: { display: "none" },
-                    }}
-                    onSelect={handleFileChange}
-                    value={formik.values.archivo}
-                  />
-                </div>
-                <div className="flex justify-content-center">
-                  <EnviarButton
-                    type="button"
-                    label="Enviar"
-                    onClick={() => {
-                      console.log(ticketSeleccionado);
-                      responderTicket(ticketSeleccionado._id);
-                    }}
-                    disabled={!formik.dirty}
-                  />
-                </div>
+              <div className="flex w-8 justify-content-end">
+                <EnviarButton
+                  type="button"
+                  label="Enviar"
+                  onClick={confirmarEnvio}
+                  disabled={!formik.isValid || !formik.dirty || !ticketSeleccionado}
+                />
               </div>
-            </TicketForm>
-          </form>
+            </div>
+          </TicketForm>
         </TicketCard>
       </TicketEnviadoContainer>
 
       <CustomConfirmDialog
         visible={verConfirmar}
-        onHide={() => setVerConfirmar(false)}
-        onConfirm={responderTicket}
-        type="submit"
-        message="¿Confirmar envío?"
+        onHide={() => setVerConfirmar()}
+        onConfirm={enviarRespuesta}
+        message="¿Enviar respuesta?"
         header="Confirmar"
       />
     </>
