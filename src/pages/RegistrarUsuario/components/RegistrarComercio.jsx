@@ -142,6 +142,7 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
       <Opciones>
         {estado == "crear" ? (
           <Button
+            icon="pi pi-plus"
             raised
             label="Registrar"
             severity="success"
@@ -150,9 +151,30 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
             disabled={!formik.dirty || !formik.isValid}
           />
         ) : (
-          <Button raised label="Actualizar" severity="warning" rounded onClick={() => setVerConfirmar(true)} disabled={!formik.dirty} />
+          <Button
+            icon="pi pi-pencil"
+            raised
+            label="Actualizar"
+            severity="warning"
+            rounded
+            onClick={() => setVerConfirmar(true)}
+            disabled={!formik.dirty}
+          />
         )}
-        <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} disabled={!formik.dirty} type="button" />
+        {estado === "crear" ? (
+          <Button
+            icon="pi pi-trash"
+            raised
+            label="Limpiar"
+            severity="danger"
+            rounded
+            onClick={() => setVerLimpiar(true)}
+            disabled={!formik.dirty}
+            type="button"
+          />
+        ) : (
+          <Button icon="pi pi-arrow-right" raised label="Cancelar" severity="danger" rounded onClick={() => cambiarPestania(3)} type="button" />
+        )}
       </Opciones>
 
       {estado === "crear" ? (

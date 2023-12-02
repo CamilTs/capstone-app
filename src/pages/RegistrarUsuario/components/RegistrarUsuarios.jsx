@@ -25,17 +25,16 @@ import { Message } from "primereact/message";
 
 export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormulario, estado, cambiarPestania }) => {
   const [imagen, setImagen] = useState(null);
-
   const [verConfirmar, setVerConfirmar] = useState(false);
   const [verLimpiar, setVerLimpiar] = useState(false);
+  const toast = useRef(null);
+  const fileUploadRef = useRef(null);
 
   const rolOptions = [
     { label: "Administrador", value: "administrador" },
     { label: "Cliente", value: "cliente" },
     { label: "Proveedor", value: "proveedor" },
   ];
-
-  const toast = useRef(null);
 
   const limpiarFormulario = () => {
     formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
@@ -82,6 +81,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
         life: 2000,
       });
       estado === "crear" ? formik.resetForm() : cambiarPestania(2);
+      estado === "crear" ? fileUploadRef.current.clear() : cambiarPestania(2);
     } catch (error) {
       toast.current.show({
         severity: "error",
@@ -184,13 +184,22 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
               </div>
             )}
             <FileUpload
+              ref={fileUploadRef}
               mode="basic"
               accept="image/*"
               maxFileSize={1000000}
-              auto
-              chooseLabel="Seleccionar"
+              auto={false}
+              chooseLabel="Escoger"
               onSelect={handleFileChange}
-              onBlur={formik.handleBlur}
+              chooseOptions={{
+                icon: "pi pi-folder-open",
+                style: {
+                  backgroundColor: "rgb(57 170 205)",
+                  color: "white",
+                  border: "2px solid rgb(76 147 164)",
+                  borderRadius: "2rem",
+                },
+              }}
             />
             {getFormErrorMessage("imagen")}
           </ContenedorImg>
@@ -281,6 +290,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
             <Opciones>
               {estado == "crear" ? (
                 <Button
+                  icon="pi pi-plus"
                   raised
                   label="Registrar"
                   severity="success"
@@ -290,6 +300,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
                 />
               ) : (
                 <Button
+                  icon="pi pi-pencil"
                   raised
                   label="Actualizar"
                   severity="warning"
@@ -298,7 +309,20 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
                   disabled={!formik.isValid || !formik.dirty}
                 />
               )}
-              <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} disabled={!formik.dirty} type="button" />
+              {estado === "crear" ? (
+                <Button
+                  icon="pi pi-trash"
+                  raised
+                  label="Limpiar"
+                  severity="danger"
+                  rounded
+                  onClick={() => setVerLimpiar(true)}
+                  disabled={!formik.dirty}
+                  type="button"
+                />
+              ) : (
+                <Button icon="pi pi-arrow-right" raised label="Cancelar" severity="danger" rounded onClick={() => cambiarPestania(3)} type="button" />
+              )}
             </Opciones>
           </ContenedorCampos>
         </Inputs>

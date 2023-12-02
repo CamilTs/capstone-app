@@ -34,7 +34,7 @@ export const VerTickets = ({ responderTicket, addClosedTicket }) => {
       });
     } finally {
       setLoading(false);
-      console.log(tickets.ticketsID);
+      console.log(tickets);
     }
   };
 
@@ -136,8 +136,7 @@ export const VerTickets = ({ responderTicket, addClosedTicket }) => {
                     outlined
                     raised
                     onClick={() => {
-                      console.log(rowData._id);
-                      responderTicket(rowData._id);
+                      responderTicket(rowData);
                     }}
                   />
                 )}

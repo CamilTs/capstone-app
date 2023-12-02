@@ -44,8 +44,8 @@ export const AgregarPublicacion = () => {
   const [imagen, setImagen] = useState(null);
   const [verConfirmar, setVerConfirmar] = useState(false);
   const [verLimpiar, setVerLimpiar] = useState(false);
-
   const toast = useRef(null);
+  const fileUploadRef = useRef(null);
 
   const handleFileChange = (e) => {
     const file = e.files[0];
@@ -75,6 +75,7 @@ export const AgregarPublicacion = () => {
         life: 2000,
       });
       formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
+      fileUploadRef.current.clear();
     } catch (error) {
       toast.current.show({
         severity: "warn",
@@ -134,7 +135,24 @@ export const AgregarPublicacion = () => {
                 <img src={URL.createObjectURL(imagen)} alt="Vista previa de la foto de perfil" />
               </div>
             )}
-            <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} auto chooseLabel="Seleccionar" onSelect={handleFileChange} />
+            <FileUpload
+              ref={fileUploadRef}
+              mode="basic"
+              accept="image/*"
+              maxFileSize={1000000}
+              auto={false}
+              chooseLabel="Escoger"
+              onSelect={handleFileChange}
+              chooseOptions={{
+                icon: "pi pi-folder-open",
+                style: {
+                  backgroundColor: "rgb(57 170 205)",
+                  color: "white",
+                  border: "2px solid rgb(76 147 164)",
+                  borderRadius: "2rem",
+                },
+              }}
+            />
             {getFormErrorMessage("imagen")}
           </ContenedorImg>
         </Campos>

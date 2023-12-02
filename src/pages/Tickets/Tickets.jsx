@@ -58,7 +58,7 @@ export const Tickets = () => {
             />
           </TabPanel>
         )}
-        <TabPanel header="Registros">
+        <TabPanel header="Registros" rightIcon="pi pi-list ml-2">
           <Registros tickets={tickets} />
         </TabPanel>
       </TabView>

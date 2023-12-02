@@ -8,27 +8,11 @@ import { Toast } from "primereact/toast";
 import { formatoRut } from "../../../components/Formatos";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 
-export const VerRegistros = ({ editarUsuario, cambiarPestania }) => {
-  const [usuarios, setUsuarios] = useState([]);
+export const VerRegistros = ({ editarUsuario, usuarios }) => {
   const [Loading, setLoading] = useState(false);
   const [verEliminar, setVerEliminar] = useState(false);
   const [usuarioEliminar, setUsuarioEliminar] = useState("");
   const toast = useRef(null);
-
-  const traerUsuarios = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get("rol/gestion");
-      const { data } = response;
-      console.log(data);
-      setUsuarios(data.data);
-    } catch (error) {
-      console.log(error);
-      console.log("Error al traer los usuarios");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const seleccionarUsuarioEliminar = async (usuarioID) => {
     setUsuarioEliminar(usuarioID);
@@ -42,18 +26,22 @@ export const VerRegistros = ({ editarUsuario, cambiarPestania }) => {
       const response = await api.delete(`usuario/${id}`);
       const { data } = response;
       console.log(data);
-      traerUsuarios();
+      toast.current.show({
+        severity: "success",
+        summary: "Eliminado",
+        detail: "Usuario eliminado",
+        life: 2000,
+      });
     } catch (error) {
       console.log(error);
       console.log("Error al eliminar el usuario");
     } finally {
       setLoading(false);
+      setVerEliminar(false);
     }
   };
 
-  useEffect(() => {
-    traerUsuarios();
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Contenedor>

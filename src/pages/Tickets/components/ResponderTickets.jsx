@@ -9,9 +9,9 @@ import { FileUpload } from "primereact/fileupload";
 import { api } from "../../../api/api";
 import { Message } from "primereact/message";
 
-export const ResponderTickets = () => {
+export const ResponderTickets = ({ ticketSeleccionado, setTicketSeleccionado }) => {
   const [tickets, setTickets] = useState([]);
-  const [ticketSeleccionado, setTicketSeleccionado] = useState(null);
+  // const [ticketSeleccionado, setTicketSeleccionado] = useState(null);
   const [verConfirmar, setVerConfirmar] = useState(false);
   const toast = useRef(null);
   const fileUploadRef = useRef(null);
@@ -131,8 +131,9 @@ export const ResponderTickets = () => {
               placeholder="Seleccione un ticket.."
               options={tickets}
               optionLabel="ticketsID"
-              value={formik.values.ticketsID}
+              value={ticketSeleccionado}
               onChange={(e) => {
+                formik.setFieldValue("ticketsID", e.value);
                 formik.handleChange(e);
                 setTicketSeleccionado(e.value);
               }}
@@ -164,11 +165,11 @@ export const ResponderTickets = () => {
                 maxFileSize={1000000}
                 chooseOptions={{
                   iconOnly: true,
-                  icon: "pi pi-paperclip",
+                  icon: "pi pi-file-export",
                   style: {
-                    backgroundColor: "rgb(180 10 180)",
+                    backgroundColor: "rgb(57 170 205)",
                     color: "white",
-                    border: "2px solid rgb(119 40 129)",
+                    border: "2px solid rgb(76 147 164)",
                     borderRadius: "2rem",
                   },
                 }}

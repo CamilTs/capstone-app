@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { api } from "../../../api/api";
 import { InputContainer, InputContainerDropdown } from "../../../components/InputContainer";
@@ -35,7 +33,10 @@ const categorias = [
 export const AgregarProductos = () => {
   const { id, comercio } = useSelector((state) => state.auth);
   const [imagen, setImagen] = useState(null);
+  const [verConfirmar, setVerConfirmar] = useState(false);
+  const [verLimpiar, setVerLimpiar] = useState(false);
   const toast = useRef(null);
+  const fileUploadRef = useRef(null);
   const estructuraFormulario = {
     id: Date.now(),
     fecha: new Date(),
@@ -48,8 +49,6 @@ export const AgregarProductos = () => {
     precio: Number(0),
   };
   const [formulario, setFormulario] = useState(estructuraFormulario);
-  const [verConfirmar, setVerConfirmar] = useState(false);
-  const [verLimpiar, setVerLimpiar] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.files[0];
@@ -78,8 +77,9 @@ export const AgregarProductos = () => {
         detail: "Producto agregado",
         life: 2000,
       });
-      formik.resetForm();
       console.log(data);
+      formik.resetForm();
+      fileUploadRef.current.clear();
     } catch (error) {
       toast.current.show({
         severity: "warn",
@@ -145,7 +145,24 @@ export const AgregarProductos = () => {
                 </div>
               )}
               <label htmlFor="imagen"></label>
-              <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} auto chooseLabel="Subir" onSelect={handleFileChange} />
+              <FileUpload
+                ref={fileUploadRef}
+                mode="basic"
+                accept="image/*"
+                maxFileSize={1000000}
+                auto={false}
+                chooseLabel="Escoger"
+                onSelect={handleFileChange}
+                chooseOptions={{
+                  icon: "pi pi-folder-open",
+                  style: {
+                    backgroundColor: "rgb(57 170 205)",
+                    color: "white",
+                    border: "2px solid rgb(76 147 164)",
+                    borderRadius: "2rem",
+                  },
+                }}
+              />
               {getFormErrorMessage("imagen")}
             </ContenedorImg>
             <ContenedorCampos>
