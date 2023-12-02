@@ -7,19 +7,11 @@ const Titulo = styled.h5`
   margin: 0;
   gap: 0.5rem;
   align-items: center;
-
-  &.tituloCard {
-    color: black;
-    width: 100%;
-    justify-content: center;
-    background-color: #f3f4f6;
-    border-bottom: 3px solid #e5e7eb;
-  }
 `;
 
-export const CustomCard = ({ titulo, icono, colorContenedor, colorIcono, primerDatos, segundoDatos, texto }) => (
-  <div className="col-12 md:col-4 lg:col-4">
-    <div className="surface-card shadow-2 p-3 border-round">
+export const CustomCard = ({ titulo, icono, colorContenedor, colorIcono, primerDatos, segundoDatos, primerTexto, segundoTexto }) => (
+  <div className="flex flex-row w-full justify-content-center">
+    <div className="w-11 surface-card shadow-2 p-3 border-round">
       <div className="flex justify-content-between mb-3">
         <div>
           <Titulo className="block mb-3">{titulo}</Titulo>
@@ -31,10 +23,11 @@ export const CustomCard = ({ titulo, icono, colorContenedor, colorIcono, primerD
           <i className={`pi ${icono} ${colorIcono} text-xl`}></i>
         </div>
       </div>
+      <span className="text-500"> {primerTexto} </span>
       <span className="text-green-500 font-medium">
         {Array.isArray(segundoDatos) ? segundoDatos.reduce((a, b) => a + b.cantidadVendida, 0) : segundoDatos}{" "}
       </span>
-      <span className="text-500"> {texto} </span>
+      <span className="text-500"> {segundoTexto} </span>
     </div>
   </div>
 );

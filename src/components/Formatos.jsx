@@ -32,3 +32,8 @@ export const formatoTelefono = (telefono) => {
   const telefonoFormateado = String(telefono).replace(/^(\d{1})(\d{4})(\d{4})$/, "$1 $2 $3");
   return telefonoFormateado;
 };
+
+export const formatoNombreMes = (mes) => {
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio ", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre "];
+  return meses[mes - 1];
+};

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { InputContainer, InputContainerDropdown } from "../../../components/InputContainer";
 import { Toast } from "primereact/toast";
@@ -55,12 +54,10 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Cuando se completa la lectura del archivo, el resultado estará en reader.result
         const base64String = reader.result;
         formik.setFieldValue("imagen", base64String);
       };
 
-      // Lee el archivo como una URL de datos (base64)
       reader.readAsDataURL(file);
     }
   };
@@ -165,7 +162,6 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
         <Campos>
           <label htmlFor="rol">Rol</label>
           <InputContainerDropdown
-            style={{ width: "100%" }}
             name="rol"
             id="rol"
             options={rolOptions}
@@ -284,9 +280,23 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
             </InputRow>
             <Opciones>
               {estado == "crear" ? (
-                <Button raised label="Registrar" severity="success" rounded onClick={() => setVerConfirmar(true)} disabled={camposVacios()} />
+                <Button
+                  raised
+                  label="Registrar"
+                  severity="success"
+                  rounded
+                  onClick={() => setVerConfirmar(true)}
+                  disabled={!formik.isValid || !formik.dirty}
+                />
               ) : (
-                <Button raised label="Actualizar" severity="warning" rounded onClick={() => setVerConfirmar(true)} disabled={camposVacios()} />
+                <Button
+                  raised
+                  label="Actualizar"
+                  severity="warning"
+                  rounded
+                  onClick={() => setVerConfirmar(true)}
+                  disabled={!formik.isValid || !formik.dirty}
+                />
               )}
               <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} disabled={!formik.dirty} type="button" />
             </Opciones>

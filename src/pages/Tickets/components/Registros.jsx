@@ -105,7 +105,7 @@ export const Registros = () => {
   };
 
   const estadoTemplate = (rowData) => {
-    return <ColorEstado estado={rowData.estado}>{rowData.estado ? "Abierto" : "Cerrado"}</ColorEstado>;
+    return <ColorEstado>{rowData.estado ? "Abierto" : "Cerrado"}</ColorEstado>;
   };
 
   useEffect(() => {

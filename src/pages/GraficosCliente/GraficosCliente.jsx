@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 import useGraficos from "./hooks/useGraficos";
 
 import { Contenedor, ContenedorDatos, ContenedorDerecha, ContenedorGraficos, Titulo } from "./components/StyledComponentGraficos";
-import { ScrollPanel } from "primereact/scrollpanel";
 import { masVendidoMensual } from "./hooks/useGraficos";
 import { totalVentas } from "./hooks/useGraficos";
 import { vendidosAnual } from "./hooks/useGraficos";
-import { formatoCurrencyCLP } from "../../components/Formatos";
+import { formatoCurrencyCLP, formatoNombreMes } from "../../components/Formatos";
 import { CustomCard } from "../../components/CustomCard";
 
 export const GraficosCliente = () => {
@@ -20,9 +19,11 @@ export const GraficosCliente = () => {
   const [ventasAnuales, setVentasAnuales] = useState([]);
   const [mesMejorVenta, setMesMejorVenta] = useState([]);
   const [vendidosAnio, setVendidosAnio] = useState([]);
+  const [masVendidoAnio, setMasVendidoAnio] = useState([]);
 
   const getMasVendido = async () => {
     const data = await masVendidoMensual();
+    // console.log(data);
     setMasVendido(data[0].cantidadVendida);
     setNombreMasVendido(data[0].nombre);
   };
@@ -30,17 +31,22 @@ export const GraficosCliente = () => {
   const getTotalVentas = async () => {
     const data = await totalVentas();
     const sumaTotal = data.reduce((a, b) => a + b.total, 0);
-    const mes = data.map((mes) => mes);
-    console.log(sumaTotal);
     setVentasAnuales(sumaTotal);
-    setMesMejorVenta(mes);
-    console.log(mesMejorVenta);
+    const ordenarData = data.sort((a, b) => b.total - a.total);
+    const mesMejorVenta = ordenarData[0];
+    setMesMejorVenta(mesMejorVenta);
+    // console.log(sumaTotal);
+    // console.log(mesMejorVenta);
   };
 
   const getVendidosAnual = async () => {
     const data = await vendidosAnual();
-    setVendidosAnio(data);
-    console.log(data);
+    const sumaTotal = data.reduce((a, b) => a + b.cantidadVendida, 0);
+    setMasVendidoAnio(sumaTotal);
+    const ordenarData = data.sort((a, b) => b.cantidadVendida - a.cantidadVendida);
+    console.log(ordenarData);
+    const mejorVendido = ordenarData[0];
+    setVendidosAnio(mejorVendido);
   };
 
   useEffect(() => {
@@ -51,37 +57,35 @@ export const GraficosCliente = () => {
 
   return (
     <Contenedor>
-      <Titulo className="tituloCard m-0 text-3xl">Dashboard</Titulo>
+      <Titulo className="tituloCard">Dashboard</Titulo>
       <div className="flex">
         <CustomCard
-          titulo="Producto mas vendido"
+          titulo="El más vendido"
           icono="pi pi-box"
           colorContenedor="bg-yellow-100"
           colorIcono="text-yellow-500"
           primerDatos={nombreMasVendido}
           segundoDatos={masVendido}
-          scrollable={false}
-          texto="unidades"
+          segundoTexto="unidades"
         />
         <CustomCard
           titulo="Ganancias actuales"
           icono="pi pi-money-bill"
           colorContenedor="bg-green-100"
           colorIcono="text-green-500"
-          primerDatos={formatoCurrencyCLP(ventasAnuales)}
-          segundoDatos={ventasAnuales}
-          scrollable={false}
-          texto="CLP"
+          primerDatos={formatoCurrencyCLP(ventasAnuales) + " CLP"}
+          segundoDatos={formatoCurrencyCLP(mesMejorVenta.total)}
+          segundoTexto={formatoNombreMes(mesMejorVenta.mes)}
         />
         <CustomCard
-          titulo="Ventas de este año"
+          titulo="Cantidad de ventas anuales"
           icono="pi pi-shopping-cart"
           colorContenedor="bg-blue-100"
           colorIcono="text-blue-500"
-          primerDatos={vendidosAnio}
-          segundoDatos={vendidosAnio}
-          scrollable={true}
-          texto="unidades"
+          primerDatos={masVendidoAnio}
+          primerTexto="Se vendieron"
+          segundoDatos={vendidosAnio.cantidadVendida}
+          segundoTexto={vendidosAnio.nombre}
         />
       </div>
 

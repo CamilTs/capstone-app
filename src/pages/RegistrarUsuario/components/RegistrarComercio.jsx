@@ -4,11 +4,9 @@ import { Formulario, Opciones, Campos, ContenedorCampos, Contenedor } from "./St
 import { api } from "../../../api/api";
 import { Button } from "primereact/button";
 import { useFormik } from "formik";
-import { Dropdown } from "primereact/dropdown";
 import { ComercioSchema } from "../../../components/Validaciones";
 import { Toast } from "primereact/toast";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
-import { formatoTelefono } from "../../../components/Formatos";
 import { Message } from "primereact/message";
 
 export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, setFormulario, estado, cambiarPestania, nombreCliente }) => {
