@@ -287,9 +287,17 @@ export const AgregarProveedores = () => {
               />
             )}
             {estado == "crear" ? (
-              <Button label="Limpiar" severity="danger" icon="pi pi-trash" rounded onClick={() => setVerLimpiar(true)} disabled={!formik.dirty} />
+              <Button
+                raised
+                label="Limpiar"
+                severity="danger"
+                icon="pi pi-trash"
+                rounded
+                onClick={() => setVerLimpiar(true)}
+                disabled={!formik.dirty}
+              />
             ) : (
-              <Button label="Cancelar" severity="danger" icon="pi pi-times" rounded onClick={() => setMostrarFormulario(false)} />
+              <Button raised label="Cancelar" severity="danger" icon="pi pi-times" rounded onClick={() => setMostrarFormulario(false)} />
             )}
           </div>
         </div>

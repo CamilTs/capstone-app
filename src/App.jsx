@@ -1,6 +1,6 @@
 import "/node_modules/primeflex/primeflex.css";
 
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { MenuLateral } from "./components/MenuLateral";
 import "./App.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -11,9 +11,9 @@ import { ProtectedRoutes } from "./routes/ProtectedRoutes";
 import { useEffect, useRef, useState } from "react";
 import { SocketProvider } from "./context/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
-import { cerrarSesion, checkAuthToken } from "./store/auth";
+import { autenticando, cerrarSesion, checkAuthToken } from "./store/auth";
 import { PublicRoutes } from "./routes/PublicRoutes";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+// import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 import { CustomConfirmDialog } from "./components/CustomConfirmDialog";
 
@@ -50,7 +50,7 @@ export const Content = styled.div`
 `;
 
 function App() {
-  const { status, token } = useSelector((state) => state.auth);
+  const { status } = useSelector((state) => state.auth);
   const [verConfirmar, setVerConfirmar] = useState(false);
   const dispatch = useDispatch();
   const toast = useRef(null);
@@ -68,6 +68,9 @@ function App() {
 
   useEffect(() => {
     dispatch(checkAuthToken());
+    if (status == "autenticado") {
+      dispatch(autenticando({ status: "autenticado" }));
+    }
   }, []);
   return (
     <>
@@ -85,7 +88,7 @@ function App() {
           </Container>
         </SocketProvider>
       </ContenedorMenuPagina>
-      <ConfirmDialog />
+      <CustomConfirmDialog />
       <Toast ref={toast} />
 
       <CustomConfirmDialog

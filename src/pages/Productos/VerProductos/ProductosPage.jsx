@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
-import { Toast } from "primereact/toast";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
@@ -30,6 +30,7 @@ export const Productos = () => {
   const navigate = useNavigate();
   const [globalFiltro, setGlobalFiltro] = useState(null);
   const toast = useRef(null);
+  const fileUploadRef = useRef(null);
 
   const borrarProducto = async () => {
     console.log("Comercio:", comercio);
@@ -80,7 +81,7 @@ export const Productos = () => {
     try {
       const body = { ...formik.values };
       if (formik.values.imagen) {
-        body.imagenes = [formik.values.imagen];
+        body.imagen = [formik.values.imagen];
       }
       const response = await api.put(`producto/${productoAModificar._id}`, body);
       const { data } = response;
@@ -92,6 +93,7 @@ export const Productos = () => {
         life: 2000,
       });
       setMostrarFormulario(false);
+      fileUploadRef.current.clear();
     } catch (error) {
       console.log(error);
       toast.current.show({
@@ -194,22 +196,7 @@ export const Productos = () => {
       const response = await api.get("producto/comercio");
       const { data } = response;
       console.log(data);
-      if (data.success) {
-        setProductos(data.data);
-        toast.current.show({
-          severity: "success",
-          summary: "Productos",
-          detail: "Productos cargados",
-          life: 2000,
-        });
-      } else {
-        toast.current.show({
-          severity: "danger",
-          summary: "Productos",
-          detail: "Error al cargar los productos",
-          life: 2000,
-        });
-      }
+      setProductos(data.data);
     } catch (error) {
       toast.current.show({
         severity: "danger",
@@ -355,14 +342,24 @@ export const Productos = () => {
                   <img src={productoAModificar.imagenes} alt="Imagen del producto" width="200" height="200" style={{ objectFit: "cover" }} />
                 ) : null}
                 <FileUpload
+                  ref={fileUploadRef}
                   name="imagen"
+                  className="p-mt-2"
                   mode="basic"
                   accept="image/*"
                   maxFileSize={1000000}
-                  auto
+                  auto={false}
+                  chooseOptions={{
+                    icon: "pi pi-images",
+                    style: {
+                      backgroundColor: "rgb(57 170 205)",
+                      color: "white",
+                      border: "2px solid rgb(76 147 164)",
+                      borderRadius: "2rem",
+                    },
+                  }}
                   chooseLabel="Cambiar"
                   onSelect={handleFileChange}
-                  className="p-mt-2"
                 />
               </div>
             </div>

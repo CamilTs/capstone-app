@@ -31,6 +31,7 @@ export const GestionarCuentas = () => {
   const [formulario, setFormulario] = useState(estructuraFormulario);
   const [formularioComercio, setFormularioComercio] = useState(estructuraFormularioComercio);
   const [nombreCliente, setNombreCliente] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
   const editarUsuario = (usuario) => {
     setFormulario({
       _id: usuario._id,
@@ -68,6 +69,7 @@ export const GestionarCuentas = () => {
       const response = await api.get("rol/cliente");
       const { data } = response;
       console.log(data);
+      setUsuarios(data.data);
       const nombreCliente = data.data.map((usuario) => ({ id: usuario._id, nombre: usuario.nombre }));
       console.log(nombreCliente);
       setNombreCliente(nombreCliente);
@@ -110,7 +112,7 @@ export const GestionarCuentas = () => {
           />
         </TabPanel>
         <TabPanel rightIcon="pi pi-users ml-2" header="Usuarios">
-          <VerRegistros editarUsuario={editarUsuario} cambiarPestania={cambiarPestania} />
+          <VerRegistros usuarios={usuarios} editarUsuario={editarUsuario} cambiarPestania={cambiarPestania} />
         </TabPanel>
         <TabPanel rightIcon="pi pi-briefcase ml-2" header="Comercios">
           <VerComercios editarComercio={editarComercio} cambiarPestania={cambiarPestania} nombreCliente={nombreCliente} />

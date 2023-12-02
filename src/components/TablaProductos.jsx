@@ -207,7 +207,7 @@ export const TablaProductos = ({ productos = [], cargarProductos, comercio }) =>
         scrollHeight="580px"
         globalFilter={globalFiltro}
         loading={loading}
-        emptyMessage="Producto no registrado"
+        emptyMessage="Esperando cliente..."
       >
         <Column field="codigo_barra" header="Código de barra" body={(rowData) => rowData.codigo_barra} />
         <Column field="nombre" header="Producto" body={(rowData) => rowData.nombre} />

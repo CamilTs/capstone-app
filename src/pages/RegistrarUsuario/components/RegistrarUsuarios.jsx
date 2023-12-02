@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { InputContainer, InputContainerDropdown } from "../../../components/InputContainer";
 import { Toast } from "primereact/toast";
@@ -26,17 +25,16 @@ import { Message } from "primereact/message";
 
 export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormulario, estado, cambiarPestania }) => {
   const [imagen, setImagen] = useState(null);
-
   const [verConfirmar, setVerConfirmar] = useState(false);
   const [verLimpiar, setVerLimpiar] = useState(false);
+  const toast = useRef(null);
+  const fileUploadRef = useRef(null);
 
   const rolOptions = [
     { label: "Administrador", value: "administrador" },
     { label: "Cliente", value: "cliente" },
     { label: "Proveedor", value: "proveedor" },
   ];
-
-  const toast = useRef(null);
 
   const limpiarFormulario = () => {
     formik.resetForm(setFormulario(estructuraFormulario), setImagen(null));
@@ -55,12 +53,10 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Cuando se completa la lectura del archivo, el resultado estará en reader.result
         const base64String = reader.result;
         formik.setFieldValue("imagen", base64String);
       };
 
-      // Lee el archivo como una URL de datos (base64)
       reader.readAsDataURL(file);
     }
   };
@@ -85,6 +81,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
         life: 2000,
       });
       estado === "crear" ? formik.resetForm() : cambiarPestania(2);
+      estado === "crear" ? fileUploadRef.current.clear() : cambiarPestania(2);
     } catch (error) {
       toast.current.show({
         severity: "error",
@@ -165,7 +162,6 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
         <Campos>
           <label htmlFor="rol">Rol</label>
           <InputContainerDropdown
-            style={{ width: "100%" }}
             name="rol"
             id="rol"
             options={rolOptions}
@@ -188,13 +184,22 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
               </div>
             )}
             <FileUpload
+              ref={fileUploadRef}
               mode="basic"
               accept="image/*"
               maxFileSize={1000000}
-              auto
-              chooseLabel="Seleccionar"
+              auto={false}
+              chooseLabel="Escoger"
               onSelect={handleFileChange}
-              onBlur={formik.handleBlur}
+              chooseOptions={{
+                icon: "pi pi-folder-open",
+                style: {
+                  backgroundColor: "rgb(57 170 205)",
+                  color: "white",
+                  border: "2px solid rgb(76 147 164)",
+                  borderRadius: "2rem",
+                },
+              }}
             />
             {getFormErrorMessage("imagen")}
           </ContenedorImg>
@@ -284,11 +289,40 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
             </InputRow>
             <Opciones>
               {estado == "crear" ? (
-                <Button raised label="Registrar" severity="success" rounded onClick={() => setVerConfirmar(true)} disabled={camposVacios()} />
+                <Button
+                  icon="pi pi-plus"
+                  raised
+                  label="Registrar"
+                  severity="success"
+                  rounded
+                  onClick={() => setVerConfirmar(true)}
+                  disabled={!formik.isValid || !formik.dirty}
+                />
               ) : (
-                <Button raised label="Actualizar" severity="warning" rounded onClick={() => setVerConfirmar(true)} disabled={camposVacios()} />
+                <Button
+                  icon="pi pi-pencil"
+                  raised
+                  label="Actualizar"
+                  severity="warning"
+                  rounded
+                  onClick={() => setVerConfirmar(true)}
+                  disabled={!formik.isValid || !formik.dirty}
+                />
               )}
-              <Button raised label="Limpiar" severity="danger" rounded onClick={() => setVerLimpiar(true)} disabled={!formik.dirty} type="button" />
+              {estado === "crear" ? (
+                <Button
+                  icon="pi pi-trash"
+                  raised
+                  label="Limpiar"
+                  severity="danger"
+                  rounded
+                  onClick={() => setVerLimpiar(true)}
+                  disabled={!formik.dirty}
+                  type="button"
+                />
+              ) : (
+                <Button icon="pi pi-arrow-right" raised label="Cancelar" severity="danger" rounded onClick={() => cambiarPestania(3)} type="button" />
+              )}
             </Opciones>
           </ContenedorCampos>
         </Inputs>

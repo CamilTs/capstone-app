@@ -115,9 +115,10 @@ export const TicketEnviado = ({ ticketSeleccionado }) => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.descripcion}
+                disabled={!formik.values.asunto}
               />
               {getFormErrorMessage("descripcion")}
-              <EnviarButton label="Enviar" disabled={!formik.dirty || !formik.isValid} />
+              <EnviarButton icon="pi pi-send" raised type="submit" label="Enviar" disabled={!formik.dirty || !formik.isValid} />
             </TicketForm>
           </form>
         </TicketCard>

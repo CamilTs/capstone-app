@@ -7,8 +7,8 @@ export const CustomConfirmDialog = ({ visible, onHide, onConfirm, message, heade
 
   const footer = (
     <div className="p-grid p-justify-end">
-      <Button label="Si" icon="pi pi-check" raised onClick={onConfirm} className="p-button-success" />
-      <Button label="No" icon="pi pi-times" raised onClick={onHide} className="p-button-danger" />
+      <Button label="Si" icon="pi pi-check-circle" rounded raised onClick={onConfirm} severity="success" />
+      <Button label="No" icon="pi pi-times-circle" rounded raised onClick={onHide} severity="danger" />
     </div>
   );
 

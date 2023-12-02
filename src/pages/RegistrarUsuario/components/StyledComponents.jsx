@@ -2,9 +2,10 @@ import styled from "styled-components";
 
 export const ContenedorMasivo = styled.div`
   height: 100%;
+  width: 100%;
   border-radius: 10px;
   @media (max-width: 1920px) {
-    overflow: auto;
+    overflow-y: auto;
   }
 `;
 
@@ -23,6 +24,7 @@ export const Formulario = styled.form`
 `;
 
 export const Inputs = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: row;
   gap: 1rem;
@@ -38,6 +40,10 @@ export const InputRow = styled.div`
   flex-direction: row;
   width: 100%;
   gap: 1rem;
+  @media (max-width: 1020px) {
+    flex-direction: column;
+    justify-content: center;
+  }
 `;
 
 export const ContenedorCampos = styled.div`

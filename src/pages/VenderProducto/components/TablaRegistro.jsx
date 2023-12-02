@@ -11,17 +11,6 @@ export const TablaRegistro = ({ registros, options = false }) => {
 
   const exportarExcel = () => {
     const datosExportar = registros;
-    // const datosExcel = datosExportar.map((registro) => {
-    // const datosExcel = datosExportar.map((registro) => {
-    //   return {
-    //     Codigo_de_barra: registro.codigo_barra,
-    //     Producto: registro.nombre,
-    //     Categoria: registro.categoria,
-    //     Cantidad: registro.cantidad,
-    //     Fecha: registro.fecha instanceof Date ? registro.fecha.toLocaleDateString() : "",
-    //     Precio: formatoCurrencyCLP(registro.precio),
-    //   }
-    // });
     import("xlsx").then((xlsx) => {
       const worksheet = xlsx.utils.json_to_sheet(datosExportar);
       const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
@@ -62,7 +51,6 @@ export const TablaRegistro = ({ registros, options = false }) => {
 
   const controlInventario = (
     <div className="flex justify-content-end align-items-center gap-3">
-      {/* <Button label="Agregar" icon="pi pi-plus" severity="info" rounded onClick={() => navigateAgregar("/agregarProductos")} /> */}
       <Button
         disabled={registros.length == 0}
         label="Excel"
@@ -86,6 +74,7 @@ export const TablaRegistro = ({ registros, options = false }) => {
   return (
     <div>
       <DataTable
+        emptyMessage="Esperando cliente..."
         value={registros}
         showGridlines
         paginator={options ? true : false}

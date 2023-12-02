@@ -13,13 +13,14 @@ export const autenticando = ({ rut, contrasena }) => {
     try {
       const response = await api.post("autenticacion/login", { rut, contrasena });
       const { data } = response;
-      console.log(data);
 
-      if (!data.success) return dispatch(logout({ errorMessage: data.data }));
+      if (!data.success) return dispatch(logout({ errorMessage: "Usuario no autorizado" }));
       localStorage.setItem("token", data.data.token);
+
       dispatch(login({ ...data.data }));
     } catch (error) {
       console.log(error);
+      throw error;
     }
   };
 };
