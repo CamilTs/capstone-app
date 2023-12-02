@@ -39,7 +39,7 @@ export const Content = styled.div`
   margin: ${({ margin }) => (margin ? margin : "50px")};
   background-color: #fff;
   border-radius: 10px;
-  height: auto
+  height: auto;
   padding: 10px;
   display: flex;
   flex-direction: column;
