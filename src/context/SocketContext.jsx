@@ -1,9 +1,11 @@
 /* eslint-disable react/prop-types */
 import { createContext, useContext } from "react";
 import { useSocket } from "../hooks/useSocket";
+import { enviroment } from "../../enviroment";
 
+const url = `${enviroment.API_URL}/socket.io/socket.io.js`;
 // const url = "https://capstone-ai-zi.onrender.com//socket.io/socket.io.js";
-const url = "http://localhost:3000/socket.io/socket.io.js";
+// const url = "http://localhost:3000/socket.io/socket.io.js";
 
 export const SocketContext = createContext();
 

@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
-
+import { enviroment } from "../../enviroment";
 // const url = "https://capstone-ai-zi.onrender.com/";
-const url = "http://localhost:3000";
+// const url = "http://localhost:3000";
 
 export const api = axios.create({
-  baseURL: url,
+  baseURL: enviroment.API_URL,
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${localStorage.getItem("token")}` || "",
