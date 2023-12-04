@@ -66,12 +66,12 @@ export const GestionarCuentas = () => {
 
   const traerUsuarios = async () => {
     try {
-      const response = await api.get("rol/cliente");
+      const response = await api.get("rol/usuarios");
       const { data } = response;
       console.log(data);
       setUsuarios(data.data);
-      const nombreCliente = data.data.map((usuario) => ({ id: usuario._id, nombre: usuario.nombre }));
-      console.log(nombreCliente);
+      const clientes = data.data.filter((usuario) => usuario.rol === "cliente");
+      const nombreCliente = clientes.map((usuario) => ({ id: usuario._id, nombre: usuario.nombre }));
       setNombreCliente(nombreCliente);
     } catch (error) {
       console.log(error);
@@ -112,7 +112,7 @@ export const GestionarCuentas = () => {
           />
         </TabPanel>
         <TabPanel rightIcon="pi pi-users ml-2" header="Usuarios">
-          <VerRegistros usuarios={usuarios} editarUsuario={editarUsuario} cambiarPestania={cambiarPestania} />
+          <VerRegistros usuarios={usuarios} traerUsuarios={traerUsuarios} editarUsuario={editarUsuario} cambiarPestania={cambiarPestania} />
         </TabPanel>
         <TabPanel rightIcon="pi pi-briefcase ml-2" header="Comercios">
           <VerComercios editarComercio={editarComercio} cambiarPestania={cambiarPestania} nombreCliente={nombreCliente} />

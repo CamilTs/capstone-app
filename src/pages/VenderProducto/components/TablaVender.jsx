@@ -10,6 +10,7 @@ import styled from "styled-components";
 import { api } from "../../../api/api";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { InputContainer } from "../../../components/InputContainer";
 import { useContextSocket } from "../../../context/SocketContext";
 import { formatoCurrencyCLP } from "../../../components/Formatos";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
@@ -236,12 +237,15 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
           setVisible(false), setCodigoBarra("");
         }}
       >
-        <div className="p-float-label glex g-2">
-          <div className="p-inputgroup flex-1 gap-1">
-            <InputText id="codigoBarra" value={codigoBarra} onChange={(e) => setCodigoBarra(e.target.value)} />
-            <label htmlFor="codigoBarra">Codigo de barra</label>
-            <Button severity="success" label="Agregar" onClick={() => agregarProducto(codigoBarra)} />
-          </div>
+        <div className="p-inputgroup flex-1 gap-1">
+          <InputContainer
+            className="venta"
+            placeholder="Código de barra"
+            id="codigoBarra"
+            value={codigoBarra}
+            onChange={(e) => setCodigoBarra(e.target.value)}
+          />
+          <Button className="justify-content-center" severity="success" label="Agregar" onClick={() => agregarProducto(codigoBarra)} />
         </div>
       </Dialog>
 

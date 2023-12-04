@@ -14,7 +14,7 @@ export const Clientes = () => {
 
   const cargarClientes = async () => {
     try {
-      const { data } = await api.get("rol/cliente");
+      const { data } = await api.get("rol/usuarios/cliente");
       if (!data.success) {
         setClientes([]);
       }

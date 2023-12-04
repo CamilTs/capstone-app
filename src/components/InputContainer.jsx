@@ -36,6 +36,15 @@ const Input = styled(InputText)`
     border-top-left-radius: 0rem !important;
     border-bottom-left-radius: 0rem !important;
   }
+
+  &.venta {
+    width: 100%;
+    height: 3rem !important;
+    background-color: #f1f1f1 !important;
+    border-radius: 0.5rem !important;
+    border-top-right-radius: 0rem !important;
+    border-bottom-right-radius: 0rem !important;
+  }
 `;
 
 const InputArea = styled(InputTextarea)`
@@ -180,6 +189,7 @@ export const InputContainerDropdown = ({
         optionValue={optionValue}
         disabled={disabled}
         className={className}
+        emptyMessage="No hay datos..."
       />
     </Container>
   );

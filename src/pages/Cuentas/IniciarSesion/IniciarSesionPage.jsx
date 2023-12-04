@@ -23,11 +23,6 @@ export const IniciarSesionPage = () => {
 
   const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({
-    rut: "",
-    contrasena: "",
-  });
-
   useEffect(() => {
     if (errorMessage) {
       msgs.current.show({
@@ -38,6 +33,20 @@ export const IniciarSesionPage = () => {
       });
     }
   }, [errorMessage]);
+
+  const formik = useFormik({
+    initialValues: {
+      rut: "",
+      contrasena: "",
+    },
+    validationSchema: Yup.object({
+      rut: Yup.string().required("El rut es obligatorio"),
+      contrasena: Yup.string().required("La contraseña es obligatoria"),
+    }),
+    onSubmit: (data) => {
+      console.log(data);
+    },
+  });
 
   const submit = async (e) => {
     e.preventDefault();
@@ -83,19 +92,6 @@ export const IniciarSesionPage = () => {
       });
     }
   };
-
-  const formik = useFormik({
-    initialValues: {
-      ...formData,
-    },
-    validationSchema: Yup.object({
-      rut: Yup.string().required("El rut es obligatorio"),
-      contrasena: Yup.string().required("La contraseña es obligatoria"),
-    }),
-    onSubmit: (data) => {
-      console.log(data);
-    },
-  });
 
   const verContrasena = () => {
     const input = document.getElementById("contrasena");

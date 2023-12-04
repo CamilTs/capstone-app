@@ -160,8 +160,8 @@ export const Comunicarse = () => {
       console.log("Cliente conectado");
     });
 
-    traerUsuarios(rol);
-    traerMensajes();
+    // Guardar el socket en la referencia
+    socketRef.current = socket;
 
     socket.on("mensaje", (nuevoMensaje) => {
       console.log("Mensaje recibido en el cliente:", nuevoMensaje);
@@ -182,19 +182,19 @@ export const Comunicarse = () => {
       setChat((prevChat) => ({ ...prevChat, mensaje: "" }));
     });
 
-    // Guardar el socket en la referencia
-    socketRef.current = socket;
-
     socket.on("disconnect", () => {
       console.log("Cliente desconectado");
     });
+
+    traerUsuarios(rol);
+    traerMensajes();
 
     return () => {
       if (socketRef.current && socketRef.current.connected) {
         socketRef.current.disconnect();
       }
     };
-  }, [rol]);
+  }, []);
 
   return (
     <>

@@ -16,6 +16,7 @@ import { PublicRoutes } from "./routes/PublicRoutes";
 // import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 import { CustomConfirmDialog } from "./components/CustomConfirmDialog";
+import { Comunicarse } from "./pages";
 
 const ContenedorMenuPagina = styled.div`
   height: 100%;
@@ -86,6 +87,7 @@ function App() {
               )}
             </Routes>
           </Container>
+          {status == "autenticado" ? <Comunicarse /> : null}
         </SocketProvider>
       </ContenedorMenuPagina>
       <CustomConfirmDialog />

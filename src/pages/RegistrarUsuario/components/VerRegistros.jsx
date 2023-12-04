@@ -8,10 +8,11 @@ import { Toast } from "primereact/toast";
 import { formatoRut } from "../../../components/Formatos";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
 
-export const VerRegistros = ({ editarUsuario, usuarios }) => {
+export const VerRegistros = ({ editarUsuario, traerUsuarios, usuarios }) => {
   const [Loading, setLoading] = useState(false);
   const [verEliminar, setVerEliminar] = useState(false);
   const [usuarioEliminar, setUsuarioEliminar] = useState("");
+  // const [usuarios, setUsuarios] = useState([]);
   const toast = useRef(null);
 
   const seleccionarUsuarioEliminar = async (usuarioID) => {
@@ -41,7 +42,21 @@ export const VerRegistros = ({ editarUsuario, usuarios }) => {
     }
   };
 
-  useEffect(() => {}, []);
+  // const traerUsuarios = async () => {
+  //   try {
+  //     const response = await api.get("rol/gestion");
+  //     const { data } = response;
+  //     console.log(data);
+  //     setUsuarios(data.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //     console.log("Error al traer los usuarios");
+  //   }
+  // };
+
+  useEffect(() => {
+    traerUsuarios();
+  }, []);
 
   return (
     <Contenedor>
@@ -49,6 +64,7 @@ export const VerRegistros = ({ editarUsuario, usuarios }) => {
 
       <div>
         <DataTable
+          emptyMessage="Esperando datos de usuarios..."
           value={usuarios}
           paginator
           showGridlines

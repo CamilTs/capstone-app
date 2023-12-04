@@ -44,6 +44,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
       detail: "Se limpió el formulario",
       life: 2000,
     });
+    fileUploadRef.current.clear();
     setVerLimpiar(false);
   };
 
@@ -64,31 +65,34 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
   const crearUsuario = async () => {
     try {
       // Excluye la propiedad 'contrasena' si estamos en modo 'editar'
-      const dataToSend = estado === "crear" ? { ...formik.values } : { ...formik.values, contrasena: undefined, rol: undefined };
+      const dataToSend = estado === "crear" ? { ...formik.values } : { ...formik.values, rol: undefined };
 
+      let response;
       if (estado === "crear") {
-        const response = await api.post("usuario", dataToSend);
-        const { data } = response;
+        response = await api.post("usuario", dataToSend);
       } else {
-        const response = await api.put("usuario", dataToSend);
-        const { data } = response;
-        console.log(data);
+        response = await api.put("usuario", dataToSend);
       }
-      toast.current.show({
-        severity: estado === "crear" ? "success" : "info",
-        summary: estado === "crear" ? "Creado" : "Editado",
-        detail: estado === "crear" ? "Usuario creado" : "Usuario actualizado",
-        life: 2000,
-      });
-      estado === "crear" ? formik.resetForm() : cambiarPestania(2);
-      estado === "crear" ? fileUploadRef.current.clear() : cambiarPestania(2);
+
+      if (response.data.success === false) {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: response.data.data,
+          life: 2000,
+        });
+      } else {
+        toast.current.show({
+          severity: estado === "crear" ? "success" : "info",
+          summary: estado === "crear" ? "Creado" : "Editado",
+          detail: estado === "crear" ? "Usuario creado" : "Usuario actualizado",
+          life: 2000,
+        });
+        estado === "crear" ? formik.resetForm() : cambiarPestania(2);
+        estado === "crear" ? fileUploadRef.current.clear() : cambiarPestania(2);
+      }
     } catch (error) {
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: `Error al ${estado === "crear" ? "crear" : "editar"} el usuario`,
-        life: 2000,
-      });
+      console.log(error);
     } finally {
       setVerConfirmar(false);
     }
@@ -105,31 +109,6 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
     },
   });
 
-  const camposVacios = () => {
-    console.log(formik.values);
-    if (estado === "crear") {
-      return (
-        !formik.values.rol ||
-        !formik.values.imagen ||
-        (formik.values.rut.length < 9 && 12) ||
-        !formik.values.nombre ||
-        !formik.values.apellido ||
-        !formik.values.correo ||
-        !formik.values.contrasena ||
-        formik.values.contrasena !== formik.values.repetir
-      );
-    }
-    // Si estás en modo "editar", verifica solo las condiciones relevantes
-    return (
-      !formik.values.rol ||
-      !formik.values.imagen ||
-      formik.values.rut.length < 7 ||
-      !formik.values.nombre ||
-      !formik.values.apellido ||
-      !formik.values.correo
-    );
-  };
-
   const validacionValores = (name) => formik.touched[name] && formik.errors[name];
 
   const getFormErrorMessage = (name) => {
@@ -140,20 +119,18 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
     ) : null;
   };
 
-  const cargarImagen = async () => {
-    if (estado === "crear") return;
-    try {
-      const { data } = await api.get(`usuario/img/${formulario.rut}`);
-      formik.setFieldValue("imagen", data.data.imagen);
-    } catch (error) {
-      console.log(error);
-      console.log("Error al cargar la imagen");
-    }
-  };
+  // const cargarImagen = async () => {
+  //   if (estado === "crear") return;
+  //   try {
+  //     const { data } = await api.get(`usuario/img/${formulario.rut}`);
+  //     formik.setFieldValue("imagen", data.data.imagen);
+  //   } catch (error) {
+  //     console.log(error);
+  //     console.log("Error al cargar la imagen");
+  //   }
+  // };
 
-  useEffect(() => {
-    cargarImagen();
-  }, [estado]);
+  useEffect(() => {}, []);
 
   return (
     <Contenedor>
@@ -200,6 +177,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
                   borderRadius: "2rem",
                 },
               }}
+              disabled={!formik.values.rol}
             />
             {getFormErrorMessage("imagen")}
           </ContenedorImg>
@@ -215,7 +193,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formatoRut(formik.values.rut)}
-                  disabled={estado === "editar"}
+                  disabled={estado === "editar" || !formik.values.rol}
                 />
                 {getFormErrorMessage("rut")}
               </Campos>
@@ -227,6 +205,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.nombre}
+                  disabled={!formik.values.rol}
                 />
                 {getFormErrorMessage("nombre")}
               </Campos>
@@ -241,6 +220,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.apellido}
+                  disabled={!formik.values.rol}
                 />
                 {getFormErrorMessage("apellido")}
               </Campos>
@@ -254,6 +234,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.correo}
+                  disabled={!formik.values.rol}
                 />
                 {getFormErrorMessage("correo")}
               </Campos>
@@ -269,7 +250,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.contrasena}
-                  icon="pi pi-eye"
+                  disabled={!formik.values.rol}
                 />
                 {getFormErrorMessage("contrasena")}
               </Campos>
@@ -283,6 +264,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.repetir}
+                  disabled={!formik.values.rol}
                 />
                 {getFormErrorMessage("repetir")}
               </Campos>
@@ -321,7 +303,7 @@ export const RegistrarUsuarios = ({ estructuraFormulario, formulario, setFormula
                   type="button"
                 />
               ) : (
-                <Button icon="pi pi-arrow-right" raised label="Cancelar" severity="danger" rounded onClick={() => cambiarPestania(3)} type="button" />
+                <Button icon="pi pi-arrow-right" raised label="Cancelar" severity="danger" rounded onClick={() => cambiarPestania(2)} type="button" />
               )}
             </Opciones>
           </ContenedorCampos>

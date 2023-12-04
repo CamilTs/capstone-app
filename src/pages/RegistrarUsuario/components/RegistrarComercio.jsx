@@ -107,6 +107,7 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
               value={formik.values.nombre}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              disabled={!formik.values.propietario}
             />
             {getFormErrorMessage("nombre")}
           </Campos>
@@ -118,6 +119,7 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
               value={formik.values.direccion}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              disabled={!formik.values.propietario}
             />
             {getFormErrorMessage("direccion")}
           </Campos>
@@ -134,6 +136,7 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
                 }
               }}
               onBlur={formik.handleBlur}
+              disabled={!formik.values.propietario}
             />
             {getFormErrorMessage("telefono")}
           </Campos>

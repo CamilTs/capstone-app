@@ -17,14 +17,13 @@ export const Publicacion = ({ publicacion, key }) => {
   };
   return (
     <Card className="lg:col-3 xl:col-2 sm:col-6 border-1 border-black-alpha-10" key={key} title={nombre} header={header} footer={footer}>
-      <div>
+      <div className="flex gap-1">
         <i className="pi pi-tag p-mr-2"></i>
         <span className="m-0 p-0">{categoria}</span>
       </div>
-      <div className="mt-2">
+      <div className="flex gap-1">
         <i className="pi pi-user p-mr-2"></i>
-        <span className="m-0 p-0">{proveedor.nombre}</span>
-        <span>
+        <span className="m-0 p-0">
           {proveedor.nombre} {proveedor.apellido}
         </span>
       </div>
