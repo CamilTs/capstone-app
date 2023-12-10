@@ -177,6 +177,7 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
 
   useEffect(() => {
     const escucharWSCodigoBarra = async (data) => {
+      console.log("HOla");
       const { codigoBarra } = data;
       console.log("Código de barras recibido por WebSocket:", codigoBarra);
       await agregarProducto(codigoBarra);

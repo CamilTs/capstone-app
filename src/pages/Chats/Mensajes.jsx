@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { api } from "../../api/api";
 import { useState } from "react";
 import { Button } from "primereact/button";
@@ -18,7 +18,6 @@ export const Comunicarse = () => {
   const { socket } = useContextSocket();
   const { id, rol } = useSelector((state) => state.auth);
   const op = useRef(null);
-  const socketRef = useRef(null);
   const toast = useRef(null);
 
   const estructuraChat = {
@@ -51,7 +50,6 @@ export const Comunicarse = () => {
 
   const seleccionarUsuario = (usuario) => {
     setReceptorID(usuario);
-    socketRef.current.emit("seleccionarUsuario", { selectedUserId: usuario._id });
   };
 
   const marcarComoFavorito = async (chatID, favorito, nombreUsuario) => {
@@ -103,10 +101,12 @@ export const Comunicarse = () => {
       const nuevoMensaje = { emisorID, mensaje, enviadoPorEmisor, chatID: chatID, createdAt: new Date() };
       console.log(nuevoMensaje);
       try {
+        console.log("HOLA");
         const response = await api.post("chat", nuevoMensaje);
         const { data } = response;
-        socketRef.current.emit("mensaje", nuevoMensaje);
+        socket.emit("mensaje", nuevoMensaje);
         console.log("Mensaje enviado", data.data);
+
         setChat((prevChat) => ({ ...prevChat, mensaje: "" }));
       } catch (error) {
         console.log("Error al guardar el mensaje", error);
@@ -158,28 +158,32 @@ export const Comunicarse = () => {
   useEffect(() => {
     socket.on("connect", () => {
       console.log("Cliente conectado");
+      console.log("ESTE ES ");
     });
 
     // Guardar el socket en la referencia
-    socketRef.current = socket;
 
     socket.on("mensaje", (nuevoMensaje) => {
-      console.log("Mensaje recibido en el cliente:", nuevoMensaje);
-      setMensajes((prevMensajes) => {
-        const chatExistente = prevMensajes.find((chat) => chat.chatID === nuevoMensaje.chatID);
-        if (chatExistente) {
-          return prevMensajes.map((chat) => {
-            if (chat.chatID === nuevoMensaje.chatID) {
-              return { ...chat, mensajes: [...chat.mensajes, nuevoMensaje] };
-            } else {
-              return chat;
-            }
-          });
-        } else {
-          return [...prevMensajes, { chatID: nuevoMensaje.chatID, mensajes: [nuevoMensaje] }];
-        }
-      });
-      setChat((prevChat) => ({ ...prevChat, mensaje: "" }));
+      // Verifica si el mensaje ya se ha enviado
+      if (!mensajes.some((mensaje) => mensaje.id === nuevoMensaje.id)) {
+        // Emite el evento
+        console.log("Mensaje recibido en el cliente:", nuevoMensaje);
+        setMensajes((prevMensajes) => {
+          const chatExistente = prevMensajes.find((chat) => chat.chatID === nuevoMensaje.chatID);
+          if (chatExistente) {
+            return prevMensajes.map((chat) => {
+              if (chat.chatID === nuevoMensaje.chatID) {
+                return { ...chat, mensajes: [...chat.mensajes, nuevoMensaje] };
+              } else {
+                return chat;
+              }
+            });
+          } else {
+            return [...prevMensajes, { chatID: nuevoMensaje.chatID, mensajes: [nuevoMensaje] }];
+          }
+        });
+        setChat((prevChat) => ({ ...prevChat, mensaje: "" }));
+      }
     });
 
     socket.on("disconnect", () => {
@@ -190,8 +194,9 @@ export const Comunicarse = () => {
     traerMensajes();
 
     return () => {
-      if (socketRef.current && socketRef.current.connected) {
-        socketRef.current.disconnect();
+      if (socket && socket.connected) {
+        socket.disconnect();
+        socket.off();
       }
     };
   }, []);

@@ -80,12 +80,11 @@ export const ClienteRoutes = () => {
   };
 
   useEffect(() => {
-    getAlertas();
-    socket.on("stockBajo", escucharAlertas);
-
-    return () => {
-      socket.off("stockBajo", escucharAlertas);
-    };
+    // getAlertas();
+    // socket.on("stockBajo", escucharAlertas);
+    // return () => {
+    //   socket.off("stockBajo", escucharAlertas);
+    // };
   }, []);
   return (
     <>
