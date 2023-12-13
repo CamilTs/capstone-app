@@ -310,14 +310,7 @@ export const Productos = () => {
         onHide={() => setMostrarFormulario(false)}
         footer={
           <>
-            <Button
-              label="Actualizar"
-              icon="pi pi-pencil"
-              severity="warning"
-              raised
-              rounded
-              onClick={() => console.log(formik.values)}
-            />
+
             <Button
               label="Actualizar"
               icon="pi pi-pencil"

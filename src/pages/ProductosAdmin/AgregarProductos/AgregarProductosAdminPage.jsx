@@ -281,15 +281,7 @@ export const AgregarProductosAdmin = () => {
                   disabled={!formik.dirty || !formik.isValid}
                   onClick={() => setVerConfirmar(true)}
                 />
-                <Button
-                  label="Prueba"
-                  rounded
-                  raised
-                  icon="pi pi-plus"
-                  className="p-button-success"
-                  onClick={() => {
-                    console.log(formik.values)}}
-                />
+
                 <Button
                   label="Limpiar"
                   rounded

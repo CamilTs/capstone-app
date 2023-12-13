@@ -153,14 +153,7 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
         </ContenedorCampos>
       </Formulario>
       <Opciones>
-      <Button
-            icon="pi pi-plus"
-            raised
-            label="PRueba"
-            severity="success"
-            rounded
-            onClick={() => console.log(formik.values)}
-          />
+
         {estado == "crear" ? (
           <Button
             icon="pi pi-plus"
