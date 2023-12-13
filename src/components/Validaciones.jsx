@@ -35,7 +35,7 @@ export const RegistrarSchema = Yup.object().shape({
 
 // Registrar Comercio Validaciones //
 export const ComercioSchema = Yup.object().shape({
-  propietario: Yup.object().required("Propietario requerido").nullable(),
+  propietario: Yup.string().required("Propietario requerido").nullable(),
   nombre: Yup.string()
     .required("Nombre requerido")
     .matches(/^[a-zA-ZÀ-ÿ\s]{1,40}$/, "Nombre invalido"),

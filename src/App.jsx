@@ -80,10 +80,10 @@ function App() {
           {status == "autenticado" ? <MenuLateral cerrarCuenta={() => setVerConfirmar(true)} /> : null}
           <Container>
             <Routes>
-              {status == "autenticado" ? (
-                <Route path="/*" element={<ProtectedRoutes />} />
-              ) : (
+              {status == "no-autenticado" || status == "cargando" ? (
                 <Route path="/*" element={<PublicRoutes status={status} />} />
+              ) : (
+                <Route path="/*" element={<ProtectedRoutes />} />
               )}
             </Routes>
           </Container>

@@ -203,7 +203,7 @@ export const TablaVender = ({ comercio, cargarRegistros }) => {
                 {formatoCurrencyCLP(registro.total)}
               </span>
               <span className="text-2xl	">
-                <b>Ultimo: </b>
+                <b>Último: </b>
                 {formatoCurrencyCLP(ultimoAgregado)}
               </span>
             </DatosVenta>

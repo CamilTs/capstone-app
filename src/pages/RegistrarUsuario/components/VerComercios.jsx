@@ -79,7 +79,7 @@ export const VerComercios = ({ editarComercio, nombreCliente }) => {
         >
           <Column field="nombre" header="Nombre" />
           <Column field="direccion" header="Dirección" />
-          <Column field="telefono" header="Telefono" body={(e) => formatoTelefono(e.telefono)} />
+          <Column field="telefono" header="Teléfono" body={(e) => formatoTelefono(e.telefono)} />
           <Column
             field="propietario"
             header="Propietario"

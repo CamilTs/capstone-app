@@ -211,7 +211,7 @@ export const TablaProductos = ({ productos = [], cargarProductos, comercio }) =>
       >
         <Column field="codigo_barra" header="Código de barra" body={(rowData) => rowData.codigo_barra} />
         <Column field="nombre" header="Producto" body={(rowData) => rowData.nombre} />
-        <Column field="categoria" header="Categoria" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoria")} />
+        <Column field="categoria" header="Categoría" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoría")} />
         <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
         <Column field="fecha" header="Fecha" body={(rowData) => formatoFecha(rowData.fecha)} />
         <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />

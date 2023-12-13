@@ -99,7 +99,7 @@ const useGraficos = (formato = {}, tipo = "", title = "") => {
         labels[mes] = `${nombre} - ${labels[mes]}`;
       }
       nuevoDataset.push({
-        label: "Producto mas vendido",
+        label: "Producto más vendido",
         data: valores,
         backgroundColor: [
           "rgba(169, 74, 59, 0.4)",

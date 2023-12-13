@@ -117,7 +117,7 @@ export const Registros = () => {
       <Toast ref={toast} />
       <TablaRegistros loading={Loading} value={ticketsCerrados} emptyMessage="Sin registros...">
         <Column field="asunto" header="Asunto" />
-        <Column field="descripcion" header="Descripcion" />
+        <Column field="descripcion" header="Descripción" />
         <Column field="respuesta" header="Respuesta" />
         <Column field="estado" header="Estado" body={estadoTemplate} />
         <Column

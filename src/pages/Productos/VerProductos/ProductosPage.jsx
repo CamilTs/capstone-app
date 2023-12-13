@@ -14,7 +14,7 @@ import { api } from "../../../api/api";
 import { useSelector } from "react-redux";
 import { Badge } from "../../../components/Badge";
 import { CustomConfirmDialog } from "../../../components/CustomConfirmDialog";
-import { InputContainer } from "../../../components/InputContainer";
+import { InputContainer, InputContainerDropdown } from "../../../components/InputContainer";
 import { ProductoSchema } from "../../../components/Validaciones";
 import { useFormik } from "formik";
 import { FileUpload } from "primereact/fileupload";
@@ -80,8 +80,8 @@ export const Productos = () => {
   const editarProducto = async () => {
     try {
       const body = { ...formik.values };
-      if (formik.values.imagen) {
-        body.imagen = [formik.values.imagen];
+      if (formik.values.imagenes) {
+        body.imagenes = [formik.values.imagenes];
       }
       const response = await api.put(`producto/${productoAModificar._id}`, body);
       const { data } = response;
@@ -118,11 +118,15 @@ export const Productos = () => {
   };
 
   // Exportar Archivos Excel, PDF //
-
+  const categorias = [
+    { label: "Alimentos y bebidas", value: "Alimentos y bebidas" },
+    { label: "Electrodoméstico", value: "Electrodoméstico" },
+    { label: "Electrónica", value: "Electrónica" },
+  ];
   const cols = [
     { field: "codigo_barra", header: "Código de barra" },
     { field: "nombre", header: "Productos" },
-    { field: "categoria", header: "Categorias" },
+    { field: "categoria", header: "Categorías" },
     { field: "cantidad", header: "Cantidad" },
     { field: "fecha", header: "Fecha" },
     { field: "precio", header: "Precio" },
@@ -215,7 +219,7 @@ export const Productos = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result;
-        formik.setFieldValue("imagen", base64String);
+        formik.setFieldValue("imagenes", base64String);
       };
       reader.readAsDataURL(file);
     }
@@ -232,7 +236,7 @@ export const Productos = () => {
     initialValues: {
       codigo_barra: "",
       nombre: "",
-      imagen: "",
+      imagenes: "",
       categoria: "",
       cantidad: Number(""),
       precio: Number(""),
@@ -279,8 +283,8 @@ export const Productos = () => {
         >
           <Column field="codigo_barra" header="Código de barra" />
           <Column field="nombre" header="Producto" />
-          <Column field="categoria" header="Categoria" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoria")} />
-          <Column field="imagen" header="Imagen" body={imageBodyTemplate} />
+          <Column field="categoria" header="Categoría" body={(rowData) => (rowData.categoria ? rowData.categoria : "Sin Categoría")} />
+          <Column field="imagenes" header="Imagen" body={imageBodyTemplate} />
           <Column sortable field="cantidad" header="Cantidad" body={cantidadProductos} />
           <Column field="fecha" header="Fecha" body={(rowData) => formatoFecha(rowData.fecha)} />
           <Column sortable field="precio" header="Precio" body={(rowData) => formatoCurrencyCLP(rowData.precio)} />
@@ -312,9 +316,17 @@ export const Productos = () => {
               severity="warning"
               raised
               rounded
+              onClick={() => console.log(formik.values)}
+            />
+            <Button
+              label="Actualizar"
+              icon="pi pi-pencil"
+              severity="warning"
+              raised
+              rounded
               onClick={editarProducto}
               disabled={
-                productoAModificar.imagen === formik.values.imagen &&
+                productoAModificar.imagenes === formik.values.imagenes &&
                 productoAModificar.nombre === formik.values.nombre &&
                 productoAModificar.categoria === formik.values.categoria &&
                 productoAModificar.cantidad === formik.values.cantidad &&
@@ -336,14 +348,14 @@ export const Productos = () => {
           <div className="flex flex-column gap-2">
             <div className="flex justify-content-center">
               <div className="flex flex-column align-items-center">
-                {formik.values.imagen ? (
-                  <img src={formik.values.imagen} alt="Imagen del producto" width="200" height="200" style={{ objectFit: "cover" }} />
+                {formik.values.imagenes ? (
+                  <img src={formik.values.imagenes} alt="Imagen del producto" width="200" height="200" style={{ objectFit: "cover" }} />
                 ) : productoAModificar.imagenes ? (
                   <img src={productoAModificar.imagenes} alt="Imagen del producto" width="200" height="200" style={{ objectFit: "cover" }} />
                 ) : null}
                 <FileUpload
                   ref={fileUploadRef}
-                  name="imagen"
+                  name="imagenes"
                   className="p-mt-2"
                   mode="basic"
                   accept="image/*"
@@ -380,15 +392,17 @@ export const Productos = () => {
               {getFormErrorMessage("nombre")}
             </div>
             <div className="p-field p-col-12 p-md-6">
-              <label htmlFor="categoria">Categoría</label>
-              <InputContainer
-                id="categoria"
-                name="categoria"
-                onChange={(e) => formik.handleChange(e)}
-                onBlur={formik.handleBlur}
-                value={formik.values.categoria}
-              />
-              {getFormErrorMessage("categoria")}
+            <label htmlFor="categoria">Categoría</label>
+                <InputContainerDropdown
+                  id="categoria"
+                  name="categoria"
+                  options={categorias}
+                  placeholder="Seleccione una categoría"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.categoria}
+                />
+                {getFormErrorMessage("categoria")}
             </div>
             <div className="p-field p-col-12 p-md-6">
               <label htmlFor="cantidad">Cantidad</label>

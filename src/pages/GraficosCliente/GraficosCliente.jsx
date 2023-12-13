@@ -10,7 +10,7 @@ import { formatoCurrencyCLP, formatoNombreMes } from "../../components/Formatos"
 import { CustomCard } from "../../components/CustomCard";
 
 export const GraficosCliente = () => {
-  const { infoGrafico, loading, title: TitleProductoPorAnio } = useGraficos(null, "productoPorAnio", "Productos mas vendidos");
+  const { infoGrafico, loading, title: TitleProductoPorAnio } = useGraficos(null, "productoPorAnio", "Productos más vendidos");
   const { infoGrafico: registroData, loading: registroLoading, title: registroTitulo } = useGraficos(null, "registro", "Total de ventas por mes");
   const { infoGrafico: registroAnioData, loading: registroAnioLoading, title } = useGraficos(null, "registroAnio", "Registros por Año");
 

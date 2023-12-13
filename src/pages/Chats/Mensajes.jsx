@@ -101,11 +101,9 @@ export const Comunicarse = () => {
       const nuevoMensaje = { emisorID, mensaje, enviadoPorEmisor, chatID: chatID, createdAt: new Date() };
       console.log(nuevoMensaje);
       try {
-        console.log("HOLA");
         const response = await api.post("chat", nuevoMensaje);
         const { data } = response;
         socket.emit("mensaje", nuevoMensaje);
-        console.log("Mensaje enviado", data.data);
 
         setChat((prevChat) => ({ ...prevChat, mensaje: "" }));
       } catch (error) {
@@ -118,7 +116,6 @@ export const Comunicarse = () => {
     try {
       const response = await api.get(`chat/buscarTodos/${id}`);
       const { data } = response;
-      console.log(data);
 
       const newFavoritos = {};
       data.data.forEach((chat) => {
@@ -157,8 +154,6 @@ export const Comunicarse = () => {
 
   useEffect(() => {
     socket.on("connect", () => {
-      console.log("Cliente conectado");
-      console.log("ESTE ES ");
     });
 
     // Guardar el socket en la referencia

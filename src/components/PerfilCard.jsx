@@ -28,15 +28,17 @@ const TextoUsuario = styled.span`
 export const PerfilCard = ({ cerrarCuenta: cerrarCuentaDialog }) => {
   const [usuario, setUsuario] = useState(null);
   const toast = useRef(null);
-  const { id } = useSelector((state) => state.auth);
+  const { id, token, status } = useSelector((state) => state.auth);
   const traerUsuario = async () => {
+    console.log("ID", id)
     const res = await api.get(`usuario/${id}`);
     setUsuario(res.data.data);
   };
 
   useEffect(() => {
+    console.log("Status", status)
     traerUsuario();
-  }, []);
+  }, [status]);
   return (
     <ContenedorTotal>
       {usuario && (

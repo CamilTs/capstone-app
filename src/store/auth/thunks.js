@@ -19,7 +19,7 @@ export const autenticando = ({ rut, contrasena }) => {
         return "Usuario no autorizado";
       }
 
-      localStorage.setItem("token", data.data.token);
+      await localStorage.setItem("token", data.data.token);
       dispatch(login({ ...data.data }));
       return null;
     } catch (error) {

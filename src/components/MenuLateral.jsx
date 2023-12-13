@@ -5,7 +5,7 @@ import { PerfilCard } from "./PerfilCard";
 import { rutas } from "../rutas";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-
+import logo from "../assets/Logo.png";
 const Fondo = styled.div`
   padding: 15px;
   display: flex;
@@ -20,8 +20,7 @@ const TituloMenu = styled.div`
   display: flex;
   border-radius: 5px;
   background: #538a95;
-  font-size: 30px;
-  width: 100%;
+  /* font-size: 30px; */
   color: #fff;
   justify-content: center;
 `;
@@ -78,7 +77,16 @@ export const MenuLateral = ({ cerrarCuenta }) => {
 
   return (
     <Fondo>
-      <TituloMenu>Ai Zi</TituloMenu>
+      <TituloMenu>
+        <img
+          src={logo}
+          style={{ width: 200, cursor: "pointer" }}
+          alt="Logo"
+          onClick={() => {
+            navigate("/");
+          }}
+        />
+      </TituloMenu>
       {itemsRuta.length > 0 && (
         <OpcionesMenu>
           {/* <Menu model={itemsRuta} /> */}

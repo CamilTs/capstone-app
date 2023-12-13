@@ -12,6 +12,7 @@ import { Message } from "primereact/message";
 export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, setFormulario, estado, cambiarPestania, nombreCliente }) => {
   const [verConfirmar, setVerConfirmar] = useState(false);
   const [verLimpiar, setVerLimpiar] = useState(false);
+  const [propietarioSeleccionado, setPropietarioSeleccionado] = useState({})
   const toast = useRef(null);
 
   const limpiarFormulario = () => {
@@ -42,6 +43,9 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
         detail: estado === "crear" ? `Comercio asignado a ${formik.values.propietario.nombre}` : "Comercio editado",
         life: 2000,
       });
+      
+    estado=='crear'&& setPropietarioSeleccionado({});
+
       estado === "crear" ? formik.resetForm() : cambiarPestania(3);
     } catch (error) {
       console.log(error);
@@ -55,6 +59,12 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
       setVerConfirmar(false);
     }
   };
+
+  const controlarPropietario = (e) => {
+    setPropietarioSeleccionado(e.value)
+    formik.handleChange(e)
+    formik.setFieldValue("propietario", e.value.id)
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -92,9 +102,9 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
               options={nombreCliente}
               optionLabel="nombre"
               placeholder="Seleccione un propietario.."
-              onChange={formik.handleChange}
+              onChange={controlarPropietario}
               onBlur={formik.handleBlur}
-              value={formik.values.propietario}
+              value={propietarioSeleccionado}
               disabled={estado === "editar"}
             />
             {getFormErrorMessage("propietario")}
@@ -128,7 +138,7 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
             <InputContainer
               name="telefono"
               maxlength="9"
-              placeholder="El telefono debe llevar '9' al inicio.."
+              placeholder="El teléfono debe llevar '9' al inicio.."
               value={formik.values.telefono}
               onChange={(e) => {
                 if (!e.target.value || /^[0-9]*$/.test(e.target.value)) {
@@ -143,6 +153,14 @@ export const RegistrarComercio = ({ estructuraFormularioComercio, formulario, se
         </ContenedorCampos>
       </Formulario>
       <Opciones>
+      <Button
+            icon="pi pi-plus"
+            raised
+            label="PRueba"
+            severity="success"
+            rounded
+            onClick={() => console.log(formik.values)}
+          />
         {estado == "crear" ? (
           <Button
             icon="pi pi-plus"

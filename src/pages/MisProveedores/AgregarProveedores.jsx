@@ -177,7 +177,7 @@ export const AgregarProveedores = () => {
       <DataTable value={proveedor} paginator rows={5} rowsPerPageOptions={[5, 10, 15]} scrollable scrollHeight="500px" loading={Loading}>
         <Column field="nombre" header="Nombre" />
         <Column field="descripcion" header="Descripción" />
-        <Column field="telefono" header="Telefono" body={(e) => formatoTelefono(e.telefono)} />
+        <Column field="telefono" header="Teléfono" body={(e) => formatoTelefono(e.telefono)} />
         <Column field="correo" header="Correo" />
         <Column
           header="Opciones"
@@ -233,7 +233,7 @@ export const AgregarProveedores = () => {
                 <InputContainer
                   name="telefono"
                   maxlength="9"
-                  placeholder="El telefono debe llevar '9' al inicio"
+                  placeholder="El teléfono debe llevar '9' al inicio"
                   value={formik.values.telefono}
                   onChange={(e) => {
                     if (!e.target.value || /^[0-9]*$/.test(e.target.value)) {

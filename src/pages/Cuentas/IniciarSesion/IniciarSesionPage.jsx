@@ -43,9 +43,6 @@ export const IniciarSesionPage = () => {
       rut: Yup.string().required("El rut es obligatorio"),
       contrasena: Yup.string().required("La contraseña es obligatoria"),
     }),
-    onSubmit: (data) => {
-      console.log(data);
-    },
   });
 
   const submit = async (e) => {
